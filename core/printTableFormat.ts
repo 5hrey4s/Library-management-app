@@ -1,4 +1,4 @@
-import chalk from "chalk";
+// import chalk from "chalk";
 
 export function printTableWithoutIndex<T>(data: T[]): void {
   const maxLengths: { [key: string]: number } = {};
@@ -22,30 +22,30 @@ export function printTableWithoutIndex<T>(data: T[]): void {
     .map((header) => "-".repeat(maxLengths[header]))
     .join(" - ");
 
-  console.log(chalk.bold.blue(divider));
+  // console.log(chalk.bold.blue(divider));
 
-  console.log(
-    headers
-      .map((header) =>
-        chalk.bold.yellow(header.toUpperCase().padEnd(maxLengths[header]))
-      )
-      .join(chalk.bold.blue("|"))
-  );
+  // console.log(
+  //   headers
+  //     .map((header) =>
+  //       chalk.bold.yellow(header.toUpperCase().padEnd(maxLengths[header]))
+  //     )
+  //     .join(chalk.bold.blue("|"))
+  // );
 
-  console.log(chalk.bold.blue(divider));
+  // console.log(chalk.bold.blue(divider));
 
   function printRow(item: T): void {
-    console.log(
-      headers
-        .map((header) =>
-          String(" " + item[header as keyof T]).padEnd(maxLengths[header])
-        )
-        .join(chalk.bold.blue("|"))
-    );
+    // console.log(
+    //   headers
+    //     .map((header) =>
+    //       String(" " + item[header as keyof T]).padEnd(maxLengths[header])
+    //     )
+    //     .join(chalk.bold.blue("|"))
+    // );
   }
 
   data.forEach((item) => {
     printRow(item);
   });
-  console.log(chalk.bold.blue(divider));
+  // console.log(chalk.bold.blue(divider));
 }

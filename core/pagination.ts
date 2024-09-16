@@ -1,4 +1,4 @@
-import chalk from "chalk";
+// import chalk from "chalk";
 import { readChar } from "./input.utils";
 import { printTableWithoutIndex } from "./printTableFormat";
 import {IRepository} from "./repository"
@@ -43,19 +43,19 @@ export async function viewCompleteList<T, U extends T>(
         limit % 2 === 0
           ? Math.ceil(totalCount / limit)
           : Math.ceil(totalCount / limit) - 1;
-      console.log(
-        chalk.bold.cyan(`\n\nPage: ${currentPage + 1} of ${totalPages})`)
-      );
+      // console.log(
+      //   chalk.bold.cyan(`\n\nPage: ${currentPage + 1} of ${totalPages})`)
+      // );
       printTableWithoutIndex<T>(result.items);
       const hasPreviousPage = currentPage > 0;
       const hasNextPage =
         result.pagination.limit + result.pagination.offset <
         result.pagination.total;
       if (hasPreviousPage) {
-        console.log(chalk.bold.yellow(`p\tPrevious Page`));
+        // console.log(chalk.bold.yellow(`p\tPrevious Page`));
       }
       if (hasNextPage) {
-        console.log(chalk.bold.yellow(`n\tNext Page`));
+        // console.log(chalk.bold.yellow(`n\tNext Page`));
       }
       if (hasPreviousPage || hasNextPage) {
         console.log(`q\tExit List`);
@@ -70,7 +70,7 @@ export async function viewCompleteList<T, U extends T>(
             await loadData();
           } else if (op !== "q") {
             console.log("---", op, "---");
-            console.log(chalk.bold.red("\n\nInvalid input"));
+            // console.log(chalk.bold.red("\n\nInvalid input"));
             await askChoice();
           }
         };
