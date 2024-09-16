@@ -1,4 +1,6 @@
 // import chalk from "chalk";
+// import chalk from "chalk";
+
 
 export function printTableWithoutIndex<T>(data: T[]): void {
   const maxLengths: { [key: string]: number } = {};
