@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Appenv } from "@/read-env";
 
 export interface ListMyBooksProps {
   searchParams: SearchParams;
@@ -28,7 +29,7 @@ export interface ListMyBooksProps {
 }
 
 const pool = mysql.createPool(
-  "mysql://root:root_password@localhost:3306/librarydb"
+  Appenv.DATABASE_URL
 );
 const db = drizzle(pool);
 const memberRepository = new MemberRepository(db);

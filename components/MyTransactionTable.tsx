@@ -28,19 +28,20 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { SearchParams } from "@/app/home/books/page";
+import { Appenv } from "@/read-env";
 
 // Initialize database connection
-const pool = mysql.createPool(
-  "mysql://root:root_password@localhost:3306/librarydb"
-);
+const pool = mysql.createPool(Appenv.DATABASE_URL);
 const db = drizzle(pool);
 const memberRepository = new MemberRepository(db);
 
-interface MyTransactionsTableProps{
-  searchParams:SearchParams
+interface MyTransactionsTableProps {
+  searchParams: SearchParams;
 }
 
-const MyTransactionsTable = async ({ searchParams }:MyTransactionsTableProps) => {
+const MyTransactionsTable = async ({
+  searchParams,
+}: MyTransactionsTableProps) => {
   const session = await auth();
   const email = session?.user?.email;
 
@@ -110,7 +111,9 @@ const MyTransactionsTable = async ({ searchParams }:MyTransactionsTableProps) =>
               <SelectItem value="Returned">Returned</SelectItem>
             </SelectContent>
           </Select>
-            <Button type="submit" className="bg-[#2f8d46] hover:bg-[#256f38]">Apply Filters</Button>
+          <Button type="submit" className="bg-[#2f8d46] hover:bg-[#256f38]">
+            Apply Filters
+          </Button>
         </form>
 
         <div className="overflow-x-auto">
