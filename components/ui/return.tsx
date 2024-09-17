@@ -42,7 +42,7 @@ const ReturnBookButton: FC<ReturnBookButtonProps> = ({
         description: "The book has been marked as returned in the system.",
         variant: "default",
       });
-      router.refresh();
+      // router.refresh();
     } catch (error) {
       console.error("Error returning book:", error);
       toast({

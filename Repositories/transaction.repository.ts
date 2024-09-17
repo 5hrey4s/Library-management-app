@@ -93,7 +93,7 @@ export class TransactionRepository
 
   async returnBook(
     id: number,
-    transaction: ITransactionBase
+    transaction: ITransaction
   ): Promise<ITransaction | null> {
     const newTransaction = await this.db.transaction(async (trx) => {
       console.log("inside returnBook", transaction);
@@ -107,12 +107,12 @@ export class TransactionRepository
         .set({ availableNumberOfCopies: book.availableNumberOfCopies + 1 });
       await this.db
         .update(Transactions)
-        .set({ returnDate: formatDate(new Date()), Status: "Returned" });
+        .set({ returnDate: formatDate(new Date()), Status: "Returned" })
+        .where(eq(Transactions.id, id));
 
       return transaction as ITransaction;
     });
     return newTransaction;
-    throw error;
   }
 
   async getById(id: number): Promise<ITransaction | null> {
@@ -163,8 +163,9 @@ export class TransactionRepository
           .from(Transactions)
           .where(
             or(
-              like(Transactions.bookId, `%${search}%`),
-              like(Transactions.memberId, `%${search}%`)
+              // like(Transactions.bookId, `%${search}%`),
+              like(Transactions.memberId, `%${search}%`),
+              like(Transactions.Status, `%${search}%`)
             )
           )
           .limit(params.limit ?? 0)
@@ -213,6 +214,6 @@ export class TransactionRepository
     return transactions || null; // Return null if no transaction is found
   }
   async delete(id: number): Promise<ITransaction | null> {
-    return null
+    return null;
   }
 }

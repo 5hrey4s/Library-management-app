@@ -92,7 +92,8 @@ export class RequestRepository implements IRepository<IRequestBase, IRequest> {
             or(
               like(Requests.bookId, `%${search}%`),
               like(Requests.memberId, `%${search}%`),
-              like(Requests.status, `%${search}%`)
+              like(Requests.status, `%${search}%`),
+              
             )
           )
           .limit(params.limit ?? 0)

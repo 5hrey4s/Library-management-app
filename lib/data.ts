@@ -162,6 +162,7 @@ export const deleteBook = async (isbnNo: string) => {
 export const updateRequestStatus = async (data: IRequestBase) => {
   try {
     await requestRepository.create(data);
+
     revalidatePath("/home/books");
   } catch (err) {
     console.log(err);

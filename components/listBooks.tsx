@@ -41,7 +41,10 @@ const ListBooks: React.FC<ListBooksProps> = async ({
 }) => {
   const session = await auth();
   const email = session?.user?.email;
+  console.log(email);
   const user: IMember | null = await memberRepository.getByEmail(email!);
+  console.log(user);
+
   const { items, pagination } = await fetchBooks(pageRequest);
 
   const page = parseInt(searchParams["page"] ?? "1");
@@ -62,12 +65,13 @@ const ListBooks: React.FC<ListBooksProps> = async ({
   });
 
   // Filter books
-  const filteredItems = sortedItems.filter((book) =>
-    (genreFilter === "all" || book.genre === genreFilter) &&
-    (book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    book.publisher.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    book.genre.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredItems = sortedItems.filter(
+    (book) =>
+      (genreFilter === "all" || book.genre === genreFilter) &&
+      (book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        book.publisher.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        book.genre.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   // Calculate start and end indices for pagination
@@ -142,11 +146,16 @@ const ListBooks: React.FC<ListBooksProps> = async ({
           style={{ gridAutoRows: "1fr" }}
         >
           {booksWithIds.map((book) => (
-            <BookCard key={book.isbnNo} data={{ book, userId: user!.id, role: role }} />
+            <BookCard
+              key={book.isbnNo}
+              data={{ book, userId: user!.id, role: role }}
+            />
           ))}
         </div>
         {booksWithIds.length === 0 && (
-          <p className="text-center text-muted-foreground mt-8">No books found matching your search criteria.</p>
+          <p className="text-center text-muted-foreground mt-8">
+            No books found matching your search criteria.
+          </p>
         )}
         <div className="mt-8 flex justify-center">
           <PaginationControls
