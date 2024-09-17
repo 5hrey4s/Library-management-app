@@ -1,14 +1,15 @@
 import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import { Appenv } from "./read-env";
+import { auth } from "./auth";
 
 export async function middleware(req) {
   const token = await getToken({ req, secret: Appenv.AUTH_SECRET });
-
-  const { pathname } = req.nextUrl;
+  const session = await auth()
+;  const { pathname } = req.nextUrl;
 
   if (pathname.startsWith("/login")) {
-    console.log(token)
+    console.log(session.user)
     const isLoggedIn = !!token;
     if (isLoggedIn && token.role === "user") {
       return NextResponse.redirect(new URL("/home/books", req.url));
