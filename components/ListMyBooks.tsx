@@ -93,17 +93,19 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
       </CardHeader>
       <CardContent>
         {/* Search, Sort, Filter Form */}
-        <form className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <Input
-            type="text"
-            name="searchTerm"
-            placeholder="Search books..."
-            defaultValue={searchTerm}
-            className="w-full sm:w-64"
-          />
-          <div className="flex items-center gap-2">
+        <form className="mb-6 space-y-4 md:space-y-0 md:flex md:flex-wrap md:items-end md:gap-4">
+          <div className="w-full md:w-auto md:flex-grow">
+            <Input
+              type="text"
+              name="searchTerm"
+              placeholder="Search books..."
+              defaultValue={searchTerm}
+              className="w-full"
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
             <Select name="sortBy" defaultValue={sortBy}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
@@ -114,7 +116,7 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
               </SelectContent>
             </Select>
             <Select name="sortOrder" defaultValue={sortOrder}>
-              <SelectTrigger className="w-[100px]">
+              <SelectTrigger className="w-full sm:w-[100px]">
                 <SelectValue placeholder="Order" />
               </SelectTrigger>
               <SelectContent>
@@ -123,10 +125,10 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
               </SelectContent>
             </Select>
             <Select name="genre" defaultValue={genreFilter}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Filter by genre" />
               </SelectTrigger>
-              <SelectContent className="h-80">
+              <SelectContent className="max-h-[200px] overflow-y-auto">
                 <SelectItem value="all">All Genres</SelectItem>
                 {genres.map((genre) => (
                   <SelectItem key={genre} value={genre}>
@@ -135,15 +137,12 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
                 ))}
               </SelectContent>
             </Select>
-            <Button type="submit">Apply</Button>
           </div>
+          <Button type="submit" className="w-full md:w-auto">Apply</Button>
         </form>
 
         {/* Book Grid */}
-        <div
-          className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          style={{ gridAutoRows: "1fr" }}
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           {booksWithIds.map((book) => (
             <BookCard key={book.isbnNo} data={{ book, userId: user!.id }} />
           ))}

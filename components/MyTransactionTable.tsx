@@ -91,7 +91,7 @@ const MyTransactionsTable = async ({
       </CardHeader>
       <CardContent>
         <form className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
-          <div className="relative w-full sm:w-64">
+          <div className="relative w-full sm:w-64 mb-4 sm:mb-0">
             <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <Input
               type="text"
@@ -101,23 +101,25 @@ const MyTransactionsTable = async ({
               defaultValue={searchParams.search || ""}
             />
           </div>
-          <Select name="status" defaultValue={filterStatus}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="Issued">Issued</SelectItem>
-              <SelectItem value="Returned">Returned</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button type="submit" className="bg-[#2f8d46] hover:bg-[#256f38]">
+          <div className="relative w-full sm:w-64 mb-4 sm:mb-0">
+            <Select name="status" defaultValue={filterStatus} className="w-full">
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Statuses</SelectItem>
+                <SelectItem value="Issued">Issued</SelectItem>
+                <SelectItem value="Returned">Returned</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Button type="submit" className="bg-[#2f8d46] hover:bg-[#256f38] w-full sm:w-auto">
             Apply Filters
           </Button>
         </form>
 
         <div className="overflow-x-auto">
-          <Table>
+          <Table className="min-w-full">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">Book ID</TableHead>

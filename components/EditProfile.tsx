@@ -47,7 +47,7 @@ export default function EditProfile({ user }: { user: any }) {
           <Edit2 className="mr-2 h-4 w-4" /> Edit Profile
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-full sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Edit Profile</DialogTitle>
           <DialogDescription>
@@ -56,8 +56,8 @@ export default function EditProfile({ user }: { user: any }) {
         </DialogHeader>
         <form action={handleFormAction}>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="firstName" className="text-right">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
+              <Label htmlFor="firstName" className="text-left sm:text-right">
                 First Name
               </Label>
               <Input
@@ -67,8 +67,8 @@ export default function EditProfile({ user }: { user: any }) {
                 className="col-span-3"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="lastName" className="text-right">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
+              <Label htmlFor="lastName" className="text-left sm:text-right">
                 Last Name
               </Label>
               <Input
@@ -78,8 +78,8 @@ export default function EditProfile({ user }: { user: any }) {
                 className="col-span-3"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="email" className="text-right">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
+              <Label htmlFor="email" className="text-left sm:text-right">
                 Email
               </Label>
               <Input
@@ -90,8 +90,8 @@ export default function EditProfile({ user }: { user: any }) {
                 className="col-span-3"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="phoneNumber" className="text-right">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
+              <Label htmlFor="phoneNumber" className="text-left sm:text-right">
                 Phone Number
               </Label>
               <Input

@@ -15,6 +15,9 @@ import {
   FileText,
   Clock,
   Bell,
+  HomeIcon,
+  History,
+  ActivityIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -203,7 +206,7 @@ export default function Navbar({
                     href="/home/books"
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800"
                   >
-                    <User className="mr-2 h-4 w-4" />
+                    <HomeIcon className="mr-2 h-4 w-4" />
                     <span>Home</span>
                   </Link>
                 </DropdownMenuItem>
@@ -212,7 +215,7 @@ export default function Navbar({
                     href="/profile"
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800"
                   >
-                    <Settings className="mr-2 h-4 w-4" />
+                    <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </Link>
                 </DropdownMenuItem>
@@ -222,7 +225,7 @@ export default function Navbar({
                     href="/home/books/mybooks"
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800"
                   >
-                    <Settings className="mr-2 h-4 w-4" />
+                    <BookOpen className="mr-2 h-4 w-4" />
                     <span>My Books</span>
                   </Link>
                 </DropdownMenuItem>
@@ -231,8 +234,17 @@ export default function Navbar({
                     href="/admin/transaction"
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800"
                   >
-                    <Settings className="mr-2 h-4 w-4" />
+                    <History className="mr-2 h-4 w-4" />
                     <span>Transaction History</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    href="/profile/activity"
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800"
+                  >
+                    <ActivityIcon className="mr-2 h-4 w-4" />
+                    <span>Activity</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="my-1 border-t border-gray-200" />
@@ -309,6 +321,7 @@ export default function Navbar({
                 isActive={active === "Requests"}
               />
             )}
+            
           </nav>
         </div>
       )}

@@ -49,9 +49,9 @@ const RequestTable: React.FC<RequestTableProps> = ({
   return (
     <Card className="w-full">
       <CardHeader className="px-6 py-4">
-        {/* <CardTitle className="text-2xl font-semibold text-primary">
+        <CardTitle className="text-2xl font-semibold text-primary">
           Request List
-        </CardTitle> */}
+        </CardTitle>
       </CardHeader>
       <CardContent className="px-6 py-4">
         <Table className="min-w-full">

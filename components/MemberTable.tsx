@@ -59,7 +59,7 @@ const MemberTable: React.FC<MemberTableProps> = async ({
   );
 
   return (
-    <Card className="w-full">
+    <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Member List</CardTitle>
       </CardHeader>
@@ -69,11 +69,11 @@ const MemberTable: React.FC<MemberTableProps> = async ({
             name="searchTerm"
             placeholder="Search members..."
             defaultValue={searchTerm}
-            className="w-full sm:w-64"
+            className="w-full sm:w-64 mb-4 sm:mb-0"
           />
-          <div className="flex items-center gap-2">
-            <Select name="sortColumn" defaultValue={sortColumn}>
-              <SelectTrigger className="w-[180px]">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+            <Select name="sortColumn" defaultValue={sortColumn} className="w-full sm:w-auto">
+              <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
@@ -83,8 +83,8 @@ const MemberTable: React.FC<MemberTableProps> = async ({
                 <SelectItem value="role">Role</SelectItem>
               </SelectContent>
             </Select>
-            <Select name="sortOrder" defaultValue={sortOrder}>
-              <SelectTrigger className="w-[100px]">
+            <Select name="sortOrder" defaultValue={sortOrder} className="w-full sm:w-auto">
+              <SelectTrigger className="w-full sm:w-[100px]">
                 <SelectValue placeholder="Order" />
               </SelectTrigger>
               <SelectContent>
@@ -92,8 +92,8 @@ const MemberTable: React.FC<MemberTableProps> = async ({
                 <SelectItem value="desc">Descending</SelectItem>
               </SelectContent>
             </Select>
-            <Select name="role" defaultValue={roleFilter}>
-              <SelectTrigger className="w-[180px]">
+            <Select name="role" defaultValue={roleFilter} className="w-full sm:w-auto">
+              <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Filter by role" />
               </SelectTrigger>
               <SelectContent>
@@ -105,82 +105,86 @@ const MemberTable: React.FC<MemberTableProps> = async ({
                 ))}
               </SelectContent>
             </Select>
-            <Button type="submit">Apply</Button>
+            <Button type="submit" className="w-full sm:w-auto">
+              Apply
+            </Button>
           </div>
         </form>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-1/5">Member</TableHead>
-              <TableHead className="w-1/5">
-                <div className="flex items-center">
-                  Email
-                  {sortColumn === "email" &&
-                    (sortOrder === "asc" ? (
-                      <ChevronUp className="ml-1" />
-                    ) : (
-                      <ChevronDown className="ml-1" />
-                    ))}
-                </div>
-              </TableHead>
-              <TableHead className="w-1/5">Phone Number</TableHead>
-              <TableHead className="w-1/5">
-                <div className="flex items-center">
-                  Role
-                  {sortColumn === "role" &&
-                    (sortOrder === "asc" ? (
-                      <ChevronUp className="ml-1" />
-                    ) : (
-                      <ChevronDown className="ml-1" />
-                    ))}
-                </div>
-              </TableHead>
-              <TableHead className="w-1/5">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredMembers.map((member: IMember) => (
-              <TableRow key={member.user_id}>
-                <TableCell className="font-medium">
-                  <div className="flex items-center space-x-3">
-                    <Avatar>
-                      <AvatarImage
-                        src={`https://api.dicebear.com/6.x/initials/svg?seed=${member.firstName} ${member.lastName}`}
-                      />
-                      <AvatarFallback>
-                        {member.firstName[0]}
-                        {member.lastName[0]}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="font-bold">
-                        {member.lastName}, {member.firstName}
+        <div className="overflow-x-auto">
+          <Table className="min-w-full">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-1/5">Member</TableHead>
+                <TableHead className="w-1/5">
+                  <div className="flex items-center">
+                    Email
+                    {sortColumn === "email" &&
+                      (sortOrder === "asc" ? (
+                        <ChevronUp className="ml-1" />
+                      ) : (
+                        <ChevronDown className="ml-1" />
+                      ))}
+                  </div>
+                </TableHead>
+                <TableHead className="w-1/5">Phone Number</TableHead>
+                <TableHead className="w-1/5">
+                  <div className="flex items-center">
+                    Role
+                    {sortColumn === "role" &&
+                      (sortOrder === "asc" ? (
+                        <ChevronUp className="ml-1" />
+                      ) : (
+                        <ChevronDown className="ml-1" />
+                      ))}
+                  </div>
+                </TableHead>
+                <TableHead className="w-1/5">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredMembers.map((member: IMember) => (
+                <TableRow key={member.user_id}>
+                  <TableCell className="font-medium">
+                    <div className="flex items-center space-x-3">
+                      <Avatar>
+                        <AvatarImage
+                          src={`https://api.dicebear.com/6.x/initials/svg?seed=${member.firstName} ${member.lastName}`}
+                        />
+                        <AvatarFallback>
+                          {member.firstName[0]}
+                          {member.lastName[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="font-bold">
+                          {member.lastName}, {member.firstName}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </TableCell>
-                <TableCell>{member.email}</TableCell>
-                <TableCell>{member.phoneNumber}</TableCell>
-                <TableCell>
-                  <Badge
-                    variant={member.role === "Admin" ? "default" : "secondary"}
-                  >
-                    {member.role}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <form action={`/admin/members/${member.id}/edit`}>
-                    <Button variant="ghost" size="sm" type="submit">
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit
-                    </Button>
-                  </form>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                  </TableCell>
+                  <TableCell>{member.email}</TableCell>
+                  <TableCell>{member.phoneNumber}</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={member.role === "Admin" ? "default" : "secondary"}
+                    >
+                      {member.role}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <form action={`/admin/members/${member.user_id}/edit`}>
+                      <Button variant="ghost" size="sm" type="submit">
+                        <Edit className="h-4 w-4 mr-2" />
+                        Edit
+                      </Button>
+                    </form>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
         {filteredMembers.length === 0 && (
           <p className="text-center text-muted-foreground mt-8">
             No members found matching your search criteria.

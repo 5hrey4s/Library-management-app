@@ -52,8 +52,8 @@ const PaginationControls: FC<PaginationControlsProps> = ({
 
   return (
     <TooltipProvider>
-      <div className="fixed bottom-0 left-0 right-0 flex items-center justify-center p-4 bg-background border-t border-border">
-        <div className="flex items-center justify-between w-full max-w-3xl">
+      <div className="fixed bottom-0 left-0 right-0 flex items-center justify-center p-4 bg-white text-black">
+        <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-3xl space-y-4 sm:space-y-0">
           <div className="flex items-center space-x-2">
             <Tooltip>
               <TooltipTrigger asChild>
@@ -62,6 +62,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
                   size="icon"
                   disabled={page === 1}
                   onClick={() => navigateToPage(1)}
+                  className="bg-white text-[#308D46] hover:bg-[#e6e6e6] hover:text-[#308D46]"
                 >
                   <ChevronsLeft className="h-4 w-4" />
                   <span className="sr-only">First page</span>
@@ -76,6 +77,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
                   size="icon"
                   disabled={!hasPrevPage}
                   onClick={() => navigateToPage(page - 1)}
+                  className="bg-white text-[#308D46] hover:bg-[#e6e6e6] hover:text-[#308D46]"
                 >
                   <ChevronLeft className="h-4 w-4" />
                   <span className="sr-only">Previous page</span>
@@ -86,7 +88,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
           </div>
 
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-muted-foreground">Page</span>
+            <span className="text-sm">Page</span>
             <Input
               type="number"
               min={1}
@@ -94,9 +96,9 @@ const PaginationControls: FC<PaginationControlsProps> = ({
               value={inputPage}
               onChange={handleInputChange}
               onKeyDown={handleInputKeyDown}
-              className="w-16 text-center"
+              className="w-16 text-center bg-white text-[#308D46]"
             />
-            <span className="text-sm text-muted-foreground">of {totalPages}</span>
+            <span className="text-sm">of {totalPages}</span>
           </div>
 
           <div className="flex items-center space-x-2">
@@ -107,6 +109,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
                   size="icon"
                   disabled={!hasNextPage}
                   onClick={() => navigateToPage(page + 1)}
+                  className="bg-white text-[#308D46] hover:bg-[#e6e6e6] hover:text-[#308D46]"
                 >
                   <ChevronRight className="h-4 w-4" />
                   <span className="sr-only">Next page</span>
@@ -121,6 +124,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
                   size="icon"
                   disabled={page === totalPages}
                   onClick={() => navigateToPage(totalPages)}
+                  className="bg-white text-[#308D46] hover:bg-[#e6e6e6] hover:text-[#308D46]"
                 >
                   <ChevronsRight className="h-4 w-4" />
                   <span className="sr-only">Last page</span>
@@ -131,12 +135,12 @@ const PaginationControls: FC<PaginationControlsProps> = ({
           </div>
 
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-muted-foreground">Show</span>
+            <span className="text-sm">Show</span>
             <Select
               value={perPage.toString()}
               onValueChange={handlePerPageChange}
             >
-              <SelectTrigger className="w-[70px]">
+              <SelectTrigger className="w-[70px] bg-white text-[#308D46]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -146,7 +150,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
                 <SelectItem value="32">32</SelectItem>
               </SelectContent>
             </Select>
-            <span className="text-sm text-muted-foreground">per page</span>
+            <span className="text-sm">per page</span>
           </div>
         </div>
       </div>

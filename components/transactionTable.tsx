@@ -6,7 +6,7 @@ import { auth } from "@/auth";
 import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
 import { IMember } from "@/Models/member.model";
-import { fetchMyTransactions, fetchTransaction, returnBook } from "@/lib/data";
+import { fetchTransaction, returnBook } from "@/lib/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -95,7 +95,7 @@ const MyTransactionsTable = async ({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form className="flex items-center space-x-4 mb-6">
+        <form className="flex flex-col sm:flex-row items-center gap-4 mb-6">
           <div className="relative flex-grow">
             <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <Input
@@ -106,8 +106,8 @@ const MyTransactionsTable = async ({
               defaultValue={searchParams.search || ""}
             />
           </div>
-          <Select name="status" defaultValue={searchParams.status || "all"}>
-            <SelectTrigger className="w-[180px]">
+          <Select name="status" defaultValue={searchParams.status || "all"} className="w-full sm:w-auto">
+            <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
             <SelectContent>
@@ -116,13 +116,13 @@ const MyTransactionsTable = async ({
               <SelectItem value="Returned">Returned</SelectItem>
             </SelectContent>
           </Select>
-          <Button type="submit">
+          <Button type="submit" className="w-full sm:w-auto">
             <Filter className="mr-2 h-4 w-4" /> Filter
           </Button>
         </form>
 
         <div className="overflow-x-auto">
-          <Table>
+          <Table className="min-w-full">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">Book ID</TableHead>
