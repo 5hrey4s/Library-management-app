@@ -8,13 +8,13 @@ export async function middleware(req) {
   const { pathname } = req.nextUrl;
 
   if (pathname.startsWith("/login")) {
+    console.log(token)
     const isLoggedIn = !!token;
     if (isLoggedIn && token.role === "user") {
       return NextResponse.redirect(new URL("/home/books", req.url));
     } else if (token?.role === "admin") {
       return NextResponse.redirect(new URL("/admin/books", req.url));
     }
-
     // if (token.role !== "admin") {
     //   return NextResponse.redirect(new URL("/home", req.url));
     // }

@@ -41,9 +41,7 @@ const ListBooks: React.FC<ListBooksProps> = async ({
 }) => {
   const session = await auth();
   const email = session?.user?.email;
-  console.log(email);
   const user: IMember | null = await memberRepository.getByEmail(email!);
-  console.log(user);
 
   const { items, pagination } = await fetchBooks(pageRequest);
 
