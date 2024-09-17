@@ -106,7 +106,7 @@ const MyTransactionsTable = async ({
               defaultValue={searchParams.search || ""}
             />
           </div>
-          <Select name="status" defaultValue={searchParams.status || "all"} className="w-full sm:w-auto">
+          <Select name="status" defaultValue={searchParams.status || "all"} >
             <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>

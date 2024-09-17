@@ -102,7 +102,7 @@ const MyTransactionsTable = async ({
             />
           </div>
           <div className="relative w-full sm:w-64 mb-4 sm:mb-0">
-            <Select name="status" defaultValue={filterStatus} className="w-full">
+            <Select name="status" defaultValue={filterStatus}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>

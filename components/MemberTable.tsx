@@ -72,7 +72,7 @@ const MemberTable: React.FC<MemberTableProps> = async ({
             className="w-full sm:w-64 mb-4 sm:mb-0"
           />
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-            <Select name="sortColumn" defaultValue={sortColumn} className="w-full sm:w-auto">
+            <Select name="sortColumn" defaultValue={sortColumn} >
               <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
@@ -83,7 +83,7 @@ const MemberTable: React.FC<MemberTableProps> = async ({
                 <SelectItem value="role">Role</SelectItem>
               </SelectContent>
             </Select>
-            <Select name="sortOrder" defaultValue={sortOrder} className="w-full sm:w-auto">
+            <Select name="sortOrder" defaultValue={sortOrder} >
               <SelectTrigger className="w-full sm:w-[100px]">
                 <SelectValue placeholder="Order" />
               </SelectTrigger>
@@ -92,7 +92,7 @@ const MemberTable: React.FC<MemberTableProps> = async ({
                 <SelectItem value="desc">Descending</SelectItem>
               </SelectContent>
             </Select>
-            <Select name="role" defaultValue={roleFilter} className="w-full sm:w-auto">
+            <Select name="role" defaultValue={roleFilter}>
               <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Filter by role" />
               </SelectTrigger>
