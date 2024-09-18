@@ -21,6 +21,7 @@ import Transactions from "@/components/transactions";
 import Profile from "@/components/profile";
 import Navbar from "@/components/Navbar";
 import { auth } from "@/auth";
+import { fetchBooks } from "@/lib/data";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -31,11 +32,17 @@ interface HomeProps {
 }
 
 export default async function Home({ searchParams }: HomeProps) {
+  const page = parseInt(searchParams["page"] ?? "1");
+  const limit = 8;
+
+  const offset = (page - 1) * limit;
+  console.log(offset);
   const pageRequest = {
-    offset: 0,
-    limit: 999,
+    offset: offset,
+    limit: limit,
     search: searchParams["search"] ?? "",
   };
+  const { items, pagination } = await fetchBooks(pageRequest);
   const session = await auth()
   if (session?.user.role !== "admin") {
     return (
@@ -72,13 +79,12 @@ export default async function Home({ searchParams }: HomeProps) {
         <section className="container mx-auto relative py-8">
           <div className="absolute top-0 right-0 -mt-4 mr-4">
           </div>
-          <div className="absolute top-[-40px] right-0">
-            {session?.user!.role === "admin" && <AddBook />}
-          </div>
+          
           <ListBooks
-            pageRequest={pageRequest}
+            pagination={pagination}
             searchParams={searchParams}
             role={session?.user!.role}
+            items={items}
           />
         </section>
       </main>

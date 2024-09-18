@@ -24,17 +24,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ChevronUp, ChevronDown, Edit } from "lucide-react";
+import PaginationControls from "./PaginationControls";
 
 interface MemberTableProps {
-  pageRequest: IPageRequest;
+  pagination: { limit: number; offset: number; total: number };
   searchParams: SearchParams;
+  items: IMember[];
 }
 
+
 const MemberTable: React.FC<MemberTableProps> = async ({
-  pageRequest,
+  pagination,
   searchParams,
+  items,
 }) => {
-  const { items: members } = await fetchMembers(pageRequest);
+  // const { items: members } = await fetchMembers(pageRequest);
 
   const sortColumn = (searchParams.sortColumn as keyof IMember) || "lastName";
   const sortOrder = searchParams.sortOrder === "desc" ? "desc" : "asc";
@@ -42,9 +46,13 @@ const MemberTable: React.FC<MemberTableProps> = async ({
   const roleFilter = searchParams.role || "all";
 
   // Get unique roles
-  const roles = Array.from(new Set(members.map((member) => member.role)));
-
-  const sortedMembers = [...members].sort((a, b) => {
+  const roles = Array.from(new Set(items.map((member) => member.role)));
+  // Calculate start and end indices for pagination
+  const page = parseInt(searchParams["page"] ?? "1");
+  const perPage = parseInt(searchParams["per_page"] ?? "8");
+  const start = (page - 1) * perPage;
+  const end = start + perPage;
+  const sortedMembers = [...items].sort((a, b) => {
     if (a[sortColumn]! < b[sortColumn]!) return sortOrder === "asc" ? -1 : 1;
     if (a[sortColumn]! > b[sortColumn]!) return sortOrder === "asc" ? 1 : -1;
     return 0;
@@ -64,15 +72,9 @@ const MemberTable: React.FC<MemberTableProps> = async ({
         <CardTitle className="text-2xl font-bold">Member List</CardTitle>
       </CardHeader>
       <CardContent>
-        <form className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <Input
-            name="searchTerm"
-            placeholder="Search members..."
-            defaultValue={searchTerm}
-            className="w-full sm:w-64 mb-4 sm:mb-0"
-          />
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-            <Select name="sortColumn" defaultValue={sortColumn} >
+        <form className="mb-6 flex flex-col sm:flex-row justify-end items-center gap-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <Select name="sortColumn" defaultValue={sortColumn}>
               <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
@@ -83,7 +85,7 @@ const MemberTable: React.FC<MemberTableProps> = async ({
                 <SelectItem value="role">Role</SelectItem>
               </SelectContent>
             </Select>
-            <Select name="sortOrder" defaultValue={sortOrder} >
+            <Select name="sortOrder" defaultValue={sortOrder}>
               <SelectTrigger className="w-full sm:w-[100px]">
                 <SelectValue placeholder="Order" />
               </SelectTrigger>
@@ -167,7 +169,9 @@ const MemberTable: React.FC<MemberTableProps> = async ({
                   <TableCell>{member.phoneNumber}</TableCell>
                   <TableCell>
                     <Badge
-                      variant={member.role === "Admin" ? "default" : "secondary"}
+                      variant={
+                        member.role === "Admin" ? "default" : "secondary"
+                      }
                     >
                       {member.role}
                     </Badge>
@@ -190,6 +194,13 @@ const MemberTable: React.FC<MemberTableProps> = async ({
             No members found matching your search criteria.
           </p>
         )}
+        <div className="mt-8 flex justify-center">
+          <PaginationControls
+            hasNextPage={end < pagination.total}
+            hasPrevPage={start > 0}
+            totalPages={Math.ceil(pagination.total / perPage)}
+          />
+        </div>
       </CardContent>
     </Card>
   );

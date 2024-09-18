@@ -62,7 +62,7 @@ export default async function Home({ searchParams }: HomeProps) {
         </section>
 
         <section className="container mx-auto bg-[#F5F5F7]">
-          <MyTransactionTable searchParams={searchParams} />
+          <MyTransactionTable searchParams={searchParams}/>
         </section>
       </main>
 

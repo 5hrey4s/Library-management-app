@@ -1,10 +1,7 @@
 "use client";
-
 import React from "react";
 import { SearchParams } from "@/app/home/books/page";
-import { IPageRequest } from "@/core/pagination";
 import { IRequest } from "@/Models/request.model";
-import { fetchRequests } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { AprroveButton, RejectButton } from "@/components/ui/buttons";
 import {
@@ -24,30 +21,25 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import PaginationControls from "./PaginationControls";
 
 interface RequestTableProps {
-  pageRequest: IPageRequest;
+  pagination: { limit: number; offset: number; total: number };
   searchParams: SearchParams;
+  items: IRequest[];
 }
 
 const RequestTable: React.FC<RequestTableProps> = ({
-  pageRequest,
+  pagination,
   searchParams,
+  items,
 }) => {
-  const [requests, setRequests] = React.useState<IRequest[]>([]);
-
-  React.useEffect(() => {
-    const loadRequests = async () => {
-      const { items } = await fetchRequests(pageRequest);
-      setRequests(
-        items.filter((request: IRequest) => request.status === "Pending")
-      );
-    };
-    loadRequests();
-  }, [pageRequest]);
-
+  const page = parseInt(searchParams["page"] ?? "1");
+  const perPage = parseInt(searchParams["per_page"] ?? "8");
+  const start = (page - 1) * perPage;
+  const end = start + perPage;
   return (
-    <Card className="w-full">
+    <Card className="w-full max-w-4xl mx-auto">
       <CardHeader className="px-6 py-4">
         <CardTitle className="text-2xl font-semibold text-primary">
           Request List
@@ -64,8 +56,8 @@ const RequestTable: React.FC<RequestTableProps> = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {requests.length > 0 ? (
-              requests.map((request) => (
+            {items.length > 0 ? (
+              items.map((request) => (
                 <TableRow key={request.id}>
                   <TableCell>
                     <div className="flex items-center">
@@ -133,6 +125,11 @@ const RequestTable: React.FC<RequestTableProps> = ({
             )}
           </TableBody>
         </Table>
+        <PaginationControls
+          hasNextPage={end < items.length}
+          hasPrevPage={start > 0}
+          totalPages={Math.ceil(items.length / perPage)}
+        />
       </CardContent>
     </Card>
   );

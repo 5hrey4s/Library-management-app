@@ -163,7 +163,7 @@ export class TransactionRepository
           .from(Transactions)
           .where(
             or(
-              // like(Transactions.bookId, `%${search}%`),
+              like(Transactions.bookId, `%${search}%`),
               like(Transactions.memberId, `%${search}%`),
               like(Transactions.Status, `%${search}%`)
             )
@@ -205,6 +205,61 @@ export class TransactionRepository
     }
   }
 
+  async listMyTransactions(
+    params: IPageRequest
+  ): Promise<IPagesResponse<ITransaction>> {
+    const search = params.search?.toLocaleLowerCase();
+    let selectSql: ITransaction[];
+    let countResult: CountResult;
+
+    try {
+      if (search) {
+        selectSql = await this.db
+          .select()
+          .from(Transactions)
+          .where(
+            or(
+              like(Transactions.bookId, `%${search}%`),
+              like(Transactions.memberId, `%${search}%`),
+              like(Transactions.Status, `%${search}%`)
+            )
+          )
+          .limit(params.limit ?? 0)
+          .offset(params.offset ?? 0);
+      } else {
+        selectSql = await this.db
+          .select()
+          .from(Transactions)
+          .limit(params.limit ?? 0)
+          .offset(params.offset ?? 0);
+      }
+
+      [countResult] = await this.db
+        .select({ count: count() })
+        .from(Transactions)
+        .where(
+          search
+            ? or(
+                like(Transactions.memberId, search),
+                like(Transactions.bookId, search)
+              )
+            : undefined
+        );
+
+      const countTransaction = (countResult as any).count;
+
+      return {
+        items: selectSql,
+        pagination: {
+          offset: params.offset,
+          limit: params.limit,
+          total: countTransaction,
+        },
+      };
+    } catch (error) {
+      throw new Error("Not found");
+    }
+  }
   async getMyTransactions(memberId: number): Promise<ITransaction[]> {
     const transactions: ITransaction[] = await this.db
       .select()

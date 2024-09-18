@@ -1,10 +1,9 @@
 import * as React from "react";
 import { fetchBooks, fetchGenre } from "@/lib/data";
 import BookCard from "./ui/flipcard";
-import { IPageRequest } from "@/core/pagination";
 import PaginationControls from "./PaginationControls";
 import { SearchParams } from "@/app/home/books/page";
-import { IBookBase } from "@/Models/book-model";
+import { IBook, IBookBase } from "@/Models/book-model";
 import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
 import { MemberRepository } from "@/Repositories/member.repository";
@@ -12,7 +11,6 @@ import { BookRepository } from "@/Repositories/book-repository";
 import { IMember } from "@/Models/member.model";
 import { Appenv } from "@/read-env";
 import { auth } from "@/auth";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -22,11 +20,17 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import AddBook from "./addBook";
 
 export interface ListBooksProps {
-  pageRequest: IPageRequest;
+  pagination: {
+    offset: number;
+    limit: number;
+    total: number;
+  };
   searchParams: SearchParams;
   role: string | undefined;
+  items: IBook[];
 }
 
 const pool = mysql.createPool(Appenv.DATABASE_URL);
@@ -35,15 +39,14 @@ const memberRepository = new MemberRepository(db);
 const bookRepository = new BookRepository(db);
 
 const ListBooks: React.FC<ListBooksProps> = async ({
-  pageRequest,
+  pagination,
   searchParams,
   role,
+  items,
 }) => {
   const session = await auth();
   const email = session?.user?.email;
   const user: IMember | null = await memberRepository.getByEmail(email!);
-
-  const { items, pagination } = await fetchBooks(pageRequest);
 
   const page = parseInt(searchParams["page"] ?? "1");
   const perPage = parseInt(searchParams["per_page"] ?? "8");
@@ -76,35 +79,18 @@ const ListBooks: React.FC<ListBooksProps> = async ({
   const start = (page - 1) * perPage;
   const end = start + perPage;
 
-  // Slice items array to get the current page's items
-  const entries: IBookBase[] = filteredItems.slice(start, end);
-
-  // Fetch bookIds for the current entries
-  const booksWithIds = await Promise.all(
-    entries.map(async (book) => {
-      const curBook = await bookRepository.getByISBN(book.isbnNo);
-      return curBook;
-    })
-  );
-
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Book Catalog</CardTitle>
+        <div className="flex justify-between">
+          <CardTitle className="text-2xl font-bold ">Book Catalog</CardTitle>
+          <AddBook />
+        </div>
       </CardHeader>
       <CardContent>
-        <form className="mb-6 space-y-4 md:space-y-0 md:flex md:flex-wrap md:items-end md:gap-4">
-          <div className="w-full md:w-auto md:flex-grow">
-            <Input
-              type="text"
-              name="searchTerm"
-              placeholder="Search books..."
-              defaultValue={searchTerm}
-              className="w-full"
-            />
-          </div>
+        <form className="mb-6 flex flex-col sm:flex-row justify-end items-center gap-4">
           <div className="flex flex-wrap items-center gap-2">
-            <Select name="sortBy" defaultValue={sortBy}>
+            <Select name="sortBy" defaultValue={`${sortBy}`}>
               <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
@@ -138,27 +124,29 @@ const ListBooks: React.FC<ListBooksProps> = async ({
               </SelectContent>
             </Select>
           </div>
-          <Button type="submit" className="w-full md:w-auto">Apply</Button>
+          <Button type="submit" className="w-[90%]   md:w-auto">
+            Apply
+          </Button>
         </form>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-          {booksWithIds.map((book) => (
+          {filteredItems.map((book) => (
             <BookCard
               key={book.isbnNo}
               data={{ book, userId: user!.id, role: role }}
             />
           ))}
         </div>
-        {booksWithIds.length === 0 && (
+        {items.length===0 && (
           <p className="text-center text-muted-foreground mt-8">
             No books found matching your search criteria.
           </p>
         )}
         <div className="mt-8 flex justify-center">
           <PaginationControls
-            hasNextPage={end < filteredItems.length}
+            hasNextPage={end < pagination.total}
             hasPrevPage={start > 0}
-            totalPages={Math.ceil(filteredItems.length / perPage)}
+            totalPages={Math.ceil(pagination.total / perPage)}
           />
         </div>
       </CardContent>

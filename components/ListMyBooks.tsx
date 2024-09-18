@@ -28,9 +28,7 @@ export interface ListMyBooksProps {
   pageRequest: IPageRequest;
 }
 
-const pool = mysql.createPool(
-  Appenv.DATABASE_URL
-);
+const pool = mysql.createPool(Appenv.DATABASE_URL);
 const db = drizzle(pool);
 const memberRepository = new MemberRepository(db);
 const bookRepository = new BookRepository(db);
@@ -93,17 +91,8 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
       </CardHeader>
       <CardContent>
         {/* Search, Sort, Filter Form */}
-        <form className="mb-6 space-y-4 md:space-y-0 md:flex md:flex-wrap md:items-end md:gap-4">
-          <div className="w-full md:w-auto md:flex-grow">
-            <Input
-              type="text"
-              name="searchTerm"
-              placeholder="Search books..."
-              defaultValue={searchTerm}
-              className="w-full"
-            />
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
+        <form className="mb-6 space-y-4 md:space-y-0 justify-end md:flex md:flex-wrap md:items-end md:gap-4">
+          <div className="flex flex-wrap items-center  gap-2">
             <Select name="sortBy" defaultValue={sortBy}>
               <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Sort by" />
@@ -138,7 +127,9 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
               </SelectContent>
             </Select>
           </div>
-          <Button type="submit" className="w-full md:w-auto">Apply</Button>
+          <Button type="submit" className="w-full md:w-auto">
+            Apply
+          </Button>
         </form>
 
         {/* Book Grid */}

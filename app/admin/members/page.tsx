@@ -4,6 +4,9 @@ import SearchComponent from "@/components/search";
 import MemberTable from "@/components/MemberTable";
 import Navbar from "@/components/Navbar";
 import { auth } from "@/auth";
+import { Suspense } from "react";
+import TableSkeleton from "@/components/TableSkeleton";
+import { fetchMembers } from "@/lib/data";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -14,11 +17,17 @@ interface HomeProps {
 }
 
 export default async function Home({ searchParams }: HomeProps) {
+  const page = parseInt(searchParams["page"] ?? "1");
+  const limit = 8;
+
+  const offset = (page - 1) * limit;
+  console.log(offset);
   const pageRequest = {
-    offset: 0,
-    limit: 999,
+    offset: offset,
+    limit: limit,
     search: searchParams["search"] ?? "",
   };
+  const { items, pagination } = await fetchMembers(pageRequest);
   const session = await auth();
   if (session?.user.role !== "admin") {
     return (
@@ -49,7 +58,13 @@ export default async function Home({ searchParams }: HomeProps) {
 
         <section className="container mx-auto bg-[#F5F5F7] py-8">
           {/* <ListBooks pageRequest={pageRequest} searchParams={searchParams} /> */}
-          <MemberTable pageRequest={pageRequest} searchParams={searchParams} />
+          <Suspense fallback={<TableSkeleton columns={5} rows={9} />}>
+            <MemberTable
+              pagination={pagination}
+              searchParams={searchParams}
+              items={items}
+            />
+          </Suspense>
         </section>
       </main>
 

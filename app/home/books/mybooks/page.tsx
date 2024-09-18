@@ -46,7 +46,6 @@ export default async function Home({ searchParams }: HomeProps) {
 
         <section className="container mx-auto bg-[#F5F5F7] mt-8 relative">
           
-          <h2 className="text-2xl font-semibold mb-4 text-[#2F8D46]">My Books</h2>
           <ListMyBooks searchParams={searchParams} pageRequest={pageRequest} />
         </section>
       </main>

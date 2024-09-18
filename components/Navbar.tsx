@@ -8,8 +8,6 @@ import {
   Menu,
   X,
   User,
-  Settings,
-  LogOut,
   Book,
   Users,
   FileText,
@@ -48,17 +46,16 @@ interface NavbarProps {
 interface NavItemProps {
   /** The URL for the navigation item */
   href: string;
-  
+
   /** The icon to display next to the navigation text */
   icon: React.ReactNode;
-  
+
   /** The text label for the navigation item */
   text: string;
-  
+
   /** Whether this item is the active (highlighted) one */
   isActive: boolean;
 }
-
 
 export default function Navbar({
   logoText = "Library",
@@ -85,7 +82,7 @@ export default function Navbar({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const NavItem = ({ href, icon, text, isActive }:NavItemProps) => (
+  const NavItem = ({ href, icon, text, isActive }: NavItemProps) => (
     <Link
       href={href}
       className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors duration-200 ${
@@ -321,7 +318,6 @@ export default function Navbar({
                 isActive={active === "Requests"}
               />
             )}
-            
           </nav>
         </div>
       )}

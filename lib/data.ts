@@ -214,6 +214,13 @@ export async function fetchMyTransactions(
   return transactions;
 }
 
+export async function listMyTransactions(
+  pageRequest: IPageRequest
+): Promise<IPagesResponse<ITransaction>> {
+  const items = await transactionRepository.listMyTransactions(pageRequest);
+  return items;
+}
+
 export async function returnBook(transactionId: number): Promise<void> {
   console.log("inside returnBook", transactionId);
   const transaction = await transactionRepository.getById(transactionId);

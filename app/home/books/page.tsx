@@ -5,6 +5,7 @@ import SearchComponent from "@/components/search";
 import AddBook from "@/components/addBook";
 import { ListBooks } from "@/components/listBooks";
 import { auth } from "@/auth";
+import { fetchBooks } from "@/lib/data";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -15,11 +16,18 @@ interface HomeProps {
 }
 
 export default async function Home({ searchParams }: HomeProps) {
+  const page = parseInt(searchParams["page"] ?? "1");
+  const limit = 8;
+
+  const offset = (page - 1) * limit;
+  console.log(offset);
   const pageRequest = {
-    offset: 0,
-    limit: 999,
+    offset: offset,
+    limit: limit,
     search: searchParams["search"] ?? "",
   };
+  const { items, pagination } = await fetchBooks(pageRequest);
+  // console.log(items)
   const session = await auth();
   return (
     <div className="flex flex-col min-h-screen bg-[#F5F5F7] text-gray-900 dark:text-gray-100">
@@ -45,15 +53,12 @@ export default async function Home({ searchParams }: HomeProps) {
 
         {/* Book List Section */}
         <section className="container mx-auto relative py-8">
-          <div className="absolute top-0 right-0 -mt-4 mr-4">
-          </div>
-          <div className="absolute top-[-40px] right-0">
-            {session?.user!.role === "admin" && <AddBook />}
-          </div>
+          <div className="absolute top-0 right-0 -mt-4 mr-4"></div>
           <ListBooks
-            pageRequest={pageRequest}
+            pagination={pagination}
             searchParams={searchParams}
-            role={session?.user!.role }
+            role={session?.user!.role}
+            items={items}
           />
         </section>
       </main>

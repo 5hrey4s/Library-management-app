@@ -30,12 +30,9 @@ export class RequestRepository implements IRepository<IRequestBase, IRequest> {
   async update(id: number, data: any): Promise<IRequest | null> {
     console.log(id);
     try {
-      await this.db
-        .update(Requests)
-        .set(data)
-        .where(eq(Requests.id, id));
-        console.log("data=====",id)
-        
+      await this.db.update(Requests).set(data).where(eq(Requests.id, id));
+      console.log("data=====", id);
+
       const [result]: IRequest[] = await this.db
         .select()
         .from(Requests)
@@ -88,14 +85,7 @@ export class RequestRepository implements IRepository<IRequestBase, IRequest> {
         selectSql = await this.db
           .select()
           .from(Requests)
-          .where(
-            or(
-              like(Requests.bookId, `%${search}%`),
-              like(Requests.memberId, `%${search}%`),
-              like(Requests.status, `%${search}%`),
-              
-            )
-          )
+          .where(eq(Requests.status, "pending"))
           .limit(params.limit ?? 0)
           .offset(params.offset ?? 0);
       } else {
@@ -103,6 +93,7 @@ export class RequestRepository implements IRepository<IRequestBase, IRequest> {
           .select()
           .from(Requests)
           .limit(params.limit ?? 0)
+          .where(eq(Requests.status, "pending"))
           .offset(params.offset ?? 0);
       }
 

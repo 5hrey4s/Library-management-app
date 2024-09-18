@@ -22,6 +22,9 @@ import Transactions from "@/components/transactions";
 import Profile from "@/components/profile";
 import Navbar from "@/components/Navbar";
 import { auth } from "@/auth";
+import { fetchRequests } from "@/lib/data";
+import TableSkeleton from "@/components/TableSkeleton";
+import { Suspense } from "react";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -32,20 +35,23 @@ interface HomeProps {
 }
 
 export default async function Home({ searchParams }: HomeProps) {
-  const session = await auth();
+  const page = parseInt(searchParams["page"] ?? "1");
+  const limit = 8;
 
+  const offset = (page - 1) * limit;
+  console.log(offset);
   const pageRequest = {
-    offset: 0,
-    limit: 999,
+    offset: offset,
+    limit: limit,
     search: searchParams["search"] ?? "",
   };
+  const { items, pagination } = await fetchRequests(pageRequest);
+  const session = await auth();
 
   if (session?.user.role !== "admin") {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <h1 className="text-2xl font-bold text-red-600">
-          Unauthorized
-        </h1>
+        <h1 className="text-2xl font-bold text-red-600">Unauthorized</h1>
       </div>
     );
   }
@@ -71,7 +77,13 @@ export default async function Home({ searchParams }: HomeProps) {
         </section>
 
         <section className="container mx-auto bg-[#F5F5F7] py-8">
-          <RequestTable pageRequest={pageRequest} searchParams={searchParams} />
+          <Suspense fallback={<TableSkeleton columns={4} rows={8} />}>
+            <RequestTable
+              pagination={pagination}
+              searchParams={searchParams}
+              items={items}
+            />
+          </Suspense>
         </section>
       </main>
 

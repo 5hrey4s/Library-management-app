@@ -16,8 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CalendarIcon, BookOpenIcon, Search, Filter } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { CalendarIcon, BookOpenIcon, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -37,36 +36,34 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { SearchParams } from "@/app/admin/page";
-import { IPageRequest } from "@/core/pagination";
+import PaginationControls from "./PaginationControls";
 
 // Initialize database connection
-const pool = mysql.createPool(
-  "mysql://root:root_password@localhost:3306/librarydb"
-);
+const pool = mysql.createPool("mysql://root:root_password@localhost:3306/librarydb");
 const db = drizzle(pool);
 const memberRepository = new MemberRepository(db);
 
 interface MyTransactionsTableProps {
-  searchParams: SearchParams;
-  pageRequest: IPageRequest;
+  searchParams: any;
+  pagination: { limit: number; offset: number; total: number };
+  transactions: ITransaction[];
 }
 
-const MyTransactionsTable = async ({
+const TransactionsTable = async ({
   searchParams,
-  pageRequest,
+  pagination,
+  transactions,
 }: MyTransactionsTableProps) => {
   const session = await auth();
   const email = session?.user?.email;
 
   // Fetch the current user based on email
   const user: IMember | null = await memberRepository.getByEmail(email!);
-
-  // Fetch transactions for the logged-in user
-  const { items } = await fetchTransaction(pageRequest);
+  const page = parseInt(searchParams["page"] ?? "1");
+  const perPage = parseInt(searchParams["per_page"] ?? "8");
 
   // Server-side filtering based on searchParams
-  const filteredTransactions = items.filter((transaction) => {
+  const filteredTransactions = transactions.filter((transaction) => {
     const searchTerm = (searchParams.search || "").toLowerCase();
     const statusFilter = searchParams.status || "all";
 
@@ -87,6 +84,9 @@ const MyTransactionsTable = async ({
     return matchesSearch && matchesStatus;
   });
 
+  const start = (page - 1) * perPage;
+  const end = start + perPage;
+
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
@@ -95,18 +95,8 @@ const MyTransactionsTable = async ({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form className="flex flex-col sm:flex-row items-center gap-4 mb-6">
-          <div className="relative flex-grow">
-            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <Input
-              type="text"
-              name="search"
-              placeholder="Search transactions..."
-              className="pl-8 pr-4 py-2 w-full"
-              defaultValue={searchParams.search || ""}
-            />
-          </div>
-          <Select name="status" defaultValue={searchParams.status || "all"} >
+        <form className="flex flex-col sm:flex-row justify-end items-center gap-4 mb-6">
+          <Select name="status" defaultValue={searchParams.status || "all"}>
             <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
@@ -121,6 +111,7 @@ const MyTransactionsTable = async ({
           </Button>
         </form>
 
+        {/* Responsive Table */}
         <div className="overflow-x-auto">
           <Table className="min-w-full">
             <TableHeader>
@@ -188,7 +179,6 @@ const MyTransactionsTable = async ({
                                   variant="default"
                                   onClick={async () => {
                                     await returnBook(transaction.id);
-                                    // Refresh the page or update the transactions list
                                   }}
                                 >
                                   Confirm Return
@@ -219,9 +209,19 @@ const MyTransactionsTable = async ({
             </TableBody>
           </Table>
         </div>
+
+        {/* Pagination */}
+        <div className="mt-8 flex justify-center">
+          <PaginationControls
+            hasNextPage={end < pagination.total}
+            hasPrevPage={start > 0}
+            totalPages={Math.ceil(pagination.total / perPage)}
+          />
+        </div>
       </CardContent>
     </Card>
   );
 };
 
-export default MyTransactionsTable;
+export default TransactionsTable;
+    

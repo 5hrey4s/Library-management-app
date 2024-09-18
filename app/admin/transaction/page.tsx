@@ -24,6 +24,9 @@ import Profile from "@/components/profile";
 import Navbar from "@/components/Navbar";
 import { auth } from "@/auth";
 import TransactionsTable from "@/components/transactionTable";
+import { fetchTransaction } from "@/lib/data";
+import { Suspense } from "react";
+import TableSkeleton from "@/components/TableSkeleton";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -34,18 +37,21 @@ interface HomeProps {
 }
 
 export default async function Home({ searchParams }: HomeProps) {
+  const page = parseInt(searchParams["page"] ?? "1");
+  const limit = 8;
+  const offset = (page - 1) * limit;
+  console.log(offset);
   const pageRequest = {
-    offset: 0,
-    limit: 999,
+    offset: offset,
+    limit: limit,
     search: searchParams["search"] ?? "",
   };
-  const session = await auth()
+  const { items, pagination } = await fetchTransaction(pageRequest);
+  const session = await auth();
   if (session?.user.role !== "admin") {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <h1 className="text-2xl font-bold text-red-600">
-          Unauthorized
-        </h1>
+        <h1 className="text-2xl font-bold text-red-600">Unauthorized</h1>
       </div>
     );
   }
@@ -70,7 +76,14 @@ export default async function Home({ searchParams }: HomeProps) {
         </section>
 
         <section className="container mx-auto bg-[#F5F5F7] py-8">
-        <TransactionsTable searchParams={searchParams} pageRequest={pageRequest}/>        </section>
+          <Suspense fallback={<TableSkeleton columns={5} rows={9} />}>
+            <TransactionsTable
+              pagination={pagination}
+              searchParams={searchParams}
+              transactions={items}
+            />
+          </Suspense>
+        </section>
       </main>
 
       <footer className="flex flex-col sm:flex-row items-center justify-between py-6 px-4 md:px-6 bg-white dark:bg-gray-800">
