@@ -1,23 +1,35 @@
+import { drizzle } from "drizzle-orm/vercel-postgres";
+import { sql } from "@vercel/postgres";
 import {
-  int,
-  mysqlEnum,
-  mysqlTable,
+  pgTable,
   serial,
+  text,
+  integer,
   varchar,
-} from "drizzle-orm/mysql-core";
-export const Books = mysqlTable("books", {
+  timestamp,
+  uniqueIndex,
+  pgEnum,
+} from "drizzle-orm/pg-core";
+
+// Define the enum
+const transactionStatusEnum = pgEnum("Status", ["Issued", "Returned"]);
+
+// Books Table
+export const Books = pgTable("books", {
   id: serial("id").primaryKey(),
   title: varchar("title", { length: 100 }).notNull(),
   author: varchar("author", { length: 100 }).notNull(),
   publisher: varchar("publisher", { length: 100 }).notNull(),
   genre: varchar("genre", { length: 100 }).notNull(),
   isbnNo: varchar("isbnNo", { length: 13 }).unique().notNull(),
-  numOfPages: int("numOfPages").notNull(),
-  totalNumOfCopies: int("totalNumOfCopies").notNull(),
-  availableNumberOfCopies: int("availableNumberOfCopies").notNull(),
+  numOfPages: integer("numOfPages").notNull(),
+  totalNumOfCopies: integer("totalNumOfCopies").notNull(),
+  availableNumberOfCopies: integer("availableNumberOfCopies").notNull(),
 });
-export const Members = mysqlTable("members", {
-  id: serial("id").primaryKey().notNull(),
+
+// Members Table
+export const Members = pgTable("members", {
+  id: serial("id").primaryKey(),
   firstName: varchar("firstName", { length: 100 }).notNull(),
   lastName: varchar("lastName", { length: 100 }).notNull(),
   email: varchar("email", { length: 100 }).unique().notNull(),
@@ -28,26 +40,29 @@ export const Members = mysqlTable("members", {
   user_id: varchar("user_id", { length: 255 }).notNull(),
   role: varchar("role", { length: 255 }).notNull(),
 });
-export const Transactions = mysqlTable("transactions", {
-  id: serial("id").primaryKey().notNull(),
-  bookId: int("bookId")
+
+// Transactions Table
+export const Transactions = pgTable("transactions", {
+  id: serial("id").primaryKey(),
+  bookId: integer("bookId")
     .references(() => Books.id)
     .notNull(),
-  memberId: int("memberId")
+  memberId: integer("memberId")
     .references(() => Members.id)
     .notNull(),
   issueDate: varchar("issueDate", { length: 100 }).notNull(),
   dueDate: varchar("dueDate", { length: 100 }).notNull(),
   returnDate: varchar("returnDate", { length: 100 }),
-  Status: mysqlEnum("Status", ["Issued", "Returned"]).notNull(),
+  Status: transactionStatusEnum("Status").notNull(),
 });
 
-export const Requests = mysqlTable("requests", {
-  id: serial("id").primaryKey().notNull(),
-  bookId: int("bookId")
+// Requests Table
+export const Requests = pgTable("requests", {
+  id: serial("id").primaryKey(),
+  bookId: integer("bookId")
     .references(() => Books.id)
     .notNull(),
-  memberId: int("memberId")
+  memberId: integer("memberId")
     .references(() => Members.id)
     .notNull(),
   status: varchar("status", { length: 50 }).notNull(),

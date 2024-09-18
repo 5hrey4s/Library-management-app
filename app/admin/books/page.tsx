@@ -1,27 +1,11 @@
 "use server";
 
-import { BookOpen, ChevronDown } from "lucide-react";
 import Link from "next/link";
-import LogoutButton from "@/components/handlelogout";
 import SearchComponent from "@/components/search";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import AddBook from "@/components/addBook";
-import Members from "@/components/members";
 import { ListBooks } from "@/components/listBooks";
-import Requests from "@/components/requests";
-import MyBooks from "@/components/mybooks";
-import Transactions from "@/components/transactions";
-import Profile from "@/components/profile";
-import Navbar from "@/components/Navbar";
 import { auth } from "@/auth";
-import { fetchBooks } from "@/lib/data";
+import { fetchBooks, fetchGenre, fetchMemberByEmail } from "@/lib/data";
+import { IBookBase } from "@/Models/book-model";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -34,6 +18,8 @@ interface HomeProps {
 export default async function Home({ searchParams }: HomeProps) {
   const page = parseInt(searchParams["page"] ?? "1");
   const limit = 8;
+  const sortBy = (searchParams["sortBy"] as keyof IBookBase) || "title";
+  const sortOrder = searchParams["sortOrder"] || "asc";
 
   const offset = (page - 1) * limit;
   console.log(offset);
@@ -42,14 +28,15 @@ export default async function Home({ searchParams }: HomeProps) {
     limit: limit,
     search: searchParams["search"] ?? "",
   };
-  const { items, pagination } = await fetchBooks(pageRequest);
-  const session = await auth()
+  const sortOptions = { sortOrder: sortOrder, sortBy: sortBy };
+  const { items, pagination } = await fetchBooks(pageRequest, sortOptions);
+  const session = await auth();
+  const genres = await fetchGenre();
+  const user = await fetchMemberByEmail(session?.user.email!);
   if (session?.user.role !== "admin") {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <h1 className="text-2xl font-bold text-red-600">
-          Unauthorized
-        </h1>
+        <h1 className="text-2xl font-bold text-red-600">Unauthorized</h1>
       </div>
     );
   }
@@ -77,14 +64,15 @@ export default async function Home({ searchParams }: HomeProps) {
 
         {/* Book List Section */}
         <section className="container mx-auto relative py-8">
-          <div className="absolute top-0 right-0 -mt-4 mr-4">
-          </div>
-          
+          <div className="absolute top-0 right-0 -mt-4 mr-4"></div>
+
           <ListBooks
             pagination={pagination}
             searchParams={searchParams}
             role={session?.user!.role}
             items={items}
+            genres={genres}
+            user={user!}
           />
         </section>
       </main>

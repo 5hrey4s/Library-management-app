@@ -7,7 +7,15 @@ export interface AppEnv {
   NEXTAUTH_URL: string;
   NEXTAUTH_URL_INTERNAL: string;
   NEXTAUTH_SECRET: string;
-  AUTH_SECRET:string
+  AUTH_SECRET: string;
+  POSTGRES_URL: string;
+  POSTGRES_PRISMA_URL: string;
+  POSTGRES_URL_NO_SSL: string;
+  POSTGRES_URL_NON_POOLING: string;
+  POSTGRES_USER: string;
+  POSTGRES_HOST: string;
+  POSTGRES_PASSWORD: string;
+  POSTGRES_DATABASE: string;
 }
 
 export const Appenv = process.env as unknown as AppEnv;

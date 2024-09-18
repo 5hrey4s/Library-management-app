@@ -3,22 +3,23 @@
 import { auth, signIn, signOut } from "@/auth";
 // import { AuthError } from 'next-auth';
 import { AuthError } from "next-auth";
-import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
 import { Members, Requests } from "@/drizzle/schema";
-import { count, eq, like, or } from "drizzle-orm";
+import { eq } from "drizzle-orm/expressions";
 import { MemberRepository } from "@/Repositories/member.repository";
 import { IMember, IMemberBase } from "@/Models/member.model";
 import { RequestRepository } from "@/Repositories/request.repository";
 import { TransactionRepository } from "@/Repositories/transaction.repository";
 import { revalidatePath } from "next/cache";
 import { Appenv } from "@/read-env";
+import "@/drizzle/envConfig";
+import { drizzle } from "drizzle-orm/vercel-postgres";
+import { sql } from "@vercel/postgres";
+import * as schema from "../drizzle/schema";
+import { and } from "drizzle-orm/expressions";
 
-const pool = mysql.createPool(
-  Appenv.DATABASE_URL
-);
+export const db = drizzle(sql, { schema });
 
-const db = drizzle(pool);
 const requestRepository = new RequestRepository(db);
 const transactionRepository = new TransactionRepository(db);
 const memberRepository = new MemberRepository(db);
@@ -90,7 +91,7 @@ export async function createMember(data: IMemberBase): Promise<IMember | null> {
       .values({
         ...data,
       })
-      .$returningId();
+      .returning({ id: Members.id }); // Use returning() to return the inserted 'id'
     const [member]: IMember[] = await db
       .select()
       .from(Members)

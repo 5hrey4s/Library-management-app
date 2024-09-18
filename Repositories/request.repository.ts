@@ -2,20 +2,21 @@ import { IPageRequest, IPagesResponse } from "@/core/pagination";
 import { IRepository } from "@/core/repository";
 import { Requests } from "@/drizzle/schema"; // Make sure the Requests schema is correctly defined
 import { MySql2Database } from "drizzle-orm/mysql2";
-import { count, eq, like, or } from "drizzle-orm";
+import { asc, desc, eq, like, or } from "drizzle-orm/expressions";
+import { VercelPgDatabase } from "drizzle-orm/vercel-postgres";
 import { CountResult } from "@/core/returnTypes";
 import { IRequest, IRequestBase } from "@/Models/request.model";
-import { error } from "@material-tailwind/react/types/components/input";
+import { count } from "drizzle-orm/sql";
 
 export class RequestRepository implements IRepository<IRequestBase, IRequest> {
-  constructor(private db: MySql2Database<Record<string, never>>) {}
+  constructor(private db: VercelPgDatabase<Record<string, unknown>>) {}
 
   async create(data: IRequestBase): Promise<IRequest | null> {
     try {
       const [result] = await this.db
         .insert(Requests)
         .values(data)
-        .$returningId();
+        .returning({ id: Requests.id });
 
       const [request] = await this.db
         .select()

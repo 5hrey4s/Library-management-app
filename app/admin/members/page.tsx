@@ -6,7 +6,9 @@ import Navbar from "@/components/Navbar";
 import { auth } from "@/auth";
 import { Suspense } from "react";
 import TableSkeleton from "@/components/TableSkeleton";
-import { fetchMembers } from "@/lib/data";
+import { fetchGenre, fetchMemberByEmail, fetchMembers } from "@/lib/data";
+import { IBookBase } from "@/Models/book-model";
+import { IMemberBase } from "@/Models/member.model";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -19,16 +21,19 @@ interface HomeProps {
 export default async function Home({ searchParams }: HomeProps) {
   const page = parseInt(searchParams["page"] ?? "1");
   const limit = 8;
+  const sortBy = (searchParams["sortBy"] as keyof IMemberBase) || "firstName";
+  const sortOrder = searchParams["sortOrder"] || "asc";
 
   const offset = (page - 1) * limit;
-  console.log(offset);
   const pageRequest = {
     offset: offset,
     limit: limit,
     search: searchParams["search"] ?? "",
   };
-  const { items, pagination } = await fetchMembers(pageRequest);
+  const sortOptions = { sortOrder: sortOrder, sortBy: sortBy };
+  const { items, pagination } = await fetchMembers(pageRequest, sortOptions);
   const session = await auth();
+  const user = await fetchMemberByEmail(session?.user.email!);
   if (session?.user.role !== "admin") {
     return (
       <div className="flex items-center justify-center min-h-screen">

@@ -8,6 +8,7 @@ export interface IBookBase {
   numOfPages: number;
   totalNumOfCopies: number;
 }
+
 export interface IBook extends IBookBase {
   id: number;
   availableNumberOfCopies: number;

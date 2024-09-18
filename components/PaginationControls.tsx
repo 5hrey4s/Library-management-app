@@ -52,7 +52,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
 
   return (
     <TooltipProvider>
-      <div className="fixed bottom-0 left-0 right-0 flex items-center justify-center p-4 bg-white text-black">
+      <div className=" fixed bottom-0 left-0 right-0 flex items-center justify-center p-4 bg-white text-black">
         <div className="flex items-center space-x-4">
           <Tooltip>
             <TooltipTrigger asChild>

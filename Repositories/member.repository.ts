@@ -1,13 +1,15 @@
 import { IPageRequest, IPagesResponse } from "../core/pagination";
 import { IRepository } from "../core/repository";
-import { MySql2Database } from "drizzle-orm/mysql2";
 import { Members } from "@/drizzle/schema";
-import { count, eq, like, or } from "drizzle-orm";
+import { asc, desc, eq, like, or } from "drizzle-orm/expressions";
 import { CountResult } from "@/core/returnTypes";
 import { IMember, IMemberBase } from "@/Models/member.model";
+import { MemberSortOptions, SortOptions } from "@/lib/data";
+import { VercelPgDatabase } from "drizzle-orm/vercel-postgres";
+import { count } from "drizzle-orm/sql";
 
 export class MemberRepository implements IRepository<IMemberBase, IMember> {
-  constructor(private db: MySql2Database<Record<string, never>>) {}
+  constructor(private db: VercelPgDatabase<Record<string, unknown>>) {}
   async create(data: IMemberBase): Promise<IMember | null> {
     try {
       const [result] = await this.db
@@ -15,7 +17,7 @@ export class MemberRepository implements IRepository<IMemberBase, IMember> {
         .values({
           ...data,
         })
-        .$returningId();
+        .returning({ id: Members.id });
       const [member]: IMember[] = await this.db
         .select()
         .from(Members)
@@ -116,60 +118,80 @@ export class MemberRepository implements IRepository<IMemberBase, IMember> {
       throw err;
     }
   }
-  async list(params: IPageRequest): Promise<IPagesResponse<IMember>> {
-    const search = params.search?.toLocaleLowerCase();
+
+  async list(
+    params: IPageRequest,
+    sortOptions?: MemberSortOptions
+  ): Promise<IPagesResponse<IMember>> {
+    let search = params.search ? params.search.toLowerCase() : "";
+
+    let sortOrder;
     let selectSql: IMember[];
     let countResult: CountResult;
 
+    // Check for valid sorting options and set default if not provided
+    if (sortOptions) {
+      const sortBy = Members[sortOptions.sortBy] || Members.firstName; // Default to author if sortBy is invalid
+      sortOrder = sortOptions.sortOrder === "desc" ? desc(sortBy) : asc(sortBy);
+    } else {
+      // Fallback to default sort
+      sortOrder = asc(Members.firstName); // Default sort by title in ascending order
+    }
+
     try {
-      // Building the query based on search and pagination parameters
+      // Build the query with search, pagination, and sorting
       if (search) {
-        selectSql = await this.db
+        selectSql = (await this.db
           .select()
           .from(Members)
           .where(
             or(
-              like(Members.email,  `%${search}%`),
-              like(Members.lastName,  `%${search}%`),
-              like(Members.firstName,  `%${search}%`)
+              like(Members.email, `%${search}%`),
+              like(Members.firstName, `%${search}%`),
+              like(Members.lastName, `%${search}%`),
+              like(Members.role, `%${search}%`)
             )
           )
-          .limit(params.limit ?? 0)
-          .offset(params.offset ?? 0);
+          .limit(params.limit ?? 10) // Add a default limit
+          .offset(params.offset ?? 0)
+          .orderBy(sortOrder)) as IMember[];
       } else {
-        selectSql = await this.db
+        selectSql = (await this.db
           .select()
           .from(Members)
-          .limit(params.limit ?? 0)
-          .offset(params.offset ?? 0);
+          .limit(params.limit ?? 10) // Add a default limit
+          .offset(params.offset ?? 0)
+          .orderBy(sortOrder)) as IMember[];
       }
 
-      // Counting the total number of results
+      // Get the count of books
       [countResult] = await this.db
         .select({ count: count() })
         .from(Members)
         .where(
           search
             ? or(
-                like(Members.email, search),
-                like(Members.lastName, search),
-                like(Members.firstName, search)
+                like(Members.email, `%${search}%`),
+                like(Members.firstName, `%${search}%`),
+                like(Members.lastName, `%${search}%`),
+                like(Members.role, `%${search}%`)
               )
             : undefined
         );
 
-      const countBook = (countResult as any).count;
+      const countMember = (countResult as any).count;
 
-      // Return the results and pagination information
+      // Return the books with pagination
       return {
         items: selectSql,
         pagination: {
           offset: params.offset,
           limit: params.limit,
-          total: countBook,
+          total: countMember,
         },
       };
     } catch (error) {
+      console.log(error);
       throw new Error("Not found");
     }
   }

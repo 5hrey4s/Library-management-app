@@ -1,3 +1,4 @@
+//lib/data.ts
 "use server";
 import { IPageRequest, IPagesResponse } from "@/core/pagination";
 import { Books, Transactions } from "@/drizzle/schema";
@@ -7,24 +8,44 @@ import { IRequestBase } from "@/Models/request.model";
 import { BookRepository } from "@/Repositories/book-repository";
 import { MemberRepository } from "@/Repositories/member.repository";
 import { RequestRepository } from "@/Repositories/request.repository";
-import { drizzle } from "drizzle-orm/mysql2";
-import mysql from "mysql2/promise";
 import { revalidatePath } from "next/cache";
-import { and, eq, like, or } from "drizzle-orm";
+import { asc, desc, eq, like, or } from "drizzle-orm/expressions";
 import { TransactionRepository } from "@/Repositories/transaction.repository";
-import { ITransaction } from "@/Models/transaction.model";
-import { Appenv } from "@/read-env";
+import { ITransaction, ITransactionBase } from "@/Models/transaction.model";
+import "@/drizzle/envConfig";
+import { drizzle } from "drizzle-orm/vercel-postgres";
+import { sql } from "@vercel/postgres";
+import * as schema from "../drizzle/schema";
+import { and } from "drizzle-orm/expressions";
 
-const pool = mysql.createPool(Appenv.DATABASE_URL);
-const db = drizzle(pool);
+const db = drizzle(sql, { schema });
+
 const bookRepository = new BookRepository(db);
 const memberRepository = new MemberRepository(db);
 const requestRepository = new RequestRepository(db);
 const transactionRepository = new TransactionRepository(db);
 
-export const fetchBooks = async (pageRequest: IPageRequest) => {
+export interface SortOptions {
+  sortBy: keyof IBookBase;
+  sortOrder: string;
+}
+
+export interface MemberSortOptions {
+  sortBy: keyof IMemberBase;
+  sortOrder: string;
+}
+
+export interface TransactionSortOptions {
+  sortBy: keyof ITransactionBase;
+  sortOrder: string;
+}
+
+export const fetchBooks = async (
+  pageRequest: IPageRequest,
+  sortOptions: SortOptions
+) => {
   try {
-    const books = await bookRepository.list(pageRequest);
+    const books = await bookRepository.list(pageRequest, sortOptions);
     return books;
   } catch (err) {
     console.log(err);
@@ -32,9 +53,12 @@ export const fetchBooks = async (pageRequest: IPageRequest) => {
   }
 };
 
-export const fetchMembers = async (pageRequest: IPageRequest) => {
+export const fetchMembers = async (
+  pageRequest: IPageRequest,
+  sortOptions: MemberSortOptions
+) => {
   try {
-    const members = await memberRepository.list(pageRequest);
+    const members = await memberRepository.list(pageRequest, sortOptions);
     return members;
   } catch (err) {
     console.log(err);
@@ -62,9 +86,15 @@ export const fetchRequests = async (pageRequest: IPageRequest) => {
   }
 };
 
-export const fetchTransaction = async (pageRequest: IPageRequest) => {
+export const fetchTransaction = async (
+  pageRequest: IPageRequest,
+  sortOptions: TransactionSortOptions
+) => {
   try {
-    const transctions = await transactionRepository.list(pageRequest);
+    const transctions = await transactionRepository.list(
+      pageRequest,
+      sortOptions
+    );
     return transctions;
   } catch (err) {
     console.log(err);
@@ -224,7 +254,7 @@ export async function listMyTransactions(
 export async function returnBook(transactionId: number): Promise<void> {
   console.log("inside returnBook", transactionId);
   const transaction = await transactionRepository.getById(transactionId);
-  console.log("inside returnBook",transaction);
+  console.log("inside returnBook", transaction);
 
   await transactionRepository.returnBook(transactionId, transaction!);
   revalidatePath("/home/transaction/mytransaction");

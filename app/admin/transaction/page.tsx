@@ -1,32 +1,12 @@
 "use server";
-import { BookOpen, ChevronDown, LogIn, Plus } from "lucide-react";
 import Link from "next/link";
-import LogoutButton from "@/components/handlelogout";
 import SearchComponent from "@/components/search";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import AddBook from "@/components/addBook";
-import ListMembers from "@/components/members";
-import MemberTable from "@/components/MemberTable";
-import Books from "@/components/book";
-import Members from "@/components/members";
-import RequestTable from "@/components/requestTable";
-import MyBooks from "@/components/mybooks";
-import Requests from "@/components/requests";
-import TransactionTable from "@/components/transactionTable";
-import Profile from "@/components/profile";
-import Navbar from "@/components/Navbar";
 import { auth } from "@/auth";
 import TransactionsTable from "@/components/transactionTable";
-import { fetchTransaction } from "@/lib/data";
+import { fetchMemberByEmail, fetchTransaction } from "@/lib/data";
 import { Suspense } from "react";
 import TableSkeleton from "@/components/TableSkeleton";
+import { ITransactionBase } from "@/Models/transaction.model";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -39,15 +19,23 @@ interface HomeProps {
 export default async function Home({ searchParams }: HomeProps) {
   const page = parseInt(searchParams["page"] ?? "1");
   const limit = 8;
+  const sortBy =
+    (searchParams["sortBy"] as keyof ITransactionBase) || "issueDate";
+  const sortOrder = searchParams["sortOrder"] || "asc";
+
   const offset = (page - 1) * limit;
-  console.log(offset);
   const pageRequest = {
     offset: offset,
     limit: limit,
     search: searchParams["search"] ?? "",
   };
-  const { items, pagination } = await fetchTransaction(pageRequest);
+  const sortOptions = { sortOrder: sortOrder, sortBy: sortBy };
+  const { items, pagination } = await fetchTransaction(
+    pageRequest,
+    sortOptions
+  );
   const session = await auth();
+  const user = await fetchMemberByEmail(session?.user.email!);
   if (session?.user.role !== "admin") {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -81,6 +69,7 @@ export default async function Home({ searchParams }: HomeProps) {
               pagination={pagination}
               searchParams={searchParams}
               transactions={items}
+              user={user!}
             />
           </Suspense>
         </section>

@@ -1,12 +1,9 @@
+// "use client";
 import * as React from "react";
 import { ITransaction } from "@/Models/transaction.model";
 import { Badge } from "@/components/ui/badge";
-import { MemberRepository } from "@/Repositories/member.repository";
-import { auth } from "@/auth";
-import { drizzle } from "drizzle-orm/mysql2";
-import mysql from "mysql2/promise";
 import { IMember } from "@/Models/member.model";
-import { fetchTransaction, returnBook } from "@/lib/data";
+import { returnBook } from "@/lib/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -38,15 +35,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import PaginationControls from "./PaginationControls";
 
-// Initialize database connection
-const pool = mysql.createPool("mysql://root:root_password@localhost:3306/librarydb");
-const db = drizzle(pool);
-const memberRepository = new MemberRepository(db);
-
 interface MyTransactionsTableProps {
   searchParams: any;
   pagination: { limit: number; offset: number; total: number };
   transactions: ITransaction[];
+  user: IMember;
 }
 
 const TransactionsTable = async ({
@@ -54,11 +47,10 @@ const TransactionsTable = async ({
   pagination,
   transactions,
 }: MyTransactionsTableProps) => {
-  const session = await auth();
-  const email = session?.user?.email;
-
+  const sortColumn =
+    (searchParams.sortColumn as keyof ITransaction) || "issueDate";
+  const sortOrder = searchParams.sortOrder === "desc" ? "desc" : "asc";
   // Fetch the current user based on email
-  const user: IMember | null = await memberRepository.getByEmail(email!);
   const page = parseInt(searchParams["page"] ?? "1");
   const perPage = parseInt(searchParams["per_page"] ?? "8");
 
@@ -96,7 +88,35 @@ const TransactionsTable = async ({
       </CardHeader>
       <CardContent>
         <form className="flex flex-col sm:flex-row justify-end items-center gap-4 mb-6">
-          <Select name="status" defaultValue={searchParams.status || "all"}>
+          <Select name="sortColumn" defaultValue={sortColumn}>
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="bookId">BookId</SelectItem>
+              <SelectItem value="memberId">MemberId</SelectItem>
+              <SelectItem value="issueDate">IssueDate</SelectItem>
+              <SelectItem value="dueDate">DueDate</SelectItem>
+            </SelectContent>
+          </Select>
+          {/* <Select name="sortColumn" defaultValue={sortColumn}>
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              
+            </SelectContent>
+          </Select> */}
+          <Select name="sortOrder" defaultValue={sortOrder}>
+            <SelectTrigger className="w-full sm:w-[100px]">
+              <SelectValue placeholder="Order" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="asc">Ascending</SelectItem>
+              <SelectItem value="desc">Descending</SelectItem>
+            </SelectContent>
+          </Select>
+          {/* <Select name="status" defaultValue={searchParams.status || "all"}>
             <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
@@ -105,7 +125,7 @@ const TransactionsTable = async ({
               <SelectItem value="Issued">Issued</SelectItem>
               <SelectItem value="Returned">Returned</SelectItem>
             </SelectContent>
-          </Select>
+          </Select> */}
           <Button type="submit" className="w-full sm:w-auto">
             <Filter className="mr-2 h-4 w-4" /> Filter
           </Button>
@@ -117,6 +137,7 @@ const TransactionsTable = async ({
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">Book ID</TableHead>
+                <TableHead className="w-[100px]">User ID</TableHead>
                 <TableHead>Issue Date</TableHead>
                 <TableHead>Due Date</TableHead>
                 <TableHead>Status</TableHead>
@@ -129,6 +150,9 @@ const TransactionsTable = async ({
                   <TableRow key={transaction.id}>
                     <TableCell className="font-medium">
                       {transaction.bookId}
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {transaction.memberId}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center">
@@ -224,4 +248,3 @@ const TransactionsTable = async ({
 };
 
 export default TransactionsTable;
-    

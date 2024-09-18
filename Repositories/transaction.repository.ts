@@ -2,12 +2,15 @@ import { formatDate } from "../core/formatdate";
 import { IPageRequest, IPagesResponse } from "../core/pagination";
 import { IRepository } from "../core/repository";
 import { MySql2Database } from "drizzle-orm/mysql2";
-
-import { and, count, eq, like, or } from "drizzle-orm";
+import { VercelPgDatabase } from "drizzle-orm/vercel-postgres";
+import { asc, desc, eq, like, or } from "drizzle-orm/expressions";
 import { error } from "node:console";
 import { ITransaction, ITransactionBase } from "@/Models/transaction.model";
 import { Books, Transactions } from "@/drizzle/schema";
 import { CountResult } from "@/core/returnTypes";
+import { TransactionSortOptions } from "@/lib/data";
+import { count } from "drizzle-orm/sql";
+import { and } from "drizzle-orm/expressions";
 
 export class TransactionRepository
   implements IRepository<ITransactionBase, ITransaction>
@@ -23,7 +26,7 @@ export class TransactionRepository
     [countResult] = await this.db.select({ count: count() }).from(Transactions);
     return countResult.count;
   }
-  constructor(private db: MySql2Database<Record<string, never>>) {}
+  constructor(private db: VercelPgDatabase<Record<string, unknown>>) {}
 
   async create(data: ITransactionBase): Promise<ITransaction | null> {
     const currentDate = new Date();
@@ -44,7 +47,7 @@ export class TransactionRepository
           const [result] = await trx
             .insert(Transactions)
             .values(transaction)
-            .$returningId();
+            .returning({ id: Transactions.id });
           const [createdTransaction] = await trx
             .select()
             .from(Transactions)
@@ -151,14 +154,29 @@ export class TransactionRepository
     return result[0].count;
   }
 
-  async list(params: IPageRequest): Promise<IPagesResponse<ITransaction>> {
-    const search = params.search?.toLocaleLowerCase();
+  async list(
+    params: IPageRequest,
+    sortOptions?: TransactionSortOptions
+  ): Promise<IPagesResponse<ITransaction>> {
+    let search = params.search ? params.search.toLowerCase() : "";
+
+    let sortOrder;
     let selectSql: ITransaction[];
     let countResult: CountResult;
 
+    // Check for valid sorting options and set default if not provided
+    if (sortOptions) {
+      const sortBy = Transactions[sortOptions.sortBy] || Transactions.issueDate; // Default to author if sortBy is invalid
+      sortOrder = sortOptions.sortOrder === "desc" ? desc(sortBy) : asc(sortBy);
+    } else {
+      // Fallback to default sort
+      sortOrder = asc(Transactions.issueDate); // Default sort by title in ascending order
+    }
+
     try {
+      // Build the query with search, pagination, and sorting
       if (search) {
-        selectSql = await this.db
+        selectSql = (await this.db
           .select()
           .from(Transactions)
           .where(
@@ -168,39 +186,45 @@ export class TransactionRepository
               like(Transactions.Status, `%${search}%`)
             )
           )
-          .limit(params.limit ?? 0)
-          .offset(params.offset ?? 0);
+          .limit(params.limit ?? 10) // Add a default limit
+          .offset(params.offset ?? 0)
+          .orderBy(sortOrder)) as ITransaction[];
       } else {
-        selectSql = await this.db
+        selectSql = (await this.db
           .select()
           .from(Transactions)
-          .limit(params.limit ?? 0)
-          .offset(params.offset ?? 0);
+          .limit(params.limit ?? 10) // Add a default limit
+          .offset(params.offset ?? 0)
+          .orderBy(sortOrder)) as ITransaction[];
       }
 
+      // Get the count of books
       [countResult] = await this.db
         .select({ count: count() })
         .from(Transactions)
         .where(
           search
             ? or(
-                like(Transactions.memberId, search),
-                like(Transactions.bookId, search)
+                like(Transactions.bookId, `%${search}%`),
+                like(Transactions.memberId, `%${search}%`),
+                like(Transactions.Status, `%${search}%`)
               )
             : undefined
         );
 
-      const countTransaction = (countResult as any).count;
+      const countMember = (countResult as any).count;
 
+      // Return the books with pagination
       return {
         items: selectSql,
         pagination: {
           offset: params.offset,
           limit: params.limit,
-          total: countTransaction,
+          total: countMember,
         },
       };
     } catch (error) {
+      console.log(error);
       throw new Error("Not found");
     }
   }

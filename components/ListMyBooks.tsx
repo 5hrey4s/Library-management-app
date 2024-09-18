@@ -6,7 +6,6 @@ import PaginationControls from "./PaginationControls";
 import { SearchParams } from "@/app/home/books/page";
 import { IBook, IBookBase } from "@/Models/book-model";
 import { auth } from "@/auth";
-import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
 import { MemberRepository } from "@/Repositories/member.repository";
 import { BookRepository } from "@/Repositories/book-repository";
@@ -28,8 +27,13 @@ export interface ListMyBooksProps {
   pageRequest: IPageRequest;
 }
 
-const pool = mysql.createPool(Appenv.DATABASE_URL);
-const db = drizzle(pool);
+import "@/drizzle/envConfig";
+import { drizzle } from "drizzle-orm/vercel-postgres";
+import { sql } from "@vercel/postgres";
+import * as schema from "../drizzle/schema";
+import { and } from "drizzle-orm/expressions";
+
+export const db = drizzle(sql, { schema });
 const memberRepository = new MemberRepository(db);
 const bookRepository = new BookRepository(db);
 

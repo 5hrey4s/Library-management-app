@@ -1,6 +1,5 @@
+"use client";
 import { SearchParams } from "@/app/home/books/page";
-import { IPageRequest } from "@/core/pagination";
-import { fetchMembers } from "@/lib/data";
 import { IMember } from "@/Models/member.model";
 import React from "react";
 import {
@@ -15,7 +14,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -25,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { ChevronUp, ChevronDown, Edit } from "lucide-react";
 import PaginationControls from "./PaginationControls";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface MemberTableProps {
   pagination: { limit: number; offset: number; total: number };
@@ -32,39 +31,46 @@ interface MemberTableProps {
   items: IMember[];
 }
 
-
 const MemberTable: React.FC<MemberTableProps> = async ({
   pagination,
   searchParams,
   items,
 }) => {
   // const { items: members } = await fetchMembers(pageRequest);
+  const router = useRouter();
+  const currentSearchParams = useSearchParams();
 
-  const sortColumn = (searchParams.sortColumn as keyof IMember) || "lastName";
+  const sortColumn = (searchParams.sortColumn as keyof IMember) || "firstName";
   const sortOrder = searchParams.sortOrder === "desc" ? "desc" : "asc";
   const searchTerm = searchParams.searchTerm || "";
   const roleFilter = searchParams.role || "all";
 
   // Get unique roles
-  const roles = Array.from(new Set(items.map((member) => member.role)));
+  const roles = ["admin", "user"];
   // Calculate start and end indices for pagination
   const page = parseInt(searchParams["page"] ?? "1");
   const perPage = parseInt(searchParams["per_page"] ?? "8");
   const start = (page - 1) * perPage;
   const end = start + perPage;
-  const sortedMembers = [...items].sort((a, b) => {
-    if (a[sortColumn]! < b[sortColumn]!) return sortOrder === "asc" ? -1 : 1;
-    if (a[sortColumn]! > b[sortColumn]!) return sortOrder === "asc" ? 1 : -1;
-    return 0;
-  });
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
 
-  const filteredMembers = sortedMembers.filter(
-    (member) =>
-      (roleFilter === "all" || member.role === roleFilter) &&
-      Object.values(member).some((value) =>
-        value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-      )
-  );
+    const newSearchParams = new URLSearchParams(currentSearchParams.toString());
+
+    // Update only the changed params
+    for (const [key, value] of formData.entries()) {
+      if (value) {
+        newSearchParams.set(key, value.toString());
+      } else {
+        newSearchParams.delete(key);
+      }
+    }
+    // newSearchParams.set('page', '1');
+
+    router.replace(`/admin/members?${newSearchParams.toString()}`);
+  };
+  console.log(items);
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
@@ -72,7 +78,10 @@ const MemberTable: React.FC<MemberTableProps> = async ({
         <CardTitle className="text-2xl font-bold">Member List</CardTitle>
       </CardHeader>
       <CardContent>
-        <form className="mb-6 flex flex-col sm:flex-row justify-end items-center gap-4">
+        <form
+          onSubmit={handleFormSubmit}
+          className="mb-6 flex flex-col sm:flex-row justify-end items-center gap-4"
+        >
           <div className="flex flex-wrap items-center gap-2">
             <Select name="sortColumn" defaultValue={sortColumn}>
               <SelectTrigger className="w-full sm:w-[180px]">
@@ -94,19 +103,7 @@ const MemberTable: React.FC<MemberTableProps> = async ({
                 <SelectItem value="desc">Descending</SelectItem>
               </SelectContent>
             </Select>
-            <Select name="role" defaultValue={roleFilter}>
-              <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="Filter by role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Roles</SelectItem>
-                {roles.map((role) => (
-                  <SelectItem key={role} value={role}>
-                    {role}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+
             <Button type="submit" className="w-full sm:w-auto">
               Apply
             </Button>
@@ -145,7 +142,7 @@ const MemberTable: React.FC<MemberTableProps> = async ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredMembers.map((member: IMember) => (
+              {items.map((member: IMember) => (
                 <TableRow key={member.user_id}>
                   <TableCell className="font-medium">
                     <div className="flex items-center space-x-3">
@@ -160,7 +157,7 @@ const MemberTable: React.FC<MemberTableProps> = async ({
                       </Avatar>
                       <div>
                         <div className="font-bold">
-                          {member.lastName}, {member.firstName}
+                          {member.firstName},{member.lastName}
                         </div>
                       </div>
                     </div>
@@ -189,7 +186,7 @@ const MemberTable: React.FC<MemberTableProps> = async ({
             </TableBody>
           </Table>
         </div>
-        {filteredMembers.length === 0 && (
+        {items.length === 0 && (
           <p className="text-center text-muted-foreground mt-8">
             No members found matching your search criteria.
           </p>
