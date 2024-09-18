@@ -3,16 +3,16 @@ import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
 import mysql from "mysql2/promise";
 import bcrypt from "bcryptjs";
-import { drizzle } from "drizzle-orm/mysql2";
 import { MemberRepository } from "./Repositories/member.repository";
 import { IMember } from "./Models/member.model";
 import { authOptions } from "./authOptions";
 import Google from "next-auth/providers/google";
-import { Appenv } from "./read-env";
+import "@/drizzle/envConfig";
+import { drizzle } from "drizzle-orm/vercel-postgres";
+import { sql } from "@vercel/postgres";
+import * as schema from "./drizzle/schema";
 
-const pool = mysql.createPool(Appenv.DATABASE_URL);
-
-const db = drizzle(pool);
+const db = drizzle(sql, { schema });
 const memberRepository = new MemberRepository(db);
 
 async function getUser(email: string): Promise<IMember | undefined> {

@@ -16,9 +16,9 @@ import "@/drizzle/envConfig";
 import { drizzle } from "drizzle-orm/vercel-postgres";
 import { sql } from "@vercel/postgres";
 import * as schema from "../drizzle/schema";
-import { and } from "drizzle-orm/expressions";
+import cloudinary from "@/cloudinary.config";
 
-export const db = drizzle(sql, { schema });
+const db = drizzle(sql, { schema });
 
 const requestRepository = new RequestRepository(db);
 const transactionRepository = new TransactionRepository(db);
@@ -153,3 +153,40 @@ export const editProfile = async (
     if (error instanceof Error) throw error;
   }
 };
+
+export async function uploadImage(file: File) {
+  if (!file) return { imageURL: "" };
+
+  try {
+    const result = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: "book_covers" },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+
+      const reader = file.stream().getReader();
+      const pump = async () => {
+        const { done, value } = await reader.read();
+        if (done) {
+          uploadStream.end();
+        } else {
+          uploadStream.write(value);
+          pump();
+        }
+      };
+      pump();
+    });
+
+    if (result && typeof result === "object" && "secure_url" in result) {
+      return { imageURL: result.secure_url as string };
+    }
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    return { error: "Failed to upload image. Please try again." };
+  }
+
+  return { imageURL: "" };
+}

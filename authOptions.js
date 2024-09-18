@@ -2,15 +2,14 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-import mysql from "mysql2/promise";
-
 import { MemberRepository } from "./Repositories/member.repository";
-import { drizzle } from "drizzle-orm/mysql2";
 import { Appenv } from "./read-env";
+import "@/drizzle/envConfig";
+import { drizzle } from "drizzle-orm/vercel-postgres";
+import { sql } from "@vercel/postgres";
+import * as schema from "./drizzle/schema";
 
-const pool = mysql.createPool(Appenv.DATABASE_URL);
-
-const db = drizzle(pool);
+const db = drizzle(sql, { schema });
 const memberRepository = new MemberRepository(db);
 
 export const authOptions = {
@@ -65,6 +64,7 @@ export const authOptions = {
       if (user) {
         const userInDb = await memberRepository.getByEmail(user.email);
         if (userInDb) {
+
           token.role = userInDb.role;
         }
       }

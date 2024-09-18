@@ -1,8 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    devIndicators :{
-        appIsrStatus : false
-    },
+  devIndicators: {
+    appIsrStatus: false,
+  },
+  reactStrictMode: true,
+  images: {
+    domains: ["res.cloudinary.com"],
+  },
   webpack(config) {
     // Add rule to ignore HTML files from node_modules
     config.module.rules.push({

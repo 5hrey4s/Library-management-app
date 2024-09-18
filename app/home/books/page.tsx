@@ -2,11 +2,9 @@
 
 import Link from "next/link";
 import SearchComponent from "@/components/search";
-import AddBook from "@/components/addBook";
 import { ListBooks } from "@/components/listBooks";
 import { auth } from "@/auth";
 import { fetchBooks, fetchGenre, fetchMemberByEmail } from "@/lib/data";
-import clsx from "clsx";
 import { IBookBase } from "@/Models/book-model";
 
 export interface SearchParams {
@@ -17,8 +15,6 @@ interface HomeProps {
   searchParams: SearchParams;
 }
 
-
-
 export default async function Home({ searchParams }: HomeProps) {
   const page = parseInt(searchParams["page"] ?? "1");
   const limit = 8;
@@ -26,18 +22,18 @@ export default async function Home({ searchParams }: HomeProps) {
   const sortOrder = searchParams["sortOrder"] || "asc";
 
   const offset = (page - 1) * limit;
-  console.log(offset);
   const pageRequest = {
     offset: offset,
     limit: limit,
     search: searchParams["search"] ?? "",
   };
   const sortOptions = { sortOrder: sortOrder, sortBy: sortBy };
-  const { items, pagination } = await fetchBooks(pageRequest,sortOptions);
-  // console.log(items)
+  const { items, pagination } = await fetchBooks(pageRequest, sortOptions);
   const session = await auth();
   const genres = await fetchGenre();
   const user = await fetchMemberByEmail(session?.user.email!);
+  console.log(items);
+
   return (
     <div className="flex flex-col min-h-screen bg-[#F5F5F7] text-gray-900 dark:text-gray-100">
       {/* <Navbar logoText="Library" active="Books" role={session?.user!.role} /> */}

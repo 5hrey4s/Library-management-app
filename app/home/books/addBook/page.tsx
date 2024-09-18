@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { addBook } from "@/lib/data";
 import { IBook, IBookBase } from "@/Models/book-model";
+import { useToast } from "@/hooks/use-toast";
+import { uploadImage } from "@/lib/actions";
 
 interface FormErrors {
   title?: string;
@@ -21,6 +23,32 @@ const AddBook: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const router = useRouter();
+  const { toast } = useToast();
+  const [imageURL, setImageURL] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setIsUploading(true);
+      const result = await uploadImage(file);
+      console.log(result);
+      setIsUploading(false);
+      console.log(result.imageURL);
+
+      if (result.imageURL) {
+        setImageURL(result.imageURL);
+        console.log(imageURL);
+        console.log(imageURL);
+
+      } else if (result.error) {
+        // Handle error
+        console.log("first");
+        console.error(result.error);
+      }
+    }
+    console.log("imageURL", imageURL);
+  };
 
   const validateForm = (formData: FormData): FormErrors => {
     const newErrors: FormErrors = {};
@@ -65,11 +93,11 @@ const AddBook: React.FC = () => {
     }
     return newErrors;
   };
-  
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-
+   
     const formErrors = validateForm(formData);
     if (Object.keys(formErrors).length === 0) {
       const data: IBookBase = {
@@ -80,6 +108,7 @@ const AddBook: React.FC = () => {
         isbnNo: formData.get("isbnNo") as string,
         numOfPages: Number(formData.get("numOfPages")),
         totalNumOfCopies: Number(formData.get("totalNumOfCopies")),
+        image_url: imageURL,
       };
 
       setIsSubmitting(true);
@@ -239,6 +268,14 @@ const AddBook: React.FC = () => {
               id="totalNumOfCopies"
               className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none"
               placeholder="Enter the total number of copies"
+            />
+            <Input
+              id="image"
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="mt-1 bg-gray-50 border border-gray-300 focus:ring-orange-500 focus:border-orange-500"
             />
             {errors.totalNumOfCopies && (
               <p className="text-red-600 text-sm mt-1">

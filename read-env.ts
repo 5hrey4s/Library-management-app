@@ -16,6 +16,10 @@ export interface AppEnv {
   POSTGRES_HOST: string;
   POSTGRES_PASSWORD: string;
   POSTGRES_DATABASE: string;
+  NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: string;
+  CLOUDINARY_API_KEY: string;
+  CLOUDINARY_API_SECRET: string;
+  CLOUDINARY_URL: string;
 }
 
 export const Appenv = process.env as unknown as AppEnv;

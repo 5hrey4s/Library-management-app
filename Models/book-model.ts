@@ -7,6 +7,7 @@ export interface IBookBase {
   isbnNo: string;
   numOfPages: number;
   totalNumOfCopies: number;
+  image_url: string;
 }
 
 export interface IBook extends IBookBase {
@@ -56,4 +57,8 @@ export const bookSchema = z.object({
     .number()
     .int({ message: "Total number of copies must be an integer" })
     .min(0, { message: "Total number of copies cannot be negative" }),
+  image_url: z
+    .string()
+    .min(10, { message: "Image URL is required" })
+    .max(255, { message: "Genre must be less than 255 characters" }),
 });

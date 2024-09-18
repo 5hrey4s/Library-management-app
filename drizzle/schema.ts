@@ -25,6 +25,7 @@ export const Books = pgTable("books", {
   numOfPages: integer("numOfPages").notNull(),
   totalNumOfCopies: integer("totalNumOfCopies").notNull(),
   availableNumberOfCopies: integer("availableNumberOfCopies").notNull(),
+  image_url: varchar("image_url", { length: 255 }).notNull(),
 });
 
 // Members Table

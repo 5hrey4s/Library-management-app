@@ -27,6 +27,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import EditButton from "../editBookButton";
+import Image from "next/image";
 
 type BookCardProps = {
   data: {
@@ -83,175 +84,176 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
       });
     }
   };
+
+  const AdminButtons = () => (
+    <div className="absolute top-2 right-2 flex space-x-2 z-10">
+      {data.role === "admin" && (
+        <>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="bg-white bg-opacity-80 hover:bg-opacity-100"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <FaEdit className="h-4 w-4 text-blue-600" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Edit Book</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to edit {data.book.title}?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction asChild>
+                        <EditButton id={book.id} />
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Edit book</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="bg-white bg-opacity-80 hover:bg-opacity-100"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <FaTrash className="h-4 w-4 text-red-600" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Book</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete {data.book.title}? This
+                        action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction asChild>
+                        <button
+                          className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors"
+                          onClick={handleDelete}
+                        >
+                          Delete
+                        </button>
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Delete book</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </>
+      )}
+    </div>
+  );
+
   return (
     <div className="flex flex-col items-center m-6">
       <div
-        className="relative w-72 h-96 cursor-pointer"
+        className="relative w-72 h-96 cursor-pointer rounded-xl overflow-hidden shadow-lg"
         onClick={handleFlip}
         style={{ perspective: "1000px" }}
       >
         <div
           className={clsx(
-            "relative w-full h-full duration-700 transform",
+            "relative w-full h-full duration-700 transform transition-transform",
             isFlipped ? "rotate-y-180" : ""
           )}
-          style={{
-            transformStyle: "preserve-3d",
-            transition: "transform 0.7s",
-          }}
+          style={{ transformStyle: "preserve-3d" }}
         >
           {/* Front Side */}
-          <div className="absolute w-full h-full bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-800 dark:to-gray-700 border border-green-200 dark:border-gray-600 rounded-lg shadow-lg flex items-center justify-center p-4">
-            <div className="absolute top-2 right-2 flex space-x-2">
-              {data.role === "admin" && (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <FaEdit className="h-4 w-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Edit Book</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to edit {data.book.title}?
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction asChild>
-                              {/* <Button onClick={() => console.log("Edit book:", data.book.title)}>
-                                Edit
-                              </Button> */}
-
-                              {data.role === "admin" && (
-                                <EditButton id={book.id} />
-                              )}
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Edit book</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
-
-              {data.role === "admin" && (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <FaTrash className="h-4 w-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Book</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to delete {data.book.title}?
-                              This action cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction asChild>
-                              {data.role === "admin" && (
-                                <button
-                                  className="hover:bg-[#D33142] bg-[#e04050] mt-auto font-semibold py-2 px-4 rounded-lg shadow-md transition-colors text-white"
-                                  onClick={handleDelete}
-                                >
-                                  Delete
-                                </button>
-                              )}
-                              {/* <BorrowButton
-                      className={`mt-auto font-semibold py-2 px-4 rounded-lg shadow-md transition-colors ${
-                        isRequested
-                          ? "bg-white text-black"
-                          : "bg-[#357960] text-white"
-                      }`} */}
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Delete book</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
+          <div className="absolute w-full h-full bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-800 dark:to-gray-700 flex flex-col items-center justify-between p-4 backface-hidden">
+            <div className="relative w-full h-[70%] rounded-lg overflow-hidden shadow-md">
+              <Image
+                src={book.image_url || "/placeholder.svg"}
+                alt={book.title}
+                layout="fill"
+                objectFit="cover"
+              />
             </div>
-
-            <div className="flex flex-col items-center">
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+            <div className="flex flex-col items-center justify-center bg-white dark:bg-gray-800 p-3 rounded-lg shadow-md w-full h-[25%]">
+              <h3
+                className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-1 text-center line-clamp-2"
+                style={{
+                  overflow: "hidden",
+                  display: "-webkit-box",
+                  WebkitBoxOrient: "vertical",
+                  WebkitLineClamp: 1, // limits the title to 2 lines
+                }}
+              >
                 {data.book.title}
               </h3>
-              <p className="text-lg text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-gray-600 dark:text-gray-300 text-center truncate line-clamp-1">
                 by {data.book.author}
               </p>
             </div>
           </div>
 
           {/* Back Side */}
-          <div
-            className="absolute w-full h-full bg-white dark:bg-gray-800 border border-green-200 dark:border-gray-600 rounded-lg shadow-lg flex flex-col p-6 text-gray-800 dark:text-gray-200"
-            style={{
-              backfaceVisibility: "hidden",
-              transform: "rotateY(180deg)",
-            }}
-          >
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+          <div className="absolute w-full h-full bg-white dark:bg-gray-800 flex flex-col p-6 text-gray-800 dark:text-gray-200 backface-hidden rotate-y-180 overflow-hidden">
+            <AdminButtons />
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 line-clamp-2">
               {data.book.title}
             </h3>
-            <p className="mb-2 text-sm">
-              <strong className="font-semibold">Author:</strong>{" "}
-              {data.book.author}
-            </p>
-            <p className="mb-2 text-sm">
-              <strong className="font-semibold">Publisher:</strong>{" "}
-              {data.book.publisher}
-            </p>
-            <p className="mb-2 text-sm">
-              <strong className="font-semibold">Genre:</strong>{" "}
-              {data.book.genre}
-            </p>
-            <p className="mb-2 text-sm">
-              <strong className="font-semibold">ISBN:</strong>{" "}
-              {data.book.isbnNo}
-            </p>
-            <p className="mb-2 text-sm">
-              <strong className="font-semibold">Pages:</strong>{" "}
-              {data.book.numOfPages}
-            </p>
-            <p className="mb-2 text-sm">
-              <strong className="font-semibold">Available Copies:</strong>{" "}
-              {data.book.availableNumberOfCopies}
-            </p>
+            <div className="flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+              <p className="mb-2 text-sm">
+                <strong className="font-semibold">Author:</strong>{" "}
+                {data.book.author}
+              </p>
+              <p className="mb-2 text-sm">
+                <strong className="font-semibold">Publisher:</strong>{" "}
+                {data.book.publisher}
+              </p>
+              <p className="mb-2 text-sm">
+                <strong className="font-semibold">Genre:</strong>{" "}
+                {data.book.genre}
+              </p>
+              <p className="mb-2 text-sm">
+                <strong className="font-semibold">ISBN:</strong>{" "}
+                {data.book.isbnNo}
+              </p>
+              <p className="mb-2 text-sm">
+                <strong className="font-semibold">Pages:</strong>{" "}
+                {data.book.numOfPages}
+              </p>
+              <p className="mb-2 text-sm">
+                <strong className="font-semibold">Available Copies:</strong>{" "}
+                {data.book.availableNumberOfCopies}
+              </p>
+            </div>
 
             {/* Borrow Button */}
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
-                  className={`mt-auto font-semibold ${
+                  className={`mt-4 font-semibold w-full ${
                     isRequested
-                      ? "bg-white text-black"
-                      : "bg-[#357960] text-white"
+                      ? "bg-gray-300 text-gray-600"
+                      : "bg-[#357960] text-white hover:bg-[#2b6350]"
                   }`}
                   disabled={isRequested}
                   onClick={(e) => e.stopPropagation()}
@@ -272,8 +274,8 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                     <BorrowButton
                       className={`mt-auto font-semibold py-2 px-4 rounded-lg shadow-md transition-colors ${
                         isRequested
-                          ? "bg-white text-black"
-                          : "bg-[#357960] text-white"
+                          ? "bg-gray-300 text-gray-600"
+                          : "bg-[#357960] text-white hover:bg-[#2b6350]"
                       }`}
                       onClick={async (e) => {
                         e.stopPropagation();

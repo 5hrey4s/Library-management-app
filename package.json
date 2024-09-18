@@ -33,6 +33,7 @@
     "bcryptjs": "^2.4.3",
     "bright": "^0.8.5",
     "class-variance-authority": "^0.7.0",
+    "cloudinary": "^2.5.0",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.33.0",

@@ -98,7 +98,7 @@ export class BookRepository implements IRepository<IBookBase, IBook> {
     let sortOrder;
     let selectSql: IBook[];
     let countResult: CountResult;
-
+    console.log(params,sortOptions);
     // Check for valid sorting options and set default if not provided
     if (sortOptions) {
       const sortBy = Books[sortOptions.sortBy] || Books.author; // Default to author if sortBy is invalid
@@ -133,7 +133,7 @@ export class BookRepository implements IRepository<IBookBase, IBook> {
           .offset(params.offset ?? 0)
           .orderBy(sortOrder)) as IBook[];
       }
-
+      
       // Get the count of books
       [countResult] = await this.db
         .select({ count: count() })

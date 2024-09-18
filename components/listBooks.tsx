@@ -41,6 +41,7 @@ const ListBooks: React.FC<ListBooksProps> = ({
 }) => {
   const router = useRouter();
   const currentSearchParams = useSearchParams();
+  // console.log(items)
 
   const page = parseInt(searchParams["page"] ?? "1");
   const perPage = parseInt(searchParams["per_page"] ?? "8");
