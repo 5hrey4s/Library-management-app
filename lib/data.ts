@@ -222,6 +222,7 @@ export async function fetchMyBooks(memberId: number): Promise<IBook[]> {
     numOfPages: row.books.numOfPages,
     totalNumOfCopies: row.books.totalNumOfCopies,
     availableNumberOfCopies: row.books.availableNumberOfCopies,
+    image_url:row.books.image_url
   }));
 }
 

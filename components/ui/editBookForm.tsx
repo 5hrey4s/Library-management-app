@@ -3,17 +3,10 @@ import React, { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { addBook, fetchBookById, fetchBooks, updateBook } from "@/lib/data";
-import { IBook } from "@/Models/book-model";
+import { IBook, IBookBase } from "@/Models/book-model";
+import { useToast } from "@/hooks/use-toast";
+import { uploadImage } from "@/lib/actions";
 
-export interface IBookBase {
-  title: string;
-  author: string;
-  publisher: string;
-  genre: string;
-  isbnNo: string;
-  numOfPages: number;
-  totalNumOfCopies: number;
-}
 
 interface FormErrors {
   title?: string;
@@ -35,6 +28,9 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const router = useRouter();
+  const { toast } = useToast();
+  const [imageURL, setImageURL] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
   const validateForm = (formData: FormData): FormErrors => {
     const newErrors: FormErrors = {};
@@ -79,7 +75,27 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
     }
     return newErrors;
   };
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setIsUploading(true);
+      const result = await uploadImage(file);
+      console.log(result);
+      setIsUploading(false);
+      console.log(result.imageURL);
 
+      if (result.imageURL) {
+        setImageURL(result.imageURL);
+        console.log(imageURL);
+        console.log(imageURL);
+      } else if (result.error) {
+        // Handle error
+        console.log("first");
+        console.error(result.error);
+      }
+    }
+    console.log("imageURL", imageURL);
+  };
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -94,11 +110,13 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
         isbnNo: formData.get("isbnNo") as string,
         numOfPages: Number(formData.get("numOfPages")),
         totalNumOfCopies: Number(formData.get("totalNumOfCopies")),
+        image_url: imageURL,
+
       };
 
       setIsSubmitting(true);
       try {
-        const updatedBook: IBook | null = await updateBook(book.id,data);
+        const updatedBook: IBook | null = await updateBook(book.id, data);
         console.log("Book data:", book);
         // setSuccessMessage("Book added successfully!");
         router.push("/home/books"); // Redirect to the books page
@@ -160,7 +178,6 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
               className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none"
               placeholder="Enter the author's name"
               defaultValue={book.author}
-
             />
             {errors.author && (
               <p className="text-red-600 text-sm mt-1">{errors.author}</p>
@@ -181,7 +198,6 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
               className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none"
               placeholder="Enter the publisher's name"
               defaultValue={book.publisher}
-
             />
             {errors.publisher && (
               <p className="text-red-600 text-sm mt-1">{errors.publisher}</p>
@@ -202,7 +218,6 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
               className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none"
               placeholder="Enter the genre"
               defaultValue={book.genre}
-
             />
             {errors.genre && (
               <p className="text-red-600 text-sm mt-1">{errors.genre}</p>
@@ -223,7 +238,6 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
               className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none"
               placeholder="Enter the ISBN number"
               defaultValue={book.isbnNo}
-
             />
             {errors.isbnNo && (
               <p className="text-red-600 text-sm mt-1">{errors.isbnNo}</p>
@@ -244,11 +258,18 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
               className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none"
               placeholder="Enter the number of pages"
               defaultValue={book.numOfPages}
-
             />
             {errors.numOfPages && (
               <p className="text-red-600 text-sm mt-1">{errors.numOfPages}</p>
             )}
+            <Input
+              id="image"
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="mt-1 bg-gray-50 border border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+            />
           </div>
 
           <div>
@@ -265,7 +286,6 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
               className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none"
               placeholder="Enter the total number of copies"
               defaultValue={book.totalNumOfCopies}
-
             />
             {errors.totalNumOfCopies && (
               <p className="text-red-600 text-sm mt-1">

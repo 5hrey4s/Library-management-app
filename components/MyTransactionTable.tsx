@@ -3,8 +3,6 @@ import { ITransaction } from "@/Models/transaction.model";
 import { Badge } from "@/components/ui/badge";
 import { MemberRepository } from "@/Repositories/member.repository";
 import { auth } from "@/auth";
-import { drizzle } from "drizzle-orm/mysql2";
-import mysql from "mysql2/promise";
 import { IMember } from "@/Models/member.model";
 import { fetchMyTransactions } from "@/lib/data";
 import ReturnBookButton from "./ui/return";
@@ -30,9 +28,12 @@ import { Button } from "@/components/ui/button";
 import { SearchParams } from "@/app/home/books/page";
 import { Appenv } from "@/read-env";
 
-// Initialize database connection
-const pool = mysql.createPool(Appenv.DATABASE_URL);
-const db = drizzle(pool);
+import "@/drizzle/envConfig";
+import { drizzle } from "drizzle-orm/vercel-postgres";
+import { sql } from "@vercel/postgres";
+import * as schema from "../drizzle/schema";
+
+const db = drizzle(sql, { schema });
 const memberRepository = new MemberRepository(db);
 
 interface MyTransactionsTableProps {
@@ -113,7 +114,10 @@ const MyTransactionsTable = async ({
               </SelectContent>
             </Select>
           </div>
-          <Button type="submit" className="bg-[#2f8d46] hover:bg-[#256f38] w-full sm:w-auto">
+          <Button
+            type="submit"
+            className="bg-[#2f8d46] hover:bg-[#256f38] w-full sm:w-auto"
+          >
             Apply Filters
           </Button>
         </form>

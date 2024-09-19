@@ -40,7 +40,6 @@ const AddBook: React.FC = () => {
         setImageURL(result.imageURL);
         console.log(imageURL);
         console.log(imageURL);
-
       } else if (result.error) {
         // Handle error
         console.log("first");
@@ -97,7 +96,7 @@ const AddBook: React.FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-   
+
     const formErrors = validateForm(formData);
     if (Object.keys(formErrors).length === 0) {
       const data: IBookBase = {
@@ -269,7 +268,13 @@ const AddBook: React.FC = () => {
               className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none"
               placeholder="Enter the total number of copies"
             />
-            <Input
+
+            {errors.totalNumOfCopies && (
+              <p className="text-red-600 text-sm mt-1">
+                {errors.totalNumOfCopies}
+              </p>
+            )}
+             <Input
               id="image"
               type="file"
               name="image"
@@ -277,11 +282,6 @@ const AddBook: React.FC = () => {
               onChange={handleImageUpload}
               className="mt-1 bg-gray-50 border border-gray-300 focus:ring-orange-500 focus:border-orange-500"
             />
-            {errors.totalNumOfCopies && (
-              <p className="text-red-600 text-sm mt-1">
-                {errors.totalNumOfCopies}
-              </p>
-            )}
           </div>
 
           <button
