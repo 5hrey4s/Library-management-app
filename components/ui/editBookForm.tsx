@@ -75,6 +75,7 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
     }
     return newErrors;
   };
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -113,11 +114,10 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
         image_url: imageURL,
 
       };
-
+      console.log(data)
       setIsSubmitting(true);
       try {
-        const updatedBook: IBook | null = await updateBook(book.id, data);
-        console.log("Book data:", book);
+        await updateBook(book.id, data);
         // setSuccessMessage("Book added successfully!");
         router.push("/home/books"); // Redirect to the books page
       } catch (error) {

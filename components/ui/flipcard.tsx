@@ -143,8 +143,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                     <AlertDialogHeader>
                       <AlertDialogTitle>Delete Book</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Are you sure you want to delete {data.book.title}? This
-                        action cannot be undone.
+                        Are you sure you want to delete {data.book.title}? This action cannot be undone.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -174,7 +173,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
   return (
     <div className="flex flex-col items-center m-6">
       <div
-        className="relative w-72 h-96 cursor-pointer rounded-xl overflow-hidden shadow-lg"
+        className="relative w-72 h-96 cursor-pointer rounded-xl overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:scale-105"
         onClick={handleFlip}
         style={{ perspective: "1000px" }}
       >
@@ -186,63 +185,49 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
           style={{ transformStyle: "preserve-3d" }}
         >
           {/* Front Side */}
-          <div className="absolute w-full h-full bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-800 dark:to-gray-700 flex flex-col items-center justify-between p-4 backface-hidden">
-            <div className="relative w-full h-[70%] rounded-lg overflow-hidden shadow-md">
+          <div className="absolute w-full h-full backface-hidden">
+            <div className="relative w-full h-full overflow-hidden">
               <Image
                 src={book.image_url || "/placeholder.svg"}
                 alt={book.title}
                 layout="fill"
                 objectFit="cover"
+                className="transition-transform duration-300 ease-in-out hover:scale-110"
               />
-            </div>
-            <div className="flex flex-col items-center justify-center bg-white dark:bg-gray-800 p-3 rounded-lg shadow-md w-full h-[25%]">
-              <h3
-                className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-1 text-center line-clamp-2"
-                style={{
-                  overflow: "hidden",
-                  display: "-webkit-box",
-                  WebkitBoxOrient: "vertical",
-                  WebkitLineClamp: 1, // limits the title to 2 lines
-                }}
-              >
-                {data.book.title}
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300 text-center truncate line-clamp-1">
-                by {data.book.author}
-              </p>
+              <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-50"></div>
+              <div className="absolute bottom-4 left-4 right-4 text-white">
+                <h3 className="text-xl font-bold mb-1 line-clamp-2">{data.book.title}</h3>
+                <p className="text-sm opacity-80">{data.book.author}</p>
+              </div>
             </div>
           </div>
 
           {/* Back Side */}
-          <div className="absolute w-full h-full bg-white dark:bg-gray-800 flex flex-col p-6 text-gray-800 dark:text-gray-200 backface-hidden rotate-y-180 overflow-hidden">
+          <div
+            className="absolute w-full h-full bg-white dark:bg-gray-800 flex flex-col p-6 text-gray-800 dark:text-gray-200 backface-hidden rotate-y-180 overflow-hidden"
+          >
             <AdminButtons />
             <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 line-clamp-2">
               {data.book.title}
             </h3>
             <div className="flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
               <p className="mb-2 text-sm">
-                <strong className="font-semibold">Author:</strong>{" "}
-                {data.book.author}
+                <strong className="font-semibold">Author:</strong> {data.book.author}
               </p>
               <p className="mb-2 text-sm">
-                <strong className="font-semibold">Publisher:</strong>{" "}
-                {data.book.publisher}
+                <strong className="font-semibold">Publisher:</strong> {data.book.publisher}
               </p>
               <p className="mb-2 text-sm">
-                <strong className="font-semibold">Genre:</strong>{" "}
-                {data.book.genre}
+                <strong className="font-semibold">Genre:</strong> {data.book.genre}
               </p>
               <p className="mb-2 text-sm">
-                <strong className="font-semibold">ISBN:</strong>{" "}
-                {data.book.isbnNo}
+                <strong className="font-semibold">ISBN:</strong> {data.book.isbnNo}
               </p>
               <p className="mb-2 text-sm">
-                <strong className="font-semibold">Pages:</strong>{" "}
-                {data.book.numOfPages}
+                <strong className="font-semibold">Pages:</strong> {data.book.numOfPages}
               </p>
               <p className="mb-2 text-sm">
-                <strong className="font-semibold">Available Copies:</strong>{" "}
-                {data.book.availableNumberOfCopies}
+                <strong className="font-semibold">Available Copies:</strong> {data.book.availableNumberOfCopies}
               </p>
             </div>
 
