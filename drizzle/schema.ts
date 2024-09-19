@@ -54,7 +54,7 @@ export const Transactions = pgTable("transactions", {
   issueDate: varchar("issueDate", { length: 100 }).notNull(),
   dueDate: varchar("dueDate", { length: 100 }).notNull(),
   returnDate: varchar("returnDate", { length: 100 }),
-  Status: transactionStatusEnum("Status").notNull(),
+  Status: varchar("Status", { length: 100 }).notNull(),
 });
 
 // Requests Table

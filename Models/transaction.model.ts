@@ -8,7 +8,7 @@ export interface ITransaction extends ITransactionBase {
   issueDate: string;
   dueDate: string;
   returnDate: string | null;
-  Status: TStatus;
+  Status: string;
 }
 
 type TStatus = "Issued" | "Returned";

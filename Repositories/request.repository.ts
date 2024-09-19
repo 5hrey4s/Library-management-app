@@ -77,16 +77,16 @@ export class RequestRepository implements IRepository<IRequestBase, IRequest> {
     } else {
       search = "";
     }
+    console.log(params);
     let selectSql: IRequest[];
     let countResult: CountResult;
 
     try {
-      // Building the query based on search and pagination parameters
       if (search) {
         selectSql = await this.db
           .select()
           .from(Requests)
-          .where(eq(Requests.status, "pending"))
+          .where(eq(Requests.status, "Pending"))
           .limit(params.limit ?? 0)
           .offset(params.offset ?? 0);
       } else {
@@ -94,7 +94,7 @@ export class RequestRepository implements IRepository<IRequestBase, IRequest> {
           .select()
           .from(Requests)
           .limit(params.limit ?? 0)
-          .where(eq(Requests.status, "pending"))
+          .where(eq(Requests.status, "Pending"))
           .offset(params.offset ?? 0);
       }
 
@@ -112,6 +112,7 @@ export class RequestRepository implements IRepository<IRequestBase, IRequest> {
         );
 
       const countRequest = (countResult as any).count;
+      console.log(countResult, selectSql);
       return {
         items: selectSql,
         pagination: {

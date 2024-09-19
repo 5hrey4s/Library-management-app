@@ -22,12 +22,12 @@ export default async function Home({ searchParams }: HomeProps) {
   const sortOrder = searchParams["sortOrder"] || "asc";
 
   const offset = (page - 1) * limit;
-  console.log(offset);
   const pageRequest = {
     offset: offset,
     limit: limit,
     search: searchParams["search"] ?? "",
   };
+  console.log(pageRequest);
   const sortOptions = { sortOrder: sortOrder, sortBy: sortBy };
   const { items, pagination } = await fetchBooks(pageRequest, sortOptions);
   const session = await auth();

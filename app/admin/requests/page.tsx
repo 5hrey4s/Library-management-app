@@ -55,7 +55,7 @@ export default async function Home({ searchParams }: HomeProps) {
       </div>
     );
   }
-
+  console.log(items)
   return (
     <div className="flex flex-col min-h-screen bg-[#F5F5F7] text-gray-900 dark:text-gray-100">
       {/* <Navbar logoText="Library" active="Requests" role={session?.user!.role} /> */}

@@ -45,6 +45,7 @@ export const fetchBooks = async (
   sortOptions: SortOptions
 ) => {
   try {
+    console.log(pageRequest)
     const books = await bookRepository.list(pageRequest, sortOptions);
     return books;
   } catch (err) {

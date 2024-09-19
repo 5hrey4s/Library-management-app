@@ -5,7 +5,7 @@ import { CountResult } from "@/core/returnTypes";
 import { IBook, IBookBase } from "@/Models/book-model";
 import { SortOptions } from "@/lib/data";
 import { Books } from "@/drizzle/schema";
-import {VercelPgDatabase} from "drizzle-orm/vercel-postgres"
+import { VercelPgDatabase } from "drizzle-orm/vercel-postgres";
 import { count } from "drizzle-orm/sql";
 export class BookRepository implements IRepository<IBookBase, IBook> {
   constructor(private db: VercelPgDatabase<Record<string, unknown>>) {}
@@ -21,19 +21,18 @@ export class BookRepository implements IRepository<IBookBase, IBook> {
         .insert(Books)
         .values(bookData)
         .returning({ id: Books.id }); // Use returning() to return the inserted 'id'
-  
+
       // Fetch the newly inserted book using the 'id'
       const [book]: IBook[] = await this.db
         .select()
         .from(Books)
         .where(eq(Books.id, result.id));
-  
+
       return book;
     } catch (err) {
       throw err;
     }
   }
-  
 
   async update(id: number, data: IBookBase): Promise<IBook | null> {
     const toBeUpdated = Object.fromEntries(
@@ -94,11 +93,11 @@ export class BookRepository implements IRepository<IBookBase, IBook> {
     sortOptions?: SortOptions
   ): Promise<IPagesResponse<IBook>> {
     let search = params.search ? params.search.toLowerCase() : "";
+    console.log("====>", params, search);
 
     let sortOrder;
     let selectSql: IBook[];
     let countResult: CountResult;
-    console.log(params,sortOptions);
     // Check for valid sorting options and set default if not provided
     if (sortOptions) {
       const sortBy = Books[sortOptions.sortBy] || Books.author; // Default to author if sortBy is invalid
@@ -107,7 +106,6 @@ export class BookRepository implements IRepository<IBookBase, IBook> {
       // Fallback to default sort
       sortOrder = asc(Books.title); // Default sort by title in ascending order
     }
-
     try {
       // Build the query with search, pagination, and sorting
       if (search) {
@@ -133,7 +131,7 @@ export class BookRepository implements IRepository<IBookBase, IBook> {
           .offset(params.offset ?? 0)
           .orderBy(sortOrder)) as IBook[];
       }
-      
+
       // Get the count of books
       [countResult] = await this.db
         .select({ count: count() })

@@ -66,7 +66,6 @@ const MemberTable: React.FC<MemberTableProps> = async ({
         newSearchParams.delete(key);
       }
     }
-    // newSearchParams.set('page', '1');
 
     router.replace(`/admin/members?${newSearchParams.toString()}`);
   };
@@ -88,8 +87,8 @@ const MemberTable: React.FC<MemberTableProps> = async ({
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="lastName">Last Name</SelectItem>
-                <SelectItem value="firstName">First Name</SelectItem>
+                <SelectItem value="firstName">Last Name</SelectItem>
+                <SelectItem value="lastName">First Name</SelectItem>
                 <SelectItem value="email">Email</SelectItem>
                 <SelectItem value="role">Role</SelectItem>
               </SelectContent>

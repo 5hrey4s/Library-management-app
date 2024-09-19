@@ -1,12 +1,7 @@
-import { Plus } from "lucide-react";
 import Link from "next/link";
 import SearchComponent from "@/components/search";
-import { Button } from "@/components/ui/button";
-import AddBook from "@/components/addBook";
 import { ListMyBooks } from "@/components/ListMyBooks";
-import Navbar from "@/components/Navbar";
 import { auth } from "@/auth";
-import { useSession } from "next-auth/react";
 
 export interface SearchParams {
   [key: string]: string | undefined;

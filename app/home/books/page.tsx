@@ -32,7 +32,6 @@ export default async function Home({ searchParams }: HomeProps) {
   const session = await auth();
   const genres = await fetchGenre();
   const user = await fetchMemberByEmail(session?.user.email!);
-  console.log(items);
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F5F5F7] text-gray-900 dark:text-gray-100">
