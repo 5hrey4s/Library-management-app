@@ -115,7 +115,7 @@ const AddBook: React.FC = () => {
         const book: IBook | null = await addBook(data);
         console.log("Book data:", book);
         // setSuccessMessage("Book added successfully!");
-        router.push("/home/books"); // Redirect to the books page
+        router.replace("/home/books"); // Redirect to the books page
       } catch (error) {
         console.error(error);
         setErrors({ global: "An error occurred while adding the book." });

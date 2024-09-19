@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FaTrash, FaEdit } from "react-icons/fa";
+import { FaTrash, FaEdit, FaBook, FaUser, FaBarcode, FaLayerGroup } from "react-icons/fa";
 import { deleteBook, updateRequestStatus } from "@/lib/data";
 import { IBook } from "@/Models/book-model";
 import BorrowButton from "./borrow";
@@ -210,25 +210,31 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
             <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 line-clamp-2">
               {data.book.title}
             </h3>
-            <div className="flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
-              <p className="mb-2 text-sm">
-                <strong className="font-semibold">Author:</strong> {data.book.author}
-              </p>
-              <p className="mb-2 text-sm">
-                <strong className="font-semibold">Publisher:</strong> {data.book.publisher}
-              </p>
-              <p className="mb-2 text-sm">
-                <strong className="font-semibold">Genre:</strong> {data.book.genre}
-              </p>
-              <p className="mb-2 text-sm">
-                <strong className="font-semibold">ISBN:</strong> {data.book.isbnNo}
-              </p>
-              <p className="mb-2 text-sm">
-                <strong className="font-semibold">Pages:</strong> {data.book.numOfPages}
-              </p>
-              <p className="mb-2 text-sm">
-                <strong className="font-semibold">Available Copies:</strong> {data.book.availableNumberOfCopies}
-              </p>
+            <div className="flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 space-y-3">
+              <div className="flex items-center">
+                <FaUser className="w-5 h-5 mr-2 text-gray-500" />
+                <p className="text-sm"><span className="font-semibold">Author:</span> {data.book.author}</p>
+              </div>
+              <div className="flex items-center">
+                <FaBook className="w-5 h-5 mr-2 text-gray-500" />
+                <p className="text-sm"><span className="font-semibold">Publisher:</span> {data.book.publisher}</p>
+              </div>
+              <div className="flex items-center">
+                <FaLayerGroup className="w-5 h-5 mr-2 text-gray-500" />
+                <p className="text-sm"><span className="font-semibold">Genre:</span> {data.book.genre}</p>
+              </div>
+              <div className="flex items-center">
+                <FaBarcode className="w-5 h-5 mr-2 text-gray-500" />
+                <p className="text-sm"><span className="font-semibold">ISBN:</span> {data.book.isbnNo}</p>
+              </div>
+              <div className="flex items-center">
+                <span className="w-5 h-5 mr-2 text-gray-500 flex items-center justify-center font-bold">P</span>
+                <p className="text-sm"><span className="font-semibold">Pages:</span> {data.book.numOfPages}</p>
+              </div>
+              <div className="flex items-center">
+                <span className="w-5 h-5 mr-2 text-gray-500 flex items-center justify-center font-bold">#</span>
+                <p className="text-sm"><span className="font-semibold">Available Copies:</span> {data.book.availableNumberOfCopies}</p>
+              </div>
             </div>
 
             {/* Borrow Button */}

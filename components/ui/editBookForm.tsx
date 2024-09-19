@@ -119,7 +119,7 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
       try {
         await updateBook(book.id, data);
         // setSuccessMessage("Book added successfully!");
-        router.push("/home/books"); // Redirect to the books page
+        router.replace("/home/books"); // Redirect to the books page
       } catch (error) {
         console.error(error);
         setErrors({ global: "An error occurred while adding the book." });

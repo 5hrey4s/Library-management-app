@@ -47,7 +47,7 @@ const ClientSideSearch: React.FC<ClientSideSearchProps> = ({ books, sortBy, sear
     setLocalSortBy(value as "title" | "author");
     const params = new URLSearchParams(searchParamsObj.toString());
     params.set("sort", value);
-    router.push(`?${params.toString()}`);
+    router.replace(`?${params.toString()}`);
   };
 
   const page = parseInt(searchParams["page"] ?? "1");

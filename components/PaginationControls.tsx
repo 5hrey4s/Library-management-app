@@ -31,7 +31,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
 
   const navigateToPage = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
-      router.push(`?page=${newPage}&per_page=${perPage}`)
+      router.replace(`?page=${newPage}&per_page=${perPage}`)
     }
   }
 
@@ -47,7 +47,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
   }
 
   const handlePerPageChange = (value: string) => {
-    router.push(`/home/books/?page=1&per_page=${value}`)
+    router.replace(`/home/books/?page=1&per_page=${value}`)
   }
 
   return (

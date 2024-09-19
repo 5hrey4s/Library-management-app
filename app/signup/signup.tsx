@@ -82,7 +82,7 @@ const Register: React.FC = () => {
         const member = await createMember(data);
         setSuccessMessage("Registration successful!");
         console.log(member);
-        router.push("signup/success"); // Redirect to the success page
+        router.replace("signup/success"); // Redirect to the success page
       } catch (error) {
         console.error(error);
         setErrors({ global: "An error occurred during registration." });

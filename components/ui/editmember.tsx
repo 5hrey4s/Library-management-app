@@ -92,7 +92,7 @@ export const EditMember: React.FC<EditMemberProps> = ({ member }) => {
           data
         );
         setSuccessMessage("Member updated successfully!");
-        router.push("/home/books"); // Redirect to the members page
+        router.replace("/home/books"); // Redirect to the members page
       } catch (error) {
         console.error(error);
         setErrors({ global: "An error occurred while updating the member." });
