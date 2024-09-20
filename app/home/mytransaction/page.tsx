@@ -1,29 +1,12 @@
 "use server";
-import { BookOpen, ChevronDown, LogIn, Plus } from "lucide-react";
 import Link from "next/link";
-import LogoutButton from "@/components/handlelogout";
 import SearchComponent from "@/components/search";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import AddBook from "@/components/addBook";
-import ListMembers from "@/components/members";
-import MemberTable from "@/components/MemberTable";
-import Books from "@/components/book";
-import Members from "@/components/members";
-import RequestTable from "@/components/requestTable";
-import MyBooks from "@/components/mybooks";
-import Requests from "@/components/requests";
-import TransactionTable from "@/components/transactionTable";
-import Profile from "@/components/profile";
+
 import MyTransactionTable from "@/components/MyTransactionTable";
-import Navbar from "@/components/Navbar";
 import { auth } from "@/auth";
+import { IMember } from "@/Models/member.model";
+import { fetchMemberByEmail, fetchMyTransactions } from "@/lib/data";
+import { ITransaction } from "@/Models/transaction.model";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -39,8 +22,14 @@ export default async function Home({ searchParams }: HomeProps) {
     limit: 999,
     search: searchParams["search"] ?? "",
   };
-  const session = await auth()
+  const session = await auth();
+  const email = session?.user?.email;
 
+  // Fetch the current user based on email
+  const user: IMember | null = await fetchMemberByEmail(email!);
+
+  // Fetch transactions for the logged-in user
+  const transactions: ITransaction[] = await fetchMyTransactions(user!.id);
   return (
     <div className="flex flex-col min-h-screen bg-[rgb(245,245,247)] text-gray-900 dark:text-gray-100">
       {/* <Navbar logoText="Library" active="MyTransactions" role = {session?.user!.role}/> */}
@@ -62,7 +51,7 @@ export default async function Home({ searchParams }: HomeProps) {
         </section>
 
         <section className="container mx-auto bg-[#F5F5F7]">
-          <MyTransactionTable searchParams={searchParams}/>
+          <MyTransactionTable searchParams={searchParams} transactions={transactions}/>
         </section>
       </main>
 

@@ -57,20 +57,13 @@ const memberRepository = new MemberRepository(db);
 
 interface MyTransactionsTableProps {
   searchParams: SearchParams;
+  transactions: ITransaction[];
 }
 
 const MyTransactionsTable = async ({
   searchParams,
+  transactions,
 }: MyTransactionsTableProps) => {
-  const session = await auth();
-  const email = session?.user?.email;
-
-  // Fetch the current user based on email
-  const user: IMember | null = await memberRepository.getByEmail(email!);
-
-  // Fetch transactions for the logged-in user
-  const transactions: ITransaction[] = await fetchMyTransactions(user!.id);
-
   // Server-side sorting and filtering
   const sortColumn =
     (searchParams.sortColumn as keyof ITransaction) || "issueDate";
