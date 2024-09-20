@@ -24,6 +24,8 @@ import {
 import { ChevronUp, ChevronDown, Edit } from "lucide-react";
 import PaginationControls from "./PaginationControls";
 import { useRouter, useSearchParams } from "next/navigation";
+import EditButton from "./editButton";
+import EditMemberButton from "./editButton";
 
 interface MemberTableProps {
   pagination: { limit: number; offset: number; total: number };
@@ -72,7 +74,7 @@ const MemberTable: React.FC<MemberTableProps> = async ({
   console.log(items);
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="w-full mx-auto">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Member List</CardTitle>
       </CardHeader>
@@ -173,12 +175,13 @@ const MemberTable: React.FC<MemberTableProps> = async ({
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <form action={`/admin/members/${member.user_id}/edit`}>
+                    {/* <form action={`/admin/members/${member.user_id}/edit`}>
                       <Button variant="ghost" size="sm" type="submit">
                         <Edit className="h-4 w-4 mr-2" />
                         Edit
                       </Button>
-                    </form>
+                    </form> */}
+                    <EditMemberButton id={Number(member.user_id)} />
                   </TableCell>
                 </TableRow>
               ))}

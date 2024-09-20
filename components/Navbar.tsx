@@ -36,7 +36,7 @@ interface NavbarProps {
   showMembers?: boolean;
   showTransactions?: boolean;
   showMyTransactions?: boolean;
-  showRequests?: boolean;
+  // showRequests?: boolean;
   active?: string;
   role?: string;
   userAvatar?: string;
@@ -63,7 +63,7 @@ export default function Navbar({
   showMyBooks = true,
   showMembers = true,
   showTransactions = true,
-  showRequests = true,
+  // showRequests = true,
   showMyTransactions = true,
   active,
   role,
@@ -153,14 +153,14 @@ export default function Navbar({
                 isActive={active === "MyTransactions"}
               />
             )}
-            {showRequests && role === "admin" && (
+            {/* {showRequests && role === "admin" && (
               <NavItem
                 href="/admin/requests"
                 icon={<Bell className="h-5 w-5" />}
                 text="Requests"
                 isActive={active === "Requests"}
               />
-            )}
+            )} */}
           </nav>
 
           <div className="flex items-center">
@@ -310,14 +310,14 @@ export default function Navbar({
                 isActive={active === "MyTransactions"}
               />
             )}
-            {showRequests && role === "admin" && (
+            {/* {showRequests && role === "admin" && (
               <NavItem
                 href="/admin/requests"
                 icon={<Bell className="h-5 w-5" />}
                 text="Requests"
                 isActive={active === "Requests"}
               />
-            )}
+            )} */}
           </nav>
         </div>
       )}
