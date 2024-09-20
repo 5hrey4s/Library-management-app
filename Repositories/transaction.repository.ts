@@ -124,10 +124,15 @@ export class TransactionRepository
         const newData: ITransaction = { ...transaction!, Status: status };
         console.log(newData);
         console.log(status);
-        this.db
+        const res = await this.db
           .update(Transactions)
           .set(newData)
-          .where(eq(Transactions.id, id));
+          .where(eq(Transactions.id, id))
+          .execute();
+
+        if (!res) {
+          throw new Error();
+        }
       }
     } catch (err) {
       throw err;
