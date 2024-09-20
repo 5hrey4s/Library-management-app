@@ -8,11 +8,11 @@ import {
   FaUser,
   FaBarcode,
   FaLayerGroup,
+  FaCopy,
+  FaDollarSign,
 } from "react-icons/fa";
 import { deleteBook, updateRequestStatus } from "@/lib/data";
 import { IBook } from "@/Models/book-model";
-import BorrowButton from "./borrow";
-import { IRequestBase } from "@/Models/request.model";
 import clsx from "clsx";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -259,82 +259,60 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                 </p>
               </div>
               <div className="flex items-center">
-                <span className="w-5 h-5 mr-2 text-gray-500 flex items-center justify-center font-bold">
-                  #
-                </span>
+                <FaCopy className="w-5 h-5 mr-2 text-gray-500" />
                 <p className="text-sm">
                   <span className="font-semibold">Available Copies:</span>{" "}
                   {data.book.availableNumberOfCopies}
                 </p>
               </div>
+              <div className="flex items-center">
+                <FaDollarSign className="w-5 h-5 mr-2 text-gray-500" />
+                <p className="text-sm">
+                  <span className="font-semibold">Price:</span>{" "}
+                  ${1000 || "N/A"}
+                </p>
+              </div>
             </div>
 
-            {/* Borrow Button */}
+            {/* Buy Button */}
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button
-                  className={`mt-4 font-semibold w-full ${
-                    isRequested
-                      ? "bg-gray-300 text-gray-600"
-                      : "bg-[#357960] text-white hover:bg-[#2b6350]"
-                  }`}
-                  disabled={isRequested}
+                <BuyButton
+                  className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors"
+                  price={1000 || 0}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  {isRequested ? "Requested" : "Borrow"}
-                </Button>
+                  Buy Now
+                </BuyButton>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Borrow Book</AlertDialogTitle>
+                  <AlertDialogTitle>Confirm Purchase</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Are you sure you want to borrow {data.book.title}?
+                    Are you sure you want to buy {data.book.title} for ${1000}?
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction asChild>
-                    {/* <BorrowButton
-                      className={`mt-auto font-semibold py-2 px-4 rounded-lg shadow-md transition-colors ${
-                        isRequested
-                          ? "bg-gray-300 text-gray-600"
-                          : "bg-[#357960] text-white hover:bg-[#2b6350]"
-                      }`}
-                      onClick={async (e) => {
-                        e.stopPropagation();
-                        if (!isRequested) {
-                          const reqData: ITransactionBase = {
-                            bookId: data.book.id,
-                            memberId: data.userId,
-                          };
-                          await handleBorrow(reqData);
-                          setRequested(true);
-                        }
-                      }}
-                    >
-                      {isRequested ? "Requested" : "Borrow"}
-                    </BorrowButton> */}
                     <BuyButton
-                      className="mt-4 w-full"
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors"
                       price={1000 || 0}
                       onClick={async (e) => {
                         e.stopPropagation();
-                        if (!isRequested) {
-                          const reqData: ITransactionBase = {
-                            bookId: data.book.id,
-                            memberId: data.userId,
-                          };
-                          await handleBorrow(reqData);
-                          setRequested(true);
-                        }
+                        const reqData: ITransactionBase = {
+                          bookId: data.book.id,
+                          memberId: data.userId,
+                        };
+                        await handleBorrow(reqData);
                         toast({
-                          title: "Purchase Initiated",
-                          description: `You are about to purchase "${data.book.title}".`,
+                          title: "Purchase Successful",
+                          description: `You have successfully purchased "${data.book.title}".`,
                           variant: "default",
                         });
                       }}
                     >
-                      Buy Now
+                      Confirm Purchase
                     </BuyButton>
                   </AlertDialogAction>
                 </AlertDialogFooter>
