@@ -37,7 +37,7 @@ const AddBook: React.FC = () => {
       setIsUploading(true);
       const result = await uploadImage(file);
       setIsUploading(false);
-
+      
       if (result.imageURL) {
         setImageURL(result.imageURL);
         toast({

@@ -72,10 +72,7 @@ export class TransactionRepository
     return createdTransaction!;
   }
 
-  async update(
-    id: number,
-    transaction: ITransactionBase
-  ): Promise<ITransaction | null> {
+  async update(id: number, data: ITransaction): Promise<ITransaction | null> {
     // const newTransaction = await this.db.transaction(async (trx) => {
     //   const [book] = await this.db
     //     .select()
@@ -92,6 +89,33 @@ export class TransactionRepository
     // });
     // return newTransaction;
     throw error;
+  }
+
+  async handlecancelBookRequest(id: number) {
+    try {
+      this.db
+        .update(Transactions)
+        .set({ Status: "Cancelled" })
+        .where(eq(Transactions.id, id));
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async handleReject(id: number) {
+    try {
+      this.db
+        .update(Transactions)
+        .set({ Status: "Rejected" })
+        .where(eq(Transactions.id, id));
+      const [createdTransaction] = await this.db
+        .select()
+        .from(Transactions)
+        .where(eq(Transactions.id, id));
+        return createdTransaction
+    } catch (err) {
+      throw err;
+    }
   }
 
   async returnBook(

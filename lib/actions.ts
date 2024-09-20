@@ -58,28 +58,30 @@ export async function authenticateLogout(
 }
 
 export async function handleApprove(data: any) {
-  await db
-    .update(Requests)
-    .set({
-      status: "Approved",
-    })
-    .where(eq(Requests.id, data.id));
-  await transactionRepository.create({
+  // await db
+  //   .update(Requests)
+  //   .set({
+  //     status: "Approved",
+  //   })
+  //   .where(eq(Requests.id, data.id));
+  const transaction = await transactionRepository.create({
     bookId: data.bookId,
     memberId: data.memberId,
   });
-  revalidatePath("/home/requests");
+  revalidatePath("/admin/transactions");
+  return transaction;
 }
 
-export async function handleReject(data: any) {
-  await db
-    .update(Requests)
-    .set({
-      status: "Rejected",
-    })
-    .where(eq(Requests.id, data.id));
-
-  revalidatePath("/home/requests");
+export async function handleReject(id: any) {
+  // await db
+  //   .update(Requests)
+  //   .set({
+  //     status: "Rejected",
+  //   })
+  //   .where(eq(Requests.id, data.id));
+  const transaction = await transactionRepository.handleReject(id);
+  revalidatePath("/admin/transactions");
+  return transaction;
 }
 
 export async function createMember(data: IMemberBase): Promise<IMember | null> {
@@ -133,7 +135,6 @@ function formDataToObject(formData: any) {
       obj[name] = value;
     }
   }
-
   return obj;
 }
 
@@ -189,4 +190,9 @@ export async function uploadImage(file: File) {
   }
 
   return { imageURL: "" };
+}
+
+export async function cancelBookRequest(transactionId: number): Promise<void> {
+  await transactionRepository.handlecancelBookRequest(transactionId);
+  revalidatePath("/home/transaction/mytransaction");
 }

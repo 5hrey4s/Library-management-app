@@ -8,11 +8,15 @@ import { toast } from "@/hooks/use-toast";
 import { FaRegObjectGroup } from "react-icons/fa";
 import { FcApproval, FcApprove, FcCancel } from "react-icons/fc";
 
-export function AprroveButton({ data }: { data: IRequest }) {
+export function AprroveButton({
+  data,
+}: {
+  data: { id: number; Status: string };
+}) {
   const router = useRouter();
 
   const handleClick = async () => {
-    await handleApprove(data);
+    const transaction = await handleApprove(data);
     toast({
       title: "Error",
       description: "Failed to approve request. Please try again.",
@@ -21,7 +25,9 @@ export function AprroveButton({ data }: { data: IRequest }) {
     router.refresh();
     toast({
       title: "Request Approved",
-      description: `Request for Book ID ${data.bookId} has been approved.`,
+      description: `Request for Book ID ${
+        transaction!.bookId
+      } has been approved.`,
     });
   };
 
@@ -39,15 +45,17 @@ export function AprroveButton({ data }: { data: IRequest }) {
   );
 }
 
-export function RejectButton({ data }: { data: IRequest }) {
+export function RejectButton({ id }: { id: number }) {
   const router = useRouter();
 
   const handleClick = async () => {
-    await handleReject(data);
+    const transaction = await handleReject(id);
     router.refresh();
     toast({
       title: "Request Rejected",
-      description: `Request for Book ID ${data.bookId} has been rejected.`,
+      description: `Request for Book ID ${
+        transaction!.bookId
+      } has been rejected.`,
     });
   };
 

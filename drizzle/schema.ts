@@ -1,5 +1,3 @@
-import { drizzle } from "drizzle-orm/vercel-postgres";
-import { sql } from "@vercel/postgres";
 import {
   pgTable,
   serial,
@@ -12,7 +10,6 @@ import {
 } from "drizzle-orm/pg-core";
 
 // Define the enum
-const transactionStatusEnum = pgEnum("Status", ["Issued", "Returned"]);
 
 // Books Table
 export const Books = pgTable("books", {

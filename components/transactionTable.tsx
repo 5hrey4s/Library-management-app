@@ -1,10 +1,16 @@
-// "use client";
+"use client";
 import * as React from "react";
 import { ITransaction } from "@/Models/transaction.model";
 import { Badge } from "@/components/ui/badge";
 import { IMember } from "@/Models/member.model";
 import { returnBook } from "@/lib/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -13,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CalendarIcon, BookOpenIcon, Filter } from "lucide-react";
+import { CalendarIcon, BookOpenIcon, Filter, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -34,6 +40,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import PaginationControls from "./PaginationControls";
+import { AprroveButton, RejectButton } from "./ui/buttons";
 
 interface MyTransactionsTableProps {
   searchParams: any;
@@ -211,6 +218,33 @@ const TransactionsTable = async ({
                             </AlertDialogFooter>
                           </AlertDialogContent>
                         </AlertDialog>
+                      )}
+                      {transaction.Status === "Pending" && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="sm">
+                              Actions
+                              <ChevronDown className="ml-2 h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem
+                              onSelect={(e) => e.preventDefault()}
+                            >
+                              <AprroveButton
+                                data={{
+                                  id: transaction.id,
+                                  Status: "Approved",
+                                }}
+                              />
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onSelect={(e) => e.preventDefault()}
+                            >
+                              <RejectButton id={transaction.id} />
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       )}
                     </TableCell>
                   </TableRow>

@@ -89,26 +89,26 @@ const RequestTable: React.FC<RequestTableProps> = ({
                           <DropdownMenuItem
                             onSelect={(e) => e.preventDefault()}
                           >
-                            <AprroveButton
+                            {/* <AprroveButton
                               data={{
                                 id: request.id,
                                 bookId: request.bookId,
                                 memberId: request.memberId,
                                 status: "Approved",
                               }}
-                            />
+                            /> */}
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onSelect={(e) => e.preventDefault()}
                           >
-                            <RejectButton
+                            {/* <RejectButton
                               data={{
                                 id: request.id,
                                 bookId: request.bookId,
                                 memberId: request.memberId,
                                 status: "Rejected",
                               }}
-                            />
+                            /> */}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

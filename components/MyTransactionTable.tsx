@@ -15,6 +15,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { CalendarIcon, BookOpenIcon, Search, ArrowUpDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,6 +35,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { SearchParams } from "@/app/home/books/page";
 import { Appenv } from "@/read-env";
@@ -32,6 +49,7 @@ import "@/drizzle/envConfig";
 import { drizzle } from "drizzle-orm/vercel-postgres";
 import { sql } from "@vercel/postgres";
 import * as schema from "../drizzle/schema";
+import { cancelBookRequest } from "@/lib/actions";
 
 const db = drizzle(sql, { schema });
 const memberRepository = new MemberRepository(db);
@@ -163,6 +181,68 @@ const MyTransactionsTable = async ({
                         >
                           {transaction.Status}
                         </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {transaction.Status === "Pending" && (
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                Cancel Request
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                  Confirm Book Cancel
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to cancel this book?
+                                  This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction asChild>
+                                  <Button
+                                    variant="default"
+                                    onClick={async () => {
+                                      await cancelBookRequest(transaction.id);
+                                    }}
+                                  >
+                                    Confirm Cancel
+                                  </Button>
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        )}
+                        {/* {transaction.Status === "Pending" && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                Actions
+                                <ChevronDown className="ml-2 h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem
+                                onSelect={(e) => e.preventDefault()}
+                              >
+                                <AprroveButton
+                                  data={{
+                                    id: transaction.id,
+                                    Status: "Approved",
+                                  }}
+                                />
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onSelect={(e) => e.preventDefault()}
+                              >
+                                <RejectButton id={transaction.id} />
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )} */}
                       </TableCell>
                     </TableRow>
                   )
