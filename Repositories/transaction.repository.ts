@@ -123,7 +123,7 @@ export class TransactionRepository
         this.db
           .update(Transactions)
           .set({ Status: status })
-          .where(eq(Transactions.id, id!));
+          .where(eq(Transactions.id, 3));
       }
     } catch (err) {
       throw err;
