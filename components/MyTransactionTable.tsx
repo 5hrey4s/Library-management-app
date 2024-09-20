@@ -3,10 +3,6 @@ import * as React from "react";
 import { ITransaction } from "@/Models/transaction.model";
 import { Badge } from "@/components/ui/badge";
 import { MemberRepository } from "@/Repositories/member.repository";
-import { auth } from "@/auth";
-import { IMember } from "@/Models/member.model";
-import { fetchMyTransactions } from "@/lib/data";
-import ReturnBookButton from "./ui/return";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -36,24 +32,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { SearchParams } from "@/app/home/books/page";
-import { Appenv } from "@/read-env";
-
 import "@/drizzle/envConfig";
 import { drizzle } from "drizzle-orm/vercel-postgres";
 import { sql } from "@vercel/postgres";
 import * as schema from "../drizzle/schema";
 import { cancelBookRequest } from "@/lib/actions";
-
-const db = drizzle(sql, { schema });
-const memberRepository = new MemberRepository(db);
 
 interface MyTransactionsTableProps {
   searchParams: SearchParams;
