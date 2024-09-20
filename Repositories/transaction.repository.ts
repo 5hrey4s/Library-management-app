@@ -117,13 +117,16 @@ export class TransactionRepository
           .insert(Transactions)
           .values(transaction)
           .returning({ id: Transactions.id });
-      } else {
-        console.log("inside else", id);
+      } else if (id) {
+        const transaction = await this.getById(id);
+
+        console.log("inside else", transaction!);
+        const newData: ITransaction = { ...transaction!, Status: status };
         console.log(status);
         this.db
           .update(Transactions)
-          .set({ Status: status })
-          .where(eq(Transactions.id, 3));
+          .set(newData)
+          .where(eq(Transactions.id, id));
       }
     } catch (err) {
       throw err;
