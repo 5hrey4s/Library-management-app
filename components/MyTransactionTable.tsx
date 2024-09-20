@@ -1,3 +1,4 @@
+"use client";
 import * as React from "react";
 import { ITransaction } from "@/Models/transaction.model";
 import { Badge } from "@/components/ui/badge";
