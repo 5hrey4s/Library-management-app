@@ -181,7 +181,7 @@ const MemberTable: React.FC<MemberTableProps> = async ({
                         Edit
                       </Button>
                     </form> */}
-                    <EditMemberButton id={Number(member.user_id)} />
+                    <EditMemberButton id={member.id} />
                   </TableCell>
                 </TableRow>
               ))}

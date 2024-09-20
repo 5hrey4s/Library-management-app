@@ -36,6 +36,7 @@ import {
 import EditButton from "../editBookButton";
 import Image from "next/image";
 import { ITransactionBase } from "@/Models/transaction.model";
+import BuyButton from "./borrow";
 
 type BookCardProps = {
   data: {
@@ -293,7 +294,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction asChild>
-                    <BorrowButton
+                    {/* <BorrowButton
                       className={`mt-auto font-semibold py-2 px-4 rounded-lg shadow-md transition-colors ${
                         isRequested
                           ? "bg-gray-300 text-gray-600"
@@ -312,7 +313,29 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                       }}
                     >
                       {isRequested ? "Requested" : "Borrow"}
-                    </BorrowButton>
+                    </BorrowButton> */}
+                    <BuyButton
+                      className="mt-4 w-full"
+                      price={1000 || 0}
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        if (!isRequested) {
+                          const reqData: ITransactionBase = {
+                            bookId: data.book.id,
+                            memberId: data.userId,
+                          };
+                          await handleBorrow(reqData);
+                          setRequested(true);
+                        }
+                        toast({
+                          title: "Purchase Initiated",
+                          description: `You are about to purchase "${data.book.title}".`,
+                          variant: "default",
+                        });
+                      }}
+                    >
+                      Buy Now
+                    </BuyButton>
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

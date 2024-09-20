@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import AuthProvider from "@/components/AuthProvider";
 import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/Navbar";
 import { auth } from "@/auth";
@@ -22,7 +21,6 @@ export default async function HomeLayout({
 }) {
     const session = await auth();
   return (
-    <AuthProvider>
       <main lang="en">
       <Navbar logoText="Library" role={session?.user!.role} userName={session?.user.name!} />
 
@@ -32,6 +30,5 @@ export default async function HomeLayout({
 
           <Toaster />
       </main>
-    </AuthProvider>
   );
 }

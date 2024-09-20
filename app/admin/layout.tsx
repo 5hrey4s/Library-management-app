@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import AuthProvider from "@/components/AuthProvider";
 import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/Navbar";
 import { auth } from "@/auth";
@@ -24,7 +23,6 @@ export default async function AdminLayout({
 }) {
     const session = await auth();
   return (
-    <AuthProvider>
       <main lang="en">
       <Navbar logoText="Library" role={session?.user!.role} userName={session?.user.name!} />
 
@@ -34,6 +32,5 @@ export default async function AdminLayout({
 
           <Toaster />
       </main>
-    </AuthProvider>
   );
 }

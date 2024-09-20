@@ -9,6 +9,7 @@ interface EditMemberButtonProps {
 }
 
 export default function EditMemberButton({ id }: EditMemberButtonProps) {
+  console.log(id);
   return (
     <Link href={`/admin/members/${id}/edit`}>
       <Button variant="ghost" size="sm" type="submit">
