@@ -122,6 +122,7 @@ export class TransactionRepository
 
         console.log("inside else", transaction!);
         const newData: ITransaction = { ...transaction!, Status: status };
+        console.log(newData);
         console.log(status);
         this.db
           .update(Transactions)
