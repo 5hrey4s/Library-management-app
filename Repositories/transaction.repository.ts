@@ -97,7 +97,10 @@ export class TransactionRepository
     id?: number
   ) {
     try {
+      console.log("outside");
       if (!id && data) {
+        console.log("inside if");
+
         const currentDate = new Date();
         const dueDays = 7;
         const dueDate = new Date(currentDate);
@@ -115,7 +118,8 @@ export class TransactionRepository
           .values(transaction)
           .returning({ id: Transactions.id });
       } else {
-        console.log(status)
+        console.log("inside else", id);
+        console.log(status);
         this.db
           .update(Transactions)
           .set({ Status: status })
