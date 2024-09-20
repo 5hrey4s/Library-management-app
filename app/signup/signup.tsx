@@ -4,6 +4,7 @@ import React, { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { Input } from "@/components/ui/input";
+import { authenticate } from "@/lib/actions";
 
 interface FormErrors {
   firstName?: string;
@@ -18,8 +19,8 @@ const Register: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const router = useRouter(); // Initialize the useRouter hook
-
+  const router = useRouter();
+  
   const validateForm = (formData: FormData): FormErrors => {
     const newErrors: FormErrors = {};
     const firstName = formData.get("firstName") as string;
@@ -60,10 +61,10 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const password = formData.get("password") as string; 
+    const password = formData.get("password") as string;
     const hashedPwd = await bcrypt.hash(password, 10);
-
     const formErrors = validateForm(formData);
+
     if (Object.keys(formErrors).length === 0) {
       const data = {
         firstName: formData.get("firstName") as string,
@@ -80,6 +81,7 @@ const Register: React.FC = () => {
       setIsSubmitting(true);
       try {
         const member = await createMember(data);
+        await authenticate(undefined,formData);
         setSuccessMessage("Registration successful!");
         console.log(member);
         router.replace("signup/success"); // Redirect to the success page
