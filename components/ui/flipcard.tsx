@@ -1,7 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { FaTrash, FaEdit, FaBook, FaUser, FaBarcode, FaLayerGroup } from "react-icons/fa";
+import {
+  FaTrash,
+  FaEdit,
+  FaBook,
+  FaUser,
+  FaBarcode,
+  FaLayerGroup,
+} from "react-icons/fa";
 import { deleteBook, updateRequestStatus } from "@/lib/data";
 import { IBook } from "@/Models/book-model";
 import BorrowButton from "./borrow";
@@ -28,6 +35,7 @@ import {
 } from "@/components/ui/tooltip";
 import EditButton from "../editBookButton";
 import Image from "next/image";
+import { ITransactionBase } from "@/Models/transaction.model";
 
 type BookCardProps = {
   data: {
@@ -67,7 +75,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
     }
   };
 
-  const handleBorrow = async (data: IRequestBase) => {
+  const handleBorrow = async (data: ITransactionBase) => {
     try {
       await updateRequestStatus(data);
       toast({
@@ -143,7 +151,8 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                     <AlertDialogHeader>
                       <AlertDialogTitle>Delete Book</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Are you sure you want to delete {data.book.title}? This action cannot be undone.
+                        Are you sure you want to delete {data.book.title}? This
+                        action cannot be undone.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -196,16 +205,16 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-50"></div>
               <div className="absolute bottom-4 left-4 right-4 text-white">
-                <h3 className="text-xl font-bold mb-1 line-clamp-2">{data.book.title}</h3>
+                <h3 className="text-xl font-bold mb-1 line-clamp-2">
+                  {data.book.title}
+                </h3>
                 <p className="text-sm opacity-80">{data.book.author}</p>
               </div>
             </div>
           </div>
 
           {/* Back Side */}
-          <div
-            className="absolute w-full h-full bg-white dark:bg-gray-800 flex flex-col p-6 text-gray-800 dark:text-gray-200 backface-hidden rotate-y-180 overflow-hidden"
-          >
+          <div className="absolute w-full h-full bg-white dark:bg-gray-800 flex flex-col p-6 text-gray-800 dark:text-gray-200 backface-hidden rotate-y-180 overflow-hidden">
             <AdminButtons />
             <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 line-clamp-2">
               {data.book.title}
@@ -213,27 +222,49 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
             <div className="flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 space-y-3">
               <div className="flex items-center">
                 <FaUser className="w-5 h-5 mr-2 text-gray-500" />
-                <p className="text-sm"><span className="font-semibold">Author:</span> {data.book.author}</p>
+                <p className="text-sm">
+                  <span className="font-semibold">Author:</span>{" "}
+                  {data.book.author}
+                </p>
               </div>
               <div className="flex items-center">
                 <FaBook className="w-5 h-5 mr-2 text-gray-500" />
-                <p className="text-sm"><span className="font-semibold">Publisher:</span> {data.book.publisher}</p>
+                <p className="text-sm">
+                  <span className="font-semibold">Publisher:</span>{" "}
+                  {data.book.publisher}
+                </p>
               </div>
               <div className="flex items-center">
                 <FaLayerGroup className="w-5 h-5 mr-2 text-gray-500" />
-                <p className="text-sm"><span className="font-semibold">Genre:</span> {data.book.genre}</p>
+                <p className="text-sm">
+                  <span className="font-semibold">Genre:</span>{" "}
+                  {data.book.genre}
+                </p>
               </div>
               <div className="flex items-center">
                 <FaBarcode className="w-5 h-5 mr-2 text-gray-500" />
-                <p className="text-sm"><span className="font-semibold">ISBN:</span> {data.book.isbnNo}</p>
+                <p className="text-sm">
+                  <span className="font-semibold">ISBN:</span>{" "}
+                  {data.book.isbnNo}
+                </p>
               </div>
               <div className="flex items-center">
-                <span className="w-5 h-5 mr-2 text-gray-500 flex items-center justify-center font-bold">P</span>
-                <p className="text-sm"><span className="font-semibold">Pages:</span> {data.book.numOfPages}</p>
+                <span className="w-5 h-5 mr-2 text-gray-500 flex items-center justify-center font-bold">
+                  P
+                </span>
+                <p className="text-sm">
+                  <span className="font-semibold">Pages:</span>{" "}
+                  {data.book.numOfPages}
+                </p>
               </div>
               <div className="flex items-center">
-                <span className="w-5 h-5 mr-2 text-gray-500 flex items-center justify-center font-bold">#</span>
-                <p className="text-sm"><span className="font-semibold">Available Copies:</span> {data.book.availableNumberOfCopies}</p>
+                <span className="w-5 h-5 mr-2 text-gray-500 flex items-center justify-center font-bold">
+                  #
+                </span>
+                <p className="text-sm">
+                  <span className="font-semibold">Available Copies:</span>{" "}
+                  {data.book.availableNumberOfCopies}
+                </p>
               </div>
             </div>
 
@@ -271,10 +302,9 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                       onClick={async (e) => {
                         e.stopPropagation();
                         if (!isRequested) {
-                          const reqData: IRequestBase = {
+                          const reqData: ITransactionBase = {
                             bookId: data.book.id,
                             memberId: data.userId,
-                            status: "Pending",
                           };
                           await handleBorrow(reqData);
                           setRequested(true);

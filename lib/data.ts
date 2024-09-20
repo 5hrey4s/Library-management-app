@@ -45,7 +45,7 @@ export const fetchBooks = async (
   sortOptions: SortOptions
 ) => {
   try {
-    console.log(pageRequest)
+    console.log(pageRequest);
     const books = await bookRepository.list(pageRequest, sortOptions);
     return books;
   } catch (err) {
@@ -190,10 +190,9 @@ export const deleteBook = async (isbnNo: string) => {
   }
 };
 
-export const updateRequestStatus = async (data: IRequestBase) => {
+export const updateRequestStatus = async (data: ITransactionBase) => {
   try {
-    await requestRepository.create(data);
-
+    await transactionRepository.handleBookRequest("Pending", data);
     revalidatePath("/home/books");
   } catch (err) {
     console.log(err);
@@ -223,7 +222,7 @@ export async function fetchMyBooks(memberId: number): Promise<IBook[]> {
     numOfPages: row.books.numOfPages,
     totalNumOfCopies: row.books.totalNumOfCopies,
     availableNumberOfCopies: row.books.availableNumberOfCopies,
-    image_url:row.books.image_url
+    image_url: row.books.image_url,
   }));
 }
 
@@ -261,5 +260,3 @@ export async function returnBook(transactionId: number): Promise<void> {
   await transactionRepository.returnBook(transactionId, transaction!);
   revalidatePath("/home/transaction/mytransaction");
 }
-
-

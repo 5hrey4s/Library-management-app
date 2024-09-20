@@ -91,12 +91,36 @@ export class TransactionRepository
     throw error;
   }
 
-  async handlecancelBookRequest(id: number) {
+  async handleBookRequest(
+    status: string,
+    data?: ITransactionBase,
+    id?: number
+  ) {
     try {
-      this.db
-        .update(Transactions)
-        .set({ Status: "Cancelled" })
-        .where(eq(Transactions.id, id));
+      if (status == "")
+        if (!id && data) {
+          const currentDate = new Date();
+          const dueDays = 7;
+          const dueDate = new Date(currentDate);
+          dueDate.setDate(currentDate.getDate() + dueDays);
+          const transaction: Omit<ITransaction, "id"> = {
+            bookId: data.bookId,
+            memberId: data.memberId,
+            issueDate: formatDate(currentDate),
+            dueDate: formatDate(dueDate),
+            returnDate: null,
+            Status: status,
+          };
+          const [result] = await this.db
+            .insert(Transactions)
+            .values(transaction)
+            .returning({ id: Transactions.id });
+        } else {
+          this.db
+            .update(Transactions)
+            .set({ Status: status })
+            .where(eq(Transactions.id, id!));
+        }
     } catch (err) {
       throw err;
     }
@@ -112,7 +136,7 @@ export class TransactionRepository
         .select()
         .from(Transactions)
         .where(eq(Transactions.id, id));
-        return createdTransaction
+      return createdTransaction;
     } catch (err) {
       throw err;
     }

@@ -17,6 +17,7 @@ import { drizzle } from "drizzle-orm/vercel-postgres";
 import { sql } from "@vercel/postgres";
 import * as schema from "../drizzle/schema";
 import cloudinary from "@/cloudinary.config";
+import { ITransactionBase } from "@/Models/transaction.model";
 
 const db = drizzle(sql, { schema });
 
@@ -193,6 +194,10 @@ export async function uploadImage(file: File) {
 }
 
 export async function cancelBookRequest(transactionId: number): Promise<void> {
-  await transactionRepository.handlecancelBookRequest(transactionId);
+  await transactionRepository.handleBookRequest(
+    "Cancelled",
+    {} as ITransactionBase,
+    transactionId
+  );
   revalidatePath("/home/transaction/mytransaction");
 }
