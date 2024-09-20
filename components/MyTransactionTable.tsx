@@ -2,7 +2,6 @@
 import * as React from "react";
 import { ITransaction } from "@/Models/transaction.model";
 import { Badge } from "@/components/ui/badge";
-import { MemberRepository } from "@/Repositories/member.repository";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -34,10 +33,6 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { SearchParams } from "@/app/home/books/page";
-import "@/drizzle/envConfig";
-import { drizzle } from "drizzle-orm/vercel-postgres";
-import { sql } from "@vercel/postgres";
-import * as schema from "../drizzle/schema";
 import { cancelBookRequest } from "@/lib/actions";
 
 interface MyTransactionsTableProps {
@@ -184,9 +179,9 @@ const MyTransactionsTable = async ({
                                 <AlertDialogAction asChild>
                                   <Button
                                     variant="default"
-                                    // onClick={async () => {
-                                    //   await cancelBookRequest(transaction.id);
-                                    // }}
+                                    onClick={async () => {
+                                      await cancelBookRequest(transaction.id);
+                                    }}
                                   >
                                     Confirm Cancel
                                   </Button>

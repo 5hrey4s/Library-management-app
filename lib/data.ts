@@ -1,4 +1,3 @@
-//lib/data.ts
 "use server";
 import { IPageRequest, IPagesResponse } from "@/core/pagination";
 import { Books, Transactions } from "@/drizzle/schema";
@@ -258,5 +257,5 @@ export async function returnBook(transactionId: number): Promise<void> {
   console.log("inside returnBook", transaction);
 
   await transactionRepository.returnBook(transactionId, transaction!);
-  revalidatePath("/home/transaction/mytransaction");
+  revalidatePath("/home/mytransaction");
 }

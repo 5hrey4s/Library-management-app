@@ -1,17 +1,14 @@
 "use server";
 
 import { auth, signIn, signOut } from "@/auth";
-// import { AuthError } from 'next-auth';
 import { AuthError } from "next-auth";
-import mysql from "mysql2/promise";
-import { Members, Requests } from "@/drizzle/schema";
+import { Members } from "@/drizzle/schema";
 import { eq } from "drizzle-orm/expressions";
 import { MemberRepository } from "@/Repositories/member.repository";
 import { IMember, IMemberBase } from "@/Models/member.model";
 import { RequestRepository } from "@/Repositories/request.repository";
 import { TransactionRepository } from "@/Repositories/transaction.repository";
 import { revalidatePath } from "next/cache";
-import { Appenv } from "@/read-env";
 import "@/drizzle/envConfig";
 import { drizzle } from "drizzle-orm/vercel-postgres";
 import { sql } from "@vercel/postgres";
@@ -199,5 +196,5 @@ export async function cancelBookRequest(transactionId: number): Promise<void> {
     {} as ITransactionBase,
     transactionId
   );
-  revalidatePath("/home/transaction/mytransaction");
+  revalidatePath("/home/mytransaction");
 }
