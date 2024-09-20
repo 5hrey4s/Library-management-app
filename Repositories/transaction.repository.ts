@@ -115,6 +115,7 @@ export class TransactionRepository
           .values(transaction)
           .returning({ id: Transactions.id });
       } else {
+        console.log(status)
         this.db
           .update(Transactions)
           .set({ Status: status })
