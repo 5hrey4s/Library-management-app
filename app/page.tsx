@@ -54,6 +54,7 @@ export default function WelcomePage() {
         </nav>
       </header>
       <main className="flex-1 pt-20">
+
         <section className="w-full py-24 bg-[#f0fdf4] from-teal-500 to-teal-600 text-black text-center">
           <h1 className="text-4xl font-bold sm:text-5xl md:text-6xl">
             Welcome to the Library! Your gateway to endless knowledge and
@@ -68,6 +69,7 @@ export default function WelcomePage() {
           </Button>
         </section>
         <section className="w-full py-16 bg-gray-100 dark:bg-gray-800">
+          
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-gray-100">
               Key Features

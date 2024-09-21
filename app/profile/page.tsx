@@ -54,7 +54,7 @@ async function ProfileContent({ user }: { user: any }) {
           <EditProfile user={user} />
         </div>
       </div>
-      <Card className="bg-white shadow-lg rounded-lg overflow-hidden">
+      <Card className="bg-[#F0FDF4] shadow-lg rounded-lg overflow-hidden">
         <CardContent className="p-4 sm:p-6">
           <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
             <Avatar className="h-20 w-20 sm:h-24 sm:w-24 border-4 border-[#2f8d46]">

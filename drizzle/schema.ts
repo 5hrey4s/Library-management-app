@@ -23,6 +23,7 @@ export const Books = pgTable("books", {
   totalNumOfCopies: integer("totalNumOfCopies").notNull(),
   availableNumberOfCopies: integer("availableNumberOfCopies").notNull(),
   image_url: varchar("image_url", { length: 255 }).notNull(),
+  price: integer("price").notNull(),
 });
 
 // Members Table

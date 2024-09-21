@@ -201,7 +201,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                 src={book.image_url || "/placeholder.svg"}
                 alt={book.title}
                 layout="fill"
-                objectFit="cover"
+                // objectFit="cover"
                 className="transition-transform duration-300 ease-in-out hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-50"></div>
@@ -269,7 +269,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                 <FaDollarSign className="w-5 h-5 mr-2 text-gray-500" />
                 <p className="text-sm">
                   <span className="font-semibold">Price:</span>{" "}
-                  ${1000 || "N/A"}
+                  ${book.price || "N/A"}
                 </p>
               </div>
             </div>
@@ -279,7 +279,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
               <AlertDialogTrigger asChild>
                 <BuyButton
                   className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors"
-                  price={1000 || 0}
+                  price={book.price || 0}
                   onClick={(e) => e.stopPropagation()}
                 >
                   Buy Now
@@ -297,7 +297,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                   <AlertDialogAction asChild>
                     <BuyButton
                       className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors"
-                      price={1000 || 0}
+                      price={book.price || 0}
                       onClick={async (e) => {
                         e.stopPropagation();
                         const reqData: ITransactionBase = {

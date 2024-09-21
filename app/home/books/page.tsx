@@ -34,20 +34,17 @@ export default async function Home({ searchParams }: HomeProps) {
   const user = await fetchMemberByEmail(session?.user.email!);
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#F5F5F7] text-gray-900 dark:text-gray-100">
-      {/* <Navbar logoText="Library" active="Books" role={session?.user!.role} /> */}
-
-      {/* Main Content */}
+    <div className="flex flex-col min-h-screen bg-[#dbd3d3] text-gray-900">
       <main className="flex-1">
         {/* Search Section */}
-        <section className="bg-green-50 py-12 rounded-lg">
+        <section className="bg-[#9fa8a0] py-16 rounded-b-3xl shadow-md">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="md:w-1/2 mb-8 md:mb-0">
-                <h1 className="text-3xl font-bold mb-4">
+                <h1 className="text-4xl font-bold mb-6 text-white">
                   Explore Our Library Collection
                 </h1>
-                <div className="flex">
+                <div className="flex w-full max-w-md">
                   <SearchComponent placeholder="Search books..." />
                 </div>
               </div>
@@ -56,7 +53,7 @@ export default async function Home({ searchParams }: HomeProps) {
         </section>
 
         {/* Book List Section */}
-        <section className="container mx-auto relative py-8">
+        <section className="container mx-auto relative py-12 px-4">
           <div className="absolute top-0 right-0 -mt-4 mr-4"></div>
           <ListBooks
             pagination={pagination}
@@ -70,24 +67,26 @@ export default async function Home({ searchParams }: HomeProps) {
       </main>
 
       {/* Footer */}
-      <footer className="flex flex-col sm:flex-row items-center justify-between py-6 px-4 md:px-6 bg-white dark:bg-gray-800">
-        <p className="text-xs text-gray-500 dark:text-gray-400">
-          © 2024 Acme Library. All rights reserved.
-        </p>
-        <nav className="flex gap-4 sm:gap-6">
-          <Link
-            className="text-xs text-blue-600 hover:underline dark:text-teal-400"
-            href="#"
-          >
-            Terms of Service
-          </Link>
-          <Link
-            className="text-xs text-blue-600 hover:underline dark:text-teal-400"
-            href="#"
-          >
-            Privacy
-          </Link>
-        </nav>
+      <footer className="py-8 px-4 md:px-6 bg-[#308D46] text-white">
+        <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between">
+          <p className="text-sm mb-4 sm:mb-0">
+            © 2024 Acme Library. All rights reserved.
+          </p>
+          <nav className="flex gap-6">
+            <Link
+              className="text-sm hover:underline transition-colors duration-200"
+              href="#"
+            >
+              Terms of Service
+            </Link>
+            <Link
+              className="text-sm hover:underline transition-colors duration-200"
+              href="#"
+            >
+              Privacy Policy  
+            </Link>
+          </nav>
+        </div>
       </footer>
     </div>
   );

@@ -20,6 +20,7 @@ interface FormErrors {
   isbnNo?: string;
   numOfPages?: string;
   totalNumOfCopies?: string;
+  price?: string; // Added price validation
   global?: string;
 }
 
@@ -37,13 +38,13 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
 
   const validateForm = (formData: FormData): FormErrors => {
     const newErrors: FormErrors = {};
-    const fields = ['title', 'author', 'publisher', 'genre', 'isbnNo', 'numOfPages', 'totalNumOfCopies'];
+    const fields = ['title', 'author', 'publisher', 'genre', 'isbnNo', 'numOfPages', 'totalNumOfCopies', 'price']; // Added price to validation fields
     
     fields.forEach(field => {
       const value = formData.get(field) as string;
       if (!value) {
         newErrors[field as keyof FormErrors] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
-      } else if ((field === 'numOfPages' || field === 'totalNumOfCopies') && isNaN(Number(value))) {
+      } else if ((field === 'numOfPages' || field === 'totalNumOfCopies' || field === 'price') && isNaN(Number(value))) {
         newErrors[field as keyof FormErrors] = `${field.charAt(0).toUpperCase() + field.slice(1)} must be a number`;
       }
     });
@@ -89,6 +90,7 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
         isbnNo: formData.get("isbnNo") as string,
         numOfPages: Number(formData.get("numOfPages")),
         totalNumOfCopies: Number(formData.get("totalNumOfCopies")),
+        price: Number(formData.get("price")), // Added price field data
         image_url: imageURL,
       };
 
@@ -124,18 +126,18 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {['title', 'author', 'publisher', 'genre', 'isbnNo', 'numOfPages', 'totalNumOfCopies'].map((field) => (
+            {['title', 'author', 'publisher', 'genre', 'isbnNo', 'numOfPages', 'totalNumOfCopies', 'price'].map((field) => ( // Added price field
               <div key={field} className="space-y-2">
                 <Label htmlFor={field} className="text-sm font-medium text-gray-700">
                   {field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1').trim()}
                 </Label>
                 <Input
-                  type={field === 'numOfPages' || field === 'totalNumOfCopies' ? 'number' : 'text'}
+                  type={field === 'numOfPages' || field === 'totalNumOfCopies' || field === 'price' ? 'number' : 'text'} // Handle price as a number
                   name={field}
                   id={field}
                   className="w-full"
                   placeholder={`Enter the ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`}
-                  defaultValue={book[field as keyof IBook]}
+                  defaultValue={book[field as keyof IBook] as string | number}
                 />
                 {errors[field as keyof FormErrors] && (
                   <p className="text-red-600 text-sm">{errors[field as keyof FormErrors]}</p>

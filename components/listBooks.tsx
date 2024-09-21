@@ -41,7 +41,6 @@ const ListBooks: React.FC<ListBooksProps> = ({
 }) => {
   const router = useRouter();
   const currentSearchParams = useSearchParams();
-  // console.log(items)
 
   const page = parseInt(searchParams["page"] ?? "1");
   const perPage = parseInt(searchParams["per_page"] ?? "8");
@@ -56,7 +55,6 @@ const ListBooks: React.FC<ListBooksProps> = ({
 
     const newSearchParams = new URLSearchParams(currentSearchParams.toString());
 
-    // Update only the changed params
     for (const [key, value] of formData.entries()) {
       if (value) {
         newSearchParams.set(key, value.toString());
@@ -64,31 +62,29 @@ const ListBooks: React.FC<ListBooksProps> = ({
         newSearchParams.delete(key);
       }
     }
-    // newSearchParams.set('page', '1');
 
     router.replace(`/home/books?${newSearchParams.toString()}`);
   };
 
-  // Calculate start and end indices for pagination
   const start = (page - 1) * perPage;
   const end = start + perPage;
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <div className="flex justify-between">
-          <CardTitle className="text-2xl font-bold">Book Catalog</CardTitle>
+    <Card className="w-full bg-[#d3c9c9] shadow-sm border border-none rounded-2xl">
+      <CardHeader className="bg-[#D3C9C9]">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+          <CardTitle className="text-3xl font-bold text-gray-800">Book Catalog</CardTitle>
           <AddBook />
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <form
           onSubmit={handleFormSubmit}
-          className="mb-6 flex flex-col sm:flex-row justify-end items-center gap-4"
+          className="mb-8 p-4 bg-[#D3C9C9] flex flex-col sm:flex-row justify-end items-center gap-4"
         >
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
             <Select name="sortBy" defaultValue={sortBy}>
-              <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px] bg-[white] border-gray-300">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
@@ -99,7 +95,7 @@ const ListBooks: React.FC<ListBooksProps> = ({
               </SelectContent>
             </Select>
             <Select name="sortOrder" defaultValue={sortOrder}>
-              <SelectTrigger className="w-full sm:w-[100px]">
+              <SelectTrigger className="w-full sm:w-[120px] bg-white border-gray-300">
                 <SelectValue placeholder="Order" />
               </SelectTrigger>
               <SelectContent>
@@ -108,12 +104,12 @@ const ListBooks: React.FC<ListBooksProps> = ({
               </SelectContent>
             </Select>
           </div>
-          <Button type="submit" className="w-[90%] md:w-auto">
-            Apply
+          <Button type="submit" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200">
+            Apply Filters
           </Button>
         </form>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
           {items.map((book) => (
             <BookCard
               key={book.isbnNo}
@@ -122,11 +118,16 @@ const ListBooks: React.FC<ListBooksProps> = ({
           ))}
         </div>
         {items.length === 0 && (
-          <p className="text-center text-muted-foreground mt-8">
-            No books found matching your search criteria.
-          </p>
+          <div className="text-center bg-gray-50 rounded-lg border border-gray-200 p-8 mt-8">
+            <p className="text-lg text-gray-600">
+              No books found matching your search criteria.
+            </p>
+            <p className="text-sm text-gray-500 mt-2">
+              Try adjusting your filters or browse our full collection.
+            </p>
+          </div>
         )}
-        <div className="mt-8 flex justify-center">
+        <div className="mt-12 flex justify-center">
           <PaginationControls
             hasNextPage={end < pagination.total}
             hasPrevPage={start > 0}

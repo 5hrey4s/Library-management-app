@@ -28,7 +28,7 @@ export function SideNav({
 }: SideNavProps) {
 
   return (
-    <aside className={`w-64 bg-white shadow-md ${className}`}>
+    <aside className={`w-64 bg-[#F0FDF4] shadow-md ${className}`}>
       <div className="p-4">
         <h2 className="text-xl font-semibold mb-4 text-[#2f8d46]">{title}</h2>
         <nav>

@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} `} >
         <div className="w-full flex-none md:w-64">
           {/* Your content here */}
         </div>

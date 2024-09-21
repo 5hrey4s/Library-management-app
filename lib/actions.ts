@@ -56,29 +56,29 @@ export async function authenticateLogout(
   }
 }
 
-export async function handleApprove(data: any) {
+export async function handleApprove(data: { id: number; Status: string }) {
   // await db
   //   .update(Requests)
   //   .set({
   //     status: "Approved",
   //   })
   //   .where(eq(Requests.id, data.id));
-  const transaction = await transactionRepository.create({
-    bookId: data.bookId,
-    memberId: data.memberId,
-  });
+  const transaction = await transactionRepository.handleBookRequest(
+    data.Status,
+    {} as ITransactionBase,
+    data.id
+  );
   revalidatePath("/admin/transactions");
   return transaction;
 }
 
 export async function handleReject(id: any) {
-  // await db
-  //   .update(Requests)
-  //   .set({
-  //     status: "Rejected",
-  //   })
-  //   .where(eq(Requests.id, data.id));
-  const transaction = await transactionRepository.handleReject(id);
+ 
+  const transaction = await transactionRepository.handleBookRequest(
+    "Rejected",
+    {} as ITransactionBase,
+    id
+  );
   revalidatePath("/admin/transactions");
   return transaction;
 }

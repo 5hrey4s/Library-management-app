@@ -133,27 +133,28 @@ export class TransactionRepository
         if (!res) {
           throw new Error();
         }
+        return transaction;
       }
     } catch (err) {
       throw err;
     }
   }
 
-  async handleReject(id: number) {
-    try {
-      this.db
-        .update(Transactions)
-        .set({ Status: "Rejected" })
-        .where(eq(Transactions.id, id));
-      const [createdTransaction] = await this.db
-        .select()
-        .from(Transactions)
-        .where(eq(Transactions.id, id));
-      return createdTransaction;
-    } catch (err) {
-      throw err;
-    }
-  }
+  // async handleReject(id: number) {
+  //   try {
+  //     this.db
+  //       .update(Transactions)
+  //       .set({ Status: "Rejected" })
+  //       .where(eq(Transactions.id, id));
+  //     const [createdTransaction] = await this.db
+  //       .select()
+  //       .from(Transactions)
+  //       .where(eq(Transactions.id, id));
+  //     return createdTransaction;
+  //   } catch (err) {
+  //     throw err;
+  //   }
+  // }
 
   async returnBook(
     id: number,

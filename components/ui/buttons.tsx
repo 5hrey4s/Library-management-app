@@ -22,7 +22,7 @@ export function AprroveButton({
       description: "Failed to approve request. Please try again.",
       variant: "destructive",
     });
-    router.refresh();
+    // router.refresh();
     toast({
       title: "Request Approved",
       description: `Request for Book ID ${

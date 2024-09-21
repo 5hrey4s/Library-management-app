@@ -20,6 +20,7 @@ interface FormErrors {
   isbnNo?: string;
   numOfPages?: string;
   totalNumOfCopies?: string;
+  price?: string; // Added price validation
   global?: string;
 }
 
@@ -37,7 +38,7 @@ const AddBook: React.FC = () => {
       setIsUploading(true);
       const result = await uploadImage(file);
       setIsUploading(false);
-      
+
       if (result.imageURL) {
         setImageURL(result.imageURL);
         toast({
@@ -65,6 +66,7 @@ const AddBook: React.FC = () => {
       "isbnNo",
       "numOfPages",
       "totalNumOfCopies",
+      "price", // Added price field for validation
     ];
 
     fields.forEach((field) => {
@@ -74,7 +76,7 @@ const AddBook: React.FC = () => {
           field.charAt(0).toUpperCase() + field.slice(1)
         } is required`;
       } else if (
-        (field === "numOfPages" || field === "totalNumOfCopies") &&
+        (field === "numOfPages" || field === "totalNumOfCopies" || field === "price") &&
         isNaN(Number(value))
       ) {
         newErrors[field as keyof FormErrors] = `${
@@ -101,6 +103,7 @@ const AddBook: React.FC = () => {
         numOfPages: Number(formData.get("numOfPages")),
         totalNumOfCopies: Number(formData.get("totalNumOfCopies")),
         image_url: imageURL,
+        price: Number(formData.get("price")), // Adding price field data to the form
       };
 
       setIsSubmitting(true);
@@ -146,6 +149,7 @@ const AddBook: React.FC = () => {
               "isbnNo",
               "numOfPages",
               "totalNumOfCopies",
+              "price", // Added price field
             ].map((field) => (
               <div key={field} className="space-y-2">
                 <Label
@@ -160,7 +164,9 @@ const AddBook: React.FC = () => {
                 </Label>
                 <Input
                   type={
-                    field === "numOfPages" || field === "totalNumOfCopies"
+                    field === "numOfPages" ||
+                    field === "totalNumOfCopies" ||
+                    field === "price" // Handling price as a number
                       ? "number"
                       : "text"
                   }
