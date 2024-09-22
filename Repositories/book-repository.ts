@@ -98,7 +98,8 @@ export class BookRepository implements IRepository<IBookBase, IBook> {
     let sortOrder;
     let selectSql: IBook[];
     let countResult: CountResult;
-    // Check for valid sorting options and set default if not provided
+
+    // Determine sorting options
     if (sortOptions) {
       const sortBy = Books[sortOptions.sortBy] || Books.author; // Default to author if sortBy is invalid
       sortOrder = sortOptions.sortOrder === "desc" ? desc(sortBy) : asc(sortBy);
@@ -106,46 +107,52 @@ export class BookRepository implements IRepository<IBookBase, IBook> {
       // Fallback to default sort
       sortOrder = asc(Books.title); // Default sort by title in ascending order
     }
+
     try {
-      // Build the query with search, pagination, and sorting
+      // Build the base query
+      const query = this.db.select().from(Books);
+
+      // Apply search conditions if search term exists
       if (search) {
-        selectSql = (await this.db
-          .select()
-          .from(Books)
-          .where(
-            or(
-              like(Books.title, `%${search}%`),
-              like(Books.isbnNo, `%${search}%`),
-              like(Books.author, `%${search}%`),
-              like(Books.genre, `%${search}%`)
-            )
+        query.where(
+          or(
+            like(Books.title, `%${search}%`),
+            like(Books.isbnNo, `%${search}%`),
+            like(Books.author, `%${search}%`),
+            like(Books.genre, `%${search}%`)
           )
-          .limit(params.limit ?? 10) // Add a default limit
-          .offset(params.offset ?? 0)
-          .orderBy(sortOrder)) as IBook[];
-      } else {
-        selectSql = (await this.db
-          .select()
-          .from(Books)
-          .limit(params.limit ?? 10) // Add a default limit
-          .offset(params.offset ?? 0)
-          .orderBy(sortOrder)) as IBook[];
+        );
       }
 
-      // Get the count of books
-      [countResult] = await this.db
-        .select({ count: count() })
-        .from(Books)
-        .where(
-          search
-            ? or(
-                like(Books.title, `%${search}%`),
-                like(Books.isbnNo, `%${search}%`),
-                like(Books.author, `%${search}%`),
-                like(Books.genre, `%${search}%`)
-              )
-            : undefined
+      // Apply pagination
+      query.limit(params.limit ?? 10).offset(params.offset ?? 0);
+
+      // Apply sorting
+      query.orderBy(sortOrder);
+
+      // Log the generated SQL query
+      console.log("Generated SQL Query:", query.toSQL());
+
+      // Execute the query
+      selectSql = (await query) as IBook[];
+      // console.log(selectSql);2
+      // Get the total count of books (with or without search)
+      const countQuery = this.db.select({ count: count() }).from(Books);
+      if (search) {
+        countQuery.where(
+          or(
+            like(Books.title, `%${search}%`),
+            like(Books.isbnNo, `%${search}%`),
+            like(Books.author, `%${search}%`),
+            like(Books.genre, `%${search}%`)
+          )
         );
+      }
+
+      // Log the count query
+      console.log("Count SQL Query:", countQuery.toSQL());
+
+      [countResult] = await countQuery;
 
       const countBook = (countResult as any).count;
 

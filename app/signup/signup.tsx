@@ -20,7 +20,7 @@ const Register: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const router = useRouter();
-  
+
   const validateForm = (formData: FormData): FormErrors => {
     const newErrors: FormErrors = {};
     const firstName = formData.get("firstName") as string;
@@ -81,13 +81,19 @@ const Register: React.FC = () => {
       setIsSubmitting(true);
       try {
         const member = await createMember(data);
-        await authenticate(undefined,formData);
+        await authenticate(undefined, formData);
         setSuccessMessage("Registration successful!");
         console.log(member);
         router.replace("signup/success"); // Redirect to the success page
-      } catch (error) {
-        console.error(error);
-        setErrors({ global: "An error occurred during registration." });
+      } catch (error: any) {
+        console.log(error);
+
+        // Check if the error message indicates a duplicate email
+        if (error.message && error.message.toLowerCase().includes("duplicate")) {
+          setErrors({ email: "This email is already registered" });
+        } else {
+          setErrors({ global: error.message });
+        }
       } finally {
         setIsSubmitting(false);
       }

@@ -6,6 +6,7 @@ import { ListBooks } from "@/components/listBooks";
 import { auth } from "@/auth";
 import { fetchBooks, fetchGenre, fetchMemberByEmail } from "@/lib/data";
 import { IBookBase } from "@/Models/book-model";
+import { getWishListByMemberId } from "@/lib/actions";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -33,6 +34,7 @@ export default async function Home({ searchParams }: HomeProps) {
   const session = await auth();
   const genres = await fetchGenre();
   const user = await fetchMemberByEmail(session?.user.email!);
+  const likedBooks = await getWishListByMemberId(user?.id!);
   if (session?.user.role !== "admin") {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -73,6 +75,7 @@ export default async function Home({ searchParams }: HomeProps) {
             items={items}
             genres={genres}
             user={user!}
+            likedBooks={likedBooks}
           />
         </section>
       </main>

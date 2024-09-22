@@ -16,12 +16,14 @@ import * as schema from "../drizzle/schema";
 import cloudinary from "@/cloudinary.config";
 import { ITransactionBase } from "@/Models/transaction.model";
 import { Action } from "@radix-ui/react-toast";
+import { WishlistRepository } from "@/Repositories/WishlistRepository";
 
 const db = drizzle(sql, { schema });
 
 const requestRepository = new RequestRepository(db);
 const transactionRepository = new TransactionRepository(db);
 const memberRepository = new MemberRepository(db);
+const wishlistRepository = new WishlistRepository(db);
 
 export const create = new MemberRepository(db).create;
 
@@ -73,7 +75,6 @@ export async function handleApprove(data: { id: number; Status: string }) {
 }
 
 export async function handleReject(id: any) {
- 
   const transaction = await transactionRepository.handleBookRequest(
     "Rejected",
     {} as ITransactionBase,
@@ -199,4 +200,24 @@ export async function cancelBookRequest(transactionId: number): Promise<void> {
     transactionId
   );
   revalidatePath("/home/mytransaction");
+}
+
+export async function hasUserLikedBook(bookId: number, userId: number) {
+  const result = await wishlistRepository.hasUserLikedBook(bookId, userId);
+  return result;
+}
+
+export async function getWishListByMemberId(userId: number) {
+  const result: {
+    bookId: number;
+  }[] = await wishlistRepository.getByMemberId(userId);
+  return result.map((obj) => obj.bookId);
+}
+
+export async function addWishList(bookId: number, memberId: number) {
+  await wishlistRepository.create({ bookId, memberId });
+}
+
+export async function removeWishList(bookId: number, memberId: number) {
+  await wishlistRepository.removeWishList(bookId, memberId);
 }

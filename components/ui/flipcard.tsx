@@ -10,6 +10,8 @@ import {
   FaLayerGroup,
   FaCopy,
   FaDollarSign,
+  FaHeart,
+  FaStar,
 } from "react-icons/fa";
 import { deleteBook, updateRequestStatus } from "@/lib/data";
 import { IBook } from "@/Models/book-model";
@@ -37,12 +39,14 @@ import EditButton from "../editBookButton";
 import Image from "next/image";
 import { ITransactionBase } from "@/Models/transaction.model";
 import BuyButton from "./borrow";
+import { addWishList, removeWishList } from "@/lib/actions";
 
 type BookCardProps = {
   data: {
     book: IBook;
     userId: number;
     role?: string | undefined;
+    isLiked: boolean;
   };
 };
 
@@ -50,6 +54,9 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
   const { book, userId } = data;
   const [isFlipped, setIsFlipped] = useState(false);
   const [isRequested, setRequested] = useState(false);
+  const [isLiked, setIsLiked] = useState(data.isLiked);
+  console.log(isLiked);
+  const [rating, setRating] = useState(0);
   const { toast } = useToast();
 
   const handleFlip = (e: React.MouseEvent) => {
@@ -65,7 +72,6 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
         title: "Book Deleted",
         description: `"${data.book.title}" has been successfully deleted.`,
       });
-      // You might want to trigger a re-fetch of the book list or update the UI here
     } catch (error) {
       console.error("Error deleting book:", error);
       toast({
@@ -92,6 +98,30 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleLike = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsLiked(!isLiked);
+    if (isLiked) {
+      await removeWishList(book.id, data.userId);
+    } else {
+      await addWishList(data.book.id, data.userId);
+    }
+    toast({
+      title: isLiked ? "Removed from Favorites" : "Added to Favorites",
+      description: `"${data.book.title}" has been ${
+        data.isLiked ? "removed from" : "added to"
+      } your favorites.`,
+    });
+  };
+
+  const handleRating = (value: number) => {
+    setRating(value);
+    toast({
+      title: "Rating Submitted",
+      description: `You've rated "${data.book.title}" ${value} stars.`,
+    });
   };
 
   const AdminButtons = () => (
@@ -201,7 +231,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                 src={book.image_url || "/placeholder.svg"}
                 alt={book.title}
                 layout="fill"
-                // objectFit="cover"
+                objectFit="cover"
                 className="transition-transform duration-300 ease-in-out hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-50"></div>
@@ -210,6 +240,24 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                   {data.book.title}
                 </h3>
                 <p className="text-sm opacity-80">{data.book.author}</p>
+              </div>
+              <button
+                className={`absolute top-4 right-4 p-2 rounded-full ${
+                  isLiked ? "bg-red-500" : "bg-white bg-opacity-50"
+                } transition-colors duration-200`}
+                onClick={handleLike}
+              >
+                <FaHeart
+                  className={`h-5 w-5 ${
+                    isLiked ? "text-white" : "text-red-500"
+                  }`}
+                />
+              </button>
+              <div className="absolute top-4 left-4 flex items-center bg-white bg-opacity-75 rounded-full px-2 py-1">
+                <FaStar className="h-4 w-4 text-yellow-400 mr-1" />
+                <span className="text-sm font-semibold text-gray-800">
+                  {rating.toFixed(1)}
+                </span>
               </div>
             </div>
           </div>
@@ -268,13 +316,29 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
               <div className="flex items-center">
                 <FaDollarSign className="w-5 h-5 mr-2 text-gray-500" />
                 <p className="text-sm">
-                  <span className="font-semibold">Price:</span>{" "}
-                  ${book.price || "N/A"}
+                  <span className="font-semibold">Price:</span> $
+                  {book.price || "N/A"}
                 </p>
               </div>
             </div>
 
-            {/* Buy Button */}
+            <div className="mt-4 flex justify-center">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  className={`mx-1 ${
+                    star <= rating ? "text-yellow-400" : "text-gray-300"
+                  }`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRating(star);
+                  }}
+                >
+                  <FaStar className="h-6 w-6" />
+                </button>
+              ))}
+            </div>
+
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <BuyButton
@@ -289,7 +353,8 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Confirm Purchase</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Are you sure you want to buy {data.book.title} for ${1000}?
+                    Are you sure you want to buy {data.book.title} for $
+                    {book.price || "N/A"}?
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

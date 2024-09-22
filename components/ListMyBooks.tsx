@@ -1,16 +1,9 @@
 import * as React from "react";
-import { fetchGenre, fetchMyBooks } from "@/lib/data";
 import BookCard from "./ui/flipcard";
-import { IPageRequest } from "@/core/pagination";
 import PaginationControls from "./PaginationControls";
 import { SearchParams } from "@/app/home/books/page";
 import { IBook, IBookBase } from "@/Models/book-model";
-import { auth } from "@/auth";
-import mysql from "mysql2/promise";
-import { MemberRepository } from "@/Repositories/member.repository";
-import { BookRepository } from "@/Repositories/book-repository";
-import { IMember } from "@/Models/member.model";
-import { Input } from "@/components/ui/input";
+
 import {
   Select,
   SelectContent,
@@ -20,41 +13,31 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Appenv } from "@/read-env";
+import { IMember } from "@/Models/member.model";
 
 export interface ListMyBooksProps {
   searchParams: SearchParams;
-  pageRequest: IPageRequest;
+  role: string | undefined;
+  items: IBook[];
+  user: IMember;
+  genres: string[];
+  likedBooks: number[];
 }
-
-import "@/drizzle/envConfig";
-import { drizzle } from "drizzle-orm/vercel-postgres";
-import { sql } from "@vercel/postgres";
-import * as schema from "../drizzle/schema";
-import { and } from "drizzle-orm/expressions";
-
-export const db = drizzle(sql, { schema });
-const memberRepository = new MemberRepository(db);
-const bookRepository = new BookRepository(db);
 
 export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
   searchParams,
-  pageRequest,
+  role,
+  items,
+  user,
+  genres,
+  likedBooks,
 }) => {
-  const session = await auth();
-  const email = session?.user?.email;
-  const user: IMember | null = await memberRepository.getByEmail(email!);
-  const items: IBook[] = await fetchMyBooks(user!.id);
-
   const page = parseInt(searchParams["page"] ?? "1");
   const perPage = parseInt(searchParams["per_page"] ?? "8");
   const sortBy = (searchParams["sortBy"] as keyof IBookBase) ?? "title";
   const sortOrder = searchParams["sortOrder"] ?? "asc";
   const searchTerm = searchParams["searchTerm"] ?? "";
   const genreFilter = searchParams["genre"] ?? "all";
-
-  // Get unique genres
-  const genres: string[] = await fetchGenre();
 
   // Sort books
   const sortedItems = [...items].sort((a, b) => {
@@ -81,12 +64,6 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
   const entries: IBookBase[] = filteredItems.slice(start, end);
 
   // Fetch bookIds for the current entries
-  const booksWithIds = await Promise.all(
-    entries.map(async (book) => {
-      const curBook = await bookRepository.getByISBN(book.isbnNo);
-      return curBook;
-    })
-  );
 
   return (
     <Card className="w-full">
@@ -138,11 +115,19 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
 
         {/* Book Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-          {booksWithIds.map((book) => (
-            <BookCard key={book.isbnNo} data={{ book, userId: user!.id }} />
+          {items.map((book) => (
+            <BookCard
+              key={book.isbnNo}
+              data={{
+                book,
+                userId: user.id,
+                role: role,
+                isLiked: likedBooks.includes(book.id),
+              }}
+            />
           ))}
         </div>
-        {booksWithIds.length === 0 && (
+        {items.length === 0 && (
           <p className="text-center text-muted-foreground mt-8">
             No books found matching your search criteria.
           </p>

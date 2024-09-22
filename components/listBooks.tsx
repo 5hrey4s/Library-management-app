@@ -29,6 +29,7 @@ export interface ListBooksProps {
   items: IBook[];
   user: IMember;
   genres: string[];
+  likedBooks: number[];
 }
 
 const ListBooks: React.FC<ListBooksProps> = ({
@@ -38,16 +39,16 @@ const ListBooks: React.FC<ListBooksProps> = ({
   items,
   user,
   genres,
+  likedBooks,
 }) => {
   const router = useRouter();
   const currentSearchParams = useSearchParams();
-
   const page = parseInt(searchParams["page"] ?? "1");
   const perPage = parseInt(searchParams["per_page"] ?? "8");
   const sortBy = (searchParams["sortBy"] as keyof IBookBase) ?? "title";
   const sortOrder = searchParams["sortOrder"] ?? "asc";
-  const searchTerm = searchParams["searchTerm"] ?? "";
-  const genreFilter = searchParams["genre"] ?? "all";
+
+  // const isLiked =
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -73,7 +74,9 @@ const ListBooks: React.FC<ListBooksProps> = ({
     <Card className="w-full bg-[#d3c9c9] shadow-sm border border-none rounded-2xl">
       <CardHeader className="bg-[#D3C9C9]">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-          <CardTitle className="text-3xl font-bold text-gray-800">Book Catalog</CardTitle>
+          <CardTitle className="text-3xl font-bold text-gray-800">
+            Book Catalog
+          </CardTitle>
           <AddBook />
         </div>
       </CardHeader>
@@ -104,7 +107,10 @@ const ListBooks: React.FC<ListBooksProps> = ({
               </SelectContent>
             </Select>
           </div>
-          <Button type="submit" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200">
+          <Button
+            type="submit"
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200"
+          >
             Apply Filters
           </Button>
         </form>
@@ -113,7 +119,12 @@ const ListBooks: React.FC<ListBooksProps> = ({
           {items.map((book) => (
             <BookCard
               key={book.isbnNo}
-              data={{ book, userId: user.id, role: role }}
+              data={{
+                book,
+                userId: user.id,
+                role: role,
+                isLiked: likedBooks.includes(book.id),
+              }}
             />
           ))}
         </div>

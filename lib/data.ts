@@ -105,7 +105,7 @@ export const fetchTransaction = async (
 export const fetchBookById = async (id: number) => {
   try {
     const book = await bookRepository.getById(id);
-    return book;
+    return book!;
   } catch (err) {
     console.log(err);
     throw err;

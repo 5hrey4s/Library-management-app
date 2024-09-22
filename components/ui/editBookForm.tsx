@@ -92,6 +92,7 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
         totalNumOfCopies: Number(formData.get("totalNumOfCopies")),
         price: Number(formData.get("price")), // Added price field data
         image_url: imageURL,
+        
       };
 
       setIsSubmitting(true);

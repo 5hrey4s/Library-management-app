@@ -1,35 +1,23 @@
-import React from 'react'
-import { WishlistGrid } from '@/components/WishlistGrid'
-import { Button } from '@/components/ui/button'
-import { PlusCircle } from 'lucide-react'
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
+import { auth } from "@/auth";
+import { getWishListByMemberId } from "@/lib/actions";
+import { fetchBookById, fetchMemberByEmail } from "@/lib/data";
+import { LikedBooksGrid } from "@/components/WishlistGrid";
 
-// This would typically come from your data fetching logic
-const mockWishlistItems = [
-  {
-    id: 1,
-    title: "To Kill a Mockingbird",
-    author: "Harper Lee",
-    coverImage: "https://example.com/to-kill-a-mockingbird-cover.jpg",
-    description: "A classic of modern American literature, this novel explores racial injustice and the loss of innocence.",
-  },
-  {
-    id: 2,
-    title: "1984",
-    author: "George Orwell",
-    coverImage: "https://example.com/1984-cover.jpg",
-    description: "A dystopian social science fiction novel and cautionary tale set in a totalitarian society.",
-  },
-  {
-    id: 3,
-    title: "Pride and Prejudice",
-    author: "Jane Austen",
-    coverImage: "https://example.com/pride-and-prejudice-cover.jpg",
-    description: "A romantic novel of manners that follows the character development of Elizabeth Bennet.",
-  },
-  // Add more mock items as needed
-]
+export default async function WishlistPage() {
+  const session = await auth();
+  const user = await fetchMemberByEmail(session?.user.email!);
 
-export default function WishlistPage() {
+  const likedBookIds = await getWishListByMemberId(Number(user!.id));
+
+  // Use Promise.all to ensure all book fetches are resolved
+  const likedBooks = await Promise.all(
+    likedBookIds.map(async (id) => await fetchBookById(id))
+  );
+  console.log(likedBookIds, likedBooks);
+
   return (
     <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-8">
@@ -39,7 +27,7 @@ export default function WishlistPage() {
           Add Book
         </Button>
       </div>
-      <WishlistGrid items={mockWishlistItems} />
+      <LikedBooksGrid items={likedBooks} />
     </div>
-  )
+  );
 }

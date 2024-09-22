@@ -9,8 +9,6 @@ import {
   pgEnum,
 } from "drizzle-orm/pg-core";
 
-// Define the enum
-
 // Books Table
 export const Books = pgTable("books", {
   id: serial("id").primaryKey(),
@@ -24,6 +22,7 @@ export const Books = pgTable("books", {
   availableNumberOfCopies: integer("availableNumberOfCopies").notNull(),
   image_url: varchar("image_url", { length: 255 }).notNull(),
   price: integer("price").notNull(),
+  
 });
 
 // Members Table
@@ -65,4 +64,30 @@ export const Requests = pgTable("requests", {
     .references(() => Members.id)
     .notNull(),
   status: varchar("status", { length: 50 }).notNull(),
+});
+
+// Ratings Table - New addition
+export const Ratings = pgTable("ratings", {
+  id: serial("id").primaryKey(),
+  bookId: integer("bookId")
+    .references(() => Books.id)
+    .notNull(),
+  memberId: integer("memberId")
+    .references(() => Members.id)
+    .notNull(),
+  rating: integer("rating").notNull(), // Rating value 1-5
+  review: text("review").notNull(), // Optional review text
+  created_at: varchar("created_at", { length: 100 })
+});
+
+// Wishlist Table - New addition
+export const Wishlist = pgTable("wishlist", {
+  id: serial("id").primaryKey(),
+  bookId: integer("bookId")
+    .references(() => Books.id)
+    .notNull(),
+  memberId: integer("memberId")
+    .references(() => Members.id)
+    .notNull(),
+  addedAt: varchar("addedAt", { length: 100 }),
 });

@@ -52,7 +52,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
 
   return (
     <TooltipProvider>
-      <div className=" fixed bottom-0 left-0 right-0 flex items-center justify-center p-4 bg-white text-black">
+      <div className="fixed bottom-0 left-0 right-0 flex items-center justify-center p-4 backdrop-blur-md bg-white/30 text-black shadow-md">
         <div className="flex items-center space-x-4">
           <Tooltip>
             <TooltipTrigger asChild>
@@ -90,7 +90,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
           </Tooltip>
 
           <div className="flex items-center space-x-2">
-            <span className="text-xs md:text-sm">Page</span>
+            <span className="text-xs md:text-sm text-black">Page</span>
             <Input
               type="number"
               min={1}
@@ -100,7 +100,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
               onKeyDown={handleInputKeyDown}
               className="w-16 text-center bg-white text-[#308D46] text-xs md:text-sm"
             />
-            <span className="text-xs md:text-sm">of {totalPages}</span>
+            <span className="text-xs md:text-sm text-black">of {totalPages}</span>
           </div>
 
           <Tooltip>
@@ -139,7 +139,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
           </Tooltip>
 
           <div className="flex items-center space-x-2">
-            <span className="text-xs md:text-sm">Show</span>
+            <span className="text-xs md:text-sm text-black">Show</span>
             <Select
               value={perPage.toString()}
               onValueChange={handlePerPageChange}
@@ -154,7 +154,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
                 <SelectItem value="32">32</SelectItem>
               </SelectContent>
             </Select>
-            <span className="text-xs md:text-sm">per page</span>
+            <span className="text-xs md:text-sm text-black">per page</span>
           </div>
         </div>
       </div>

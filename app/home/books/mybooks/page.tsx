@@ -2,6 +2,9 @@ import Link from "next/link";
 import SearchComponent from "@/components/search";
 import { ListMyBooks } from "@/components/ListMyBooks";
 import { auth } from "@/auth";
+import { fetchGenre, fetchMemberByEmail, fetchMyBooks } from "@/lib/data";
+import { getWishListByMemberId } from "@/lib/actions";
+import { IBook } from "@/Models/book-model";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -17,12 +20,15 @@ export default async function Home({ searchParams }: HomeProps) {
     limit: 999,
     search: searchParams["search"] ?? "",
   };
-  const session = await auth();
 
+  const genres: string[] = await fetchGenre();
+  const session = await auth();
+  const email = session?.user?.email;
+  const user = await fetchMemberByEmail(session?.user.email!);
+  const likedBooks = await getWishListByMemberId(user?.id!);
+  const items: IBook[] = await fetchMyBooks(user!.id);
   return (
     <div className="flex flex-col min-h-screen bg-[#F5F5F7] text-gray-900 dark:text-gray-100">
-      {/* <Navbar logoText="Library" active="MyBooks" role = {session?.user!.role}/> */}
-
       <main className="flex-1 bg-[#F5F5F7]-50">
         <section className="bg-green-50 py-12 rounded-lg">
           <div className="container mx-auto px-4">
@@ -40,8 +46,14 @@ export default async function Home({ searchParams }: HomeProps) {
         </section>
 
         <section className="container mx-auto bg-[#F5F5F7] mt-8 relative">
-          
-          <ListMyBooks searchParams={searchParams} pageRequest={pageRequest} />
+          <ListMyBooks
+            searchParams={searchParams}
+            role={session?.user!.role}
+            items={items}
+            genres={genres}
+            user={user!}
+            likedBooks={likedBooks}
+          />
         </section>
       </main>
 

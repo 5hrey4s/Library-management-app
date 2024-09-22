@@ -1,3 +1,4 @@
+import { boolean } from "drizzle-orm/mysql-core";
 import z from "zod";
 export interface IBookBase {
   title: string;
@@ -8,7 +9,7 @@ export interface IBookBase {
   numOfPages: number;
   totalNumOfCopies: number;
   image_url: string;
-  price:number
+  price: number;
 }
 
 export interface IBook extends IBookBase {
@@ -62,4 +63,5 @@ export const bookSchema = z.object({
     .string()
     .min(10, { message: "Image URL is required" })
     .max(255, { message: "Genre must be less than 255 characters" }),
+  price: z.number(),
 });

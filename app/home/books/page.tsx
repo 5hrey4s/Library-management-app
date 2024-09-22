@@ -6,6 +6,7 @@ import { ListBooks } from "@/components/listBooks";
 import { auth } from "@/auth";
 import { fetchBooks, fetchGenre, fetchMemberByEmail } from "@/lib/data";
 import { IBookBase } from "@/Models/book-model";
+import { getWishListByMemberId } from "@/lib/actions";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -32,6 +33,7 @@ export default async function Home({ searchParams }: HomeProps) {
   const session = await auth();
   const genres = await fetchGenre();
   const user = await fetchMemberByEmail(session?.user.email!);
+  const likedBooks = await getWishListByMemberId(user?.id!);
 
   return (
     <div className="flex flex-col min-h-screen bg-[#dbd3d3] text-gray-900">
@@ -62,12 +64,13 @@ export default async function Home({ searchParams }: HomeProps) {
             items={items}
             genres={genres}
             user={user!}
+            likedBooks={likedBooks}
           />
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="py-8 px-4 md:px-6 bg-[#308D46] text-white">
+      <footer className="py-8 px-4 md:px-6 bg-[#9FA8A0] text-white">
         <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between">
           <p className="text-sm mb-4 sm:mb-0">
             © 2024 Acme Library. All rights reserved.
@@ -83,7 +86,7 @@ export default async function Home({ searchParams }: HomeProps) {
               className="text-sm hover:underline transition-colors duration-200"
               href="#"
             >
-              Privacy Policy  
+              Privacy Policy
             </Link>
           </nav>
         </div>
