@@ -120,7 +120,7 @@ const ListBooks: React.FC<ListBooksProps> = ({
                 className="bg-[#9FA8A0] hover:bg-[#8A9389] text-white transition-colors duration-200"
               >
                 <Filter className="h-4 w-4 mr-2" />
-                {t("filter")}
+                {t("applyFilters")}
               </Button>
             </form>
             <AddBook />

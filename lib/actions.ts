@@ -18,6 +18,7 @@ import { ITransactionBase } from "@/Models/transaction.model";
 import { Action } from "@radix-ui/react-toast";
 import { WishlistRepository } from "@/Repositories/WishlistRepository";
 import { DueBook } from "@/components/TodaysDues";
+import { RatingsRepository } from "@/Repositories/rating.repository";
 
 const db = drizzle(sql, { schema });
 
@@ -25,6 +26,7 @@ const requestRepository = new RequestRepository(db);
 const transactionRepository = new TransactionRepository(db);
 const memberRepository = new MemberRepository(db);
 const wishlistRepository = new WishlistRepository(db);
+const ratingsRepository = new RatingsRepository(db);
 
 export const create = new MemberRepository(db).create;
 
@@ -227,4 +229,13 @@ export async function todaysDues() {
   const dues: DueBook[] =
     await transactionRepository.getTodaysDueTransactions();
   return dues;
+}
+
+async function rateBook(rating: number, bookId: number, memberId: number) {
+  await ratingsRepository.create({
+    bookId: bookId,
+    memberId: memberId,
+    rating: rating,
+    review: "",
+  });
 }

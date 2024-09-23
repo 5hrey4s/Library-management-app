@@ -22,7 +22,7 @@ export class RatingsRepository implements IRepository<IRatingBase, IRating> {
     throw new Error("Method not implemented.");
   }
 
-  async create(data: IRating): Promise<IRating | null> {
+  async create(data: IRatingBase): Promise<IRating | null> {
     try {
       const [result] = await this.db
         .insert(Ratings)

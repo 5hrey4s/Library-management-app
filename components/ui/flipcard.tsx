@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import {
   FaTrash,
   FaEdit,
@@ -40,6 +40,17 @@ import Image from "next/image";
 import { ITransactionBase } from "@/Models/transaction.model";
 import BuyButton from "./borrow";
 import { addWishList, removeWishList } from "@/lib/actions";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 type BookCardProps = {
   data: {
@@ -47,6 +58,7 @@ type BookCardProps = {
     userId: number;
     role?: string | undefined;
     isLiked: boolean;
+    myBooks?: boolean;
   };
 };
 
@@ -55,8 +67,8 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isRequested, setRequested] = useState(false);
   const [isLiked, setIsLiked] = useState(data.isLiked);
-  console.log(isLiked);
   const [rating, setRating] = useState(0);
+  const [review, setReview] = useState("");
   const { toast } = useToast();
 
   const handleFlip = (e: React.MouseEvent) => {
@@ -111,17 +123,20 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
     toast({
       title: isLiked ? "Removed from Favorites" : "Added to Favorites",
       description: `"${data.book.title}" has been ${
-        data.isLiked ? "removed from" : "added to"
+        isLiked ? "removed from" : "added to"
       } your favorites.`,
     });
   };
 
-  const handleRating = (value: number) => {
-    setRating(value);
+  const handleRatingSubmit = async () => {
+    // Here you would typically send the rating and review to your backend
+    console.log(`Rating: ${rating}, Review: ${review}`);
     toast({
       title: "Rating Submitted",
-      description: `You've rated "${data.book.title}" ${value} stars.`,
+      description: `You've rated "${data.book.title}" ${rating} stars.`,
     });
+    // Reset the review field after submission
+    setReview("");
   };
 
   const AdminButtons = () => (
@@ -323,20 +338,59 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
             </div>
 
             <div className="mt-4 flex justify-center">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                  key={star}
-                  className={`mx-1 ${
-                    star <= rating ? "text-yellow-400" : "text-gray-300"
-                  }`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRating(star);
-                  }}
-                >
-                  <FaStar className="h-6 w-6" />
-                </button>
-              ))}
+              {data.myBooks && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="w-full">
+                      Rate this book
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Rate "{data.book.title}"</DialogTitle>
+                      <DialogDescription>
+                        How many stars would you give this book? You can also
+                        leave an optional review.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="flex justify-center space-x-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            className={`text-2xl ${
+                              star <= rating
+                                ? "text-yellow-400"
+                                : "text-gray-300"
+                            }`}
+                            onClick={() => setRating(star)}
+                          >
+                            ★
+                          </button>
+                        ))}
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="review" className="text-right">
+                          Review (optional)
+                        </Label>
+                        <Textarea
+                          id="review"
+                          value={review}
+                          onChange={(e: {
+                            target: { value: SetStateAction<string> };
+                          }) => setReview(e.target.value)}
+                          placeholder="Write your review here..."
+                        />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button type="submit" onClick={handleRatingSubmit}>
+                        Submit Rating
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
 
             <AlertDialog>
