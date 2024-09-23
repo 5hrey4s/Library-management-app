@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import BookCard from "./ui/flipcard";
 import PaginationControls from "./PaginationControls";
-import { SearchParams } from "@/app/[locale]/home/books/page";
+import { SearchParams } from "@/app/home/books/page";
 import { IBook, IBookBase } from "@/Models/book-model";
 import { IMember } from "@/Models/member.model";
 import {

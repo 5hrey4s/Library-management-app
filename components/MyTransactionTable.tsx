@@ -32,7 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { SearchParams } from "@/app/[locale]/home/books/page";
+import { SearchParams } from "@/app/home/books/page";
 import { cancelBookRequest } from "@/lib/actions";
 
 interface MyTransactionsTableProps {

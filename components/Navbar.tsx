@@ -31,6 +31,7 @@ import LogoutButton from "@/components/handlelogout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
+import LocaleSwitcher from "@/components/LocaleSwitcher"; // Import the LocaleSwitcher component
 
 interface NavbarProps {
   logoText?: string;
@@ -39,7 +40,6 @@ interface NavbarProps {
   showMembers?: boolean;
   showTransactions?: boolean;
   showMyTransactions?: boolean;
-  // showRequests?: boolean;
   active?: string;
   role?: string;
   userAvatar?: string;
@@ -48,16 +48,9 @@ interface NavbarProps {
 }
 
 interface NavItemProps {
-  /** The URL for the navigation item */
   href: string;
-
-  /** The icon to display next to the navigation text */
   icon: React.ReactNode;
-
-  /** The text label for the navigation item */
   text: string;
-
-  /** Whether this item is the active (highlighted) one */
   isActive: boolean;
 }
 
@@ -67,7 +60,6 @@ export default function Navbar({
   showMyBooks = true,
   showMembers = true,
   showTransactions = true,
-  // showRequests = true,
   showMyTransactions = true,
   active,
   role,
@@ -167,14 +159,8 @@ export default function Navbar({
                 isActive={active === "MyTransactions"}
               />
             )}
-            {/* {showRequests && role === "admin" && (
-              <NavItem
-                href="/admin/requests"
-                icon={<Bell className="h-5 w-5" />}
-                text="Requests"
-                isActive={active === "Requests"}
-              />
-            )} */}
+            {/* LocaleSwitcher Component */}
+            <LocaleSwitcher /> {/* Locale switcher added to the desktop navigation */}
           </nav>
 
           <div className="flex items-center">
@@ -249,6 +235,9 @@ export default function Navbar({
               </DropdownMenuContent>
             </DropdownMenu>
 
+            {/* LocaleSwitcher for mobile */}
+            <LocaleSwitcher className="ml-4 md:hidden" />
+
             {/* Mobile menu button */}
             <button
               className="ml-4 md:hidden"
@@ -308,14 +297,6 @@ export default function Navbar({
                 isActive={active === "MyTransactions"}
               />
             )}
-            {/* {showRequests && role === "admin" && (
-              <NavItem
-                href="/admin/requests"
-                icon={<Bell className="h-5 w-5" />}
-                text="Requests"
-                isActive={active === "Requests"}
-              />
-            )} */}
           </nav>
         </div>
       )}

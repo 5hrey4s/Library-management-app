@@ -42,6 +42,7 @@ import BuyButton from "./borrow";
 import {
   addWishList,
   getMeanRating,
+  rateBook,
   removeWishList,
   updateRating,
 } from "@/lib/actions";
@@ -137,6 +138,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
   const handleRatingSubmit = async () => {
     console.log("inside card");
     // Here you would typically send the rating and review to your backend
+    await rateBook(rating, book.id, data.userId, review);
     const meanRating = await getMeanRating(book.id);
     console.log("===========mean rating", meanRating);
     await updateRating(book.id, meanRating);
@@ -373,7 +375,9 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                                 ? "text-yellow-400"
                                 : "text-gray-300"
                             }`}
-                            onClick={() => setRating(star)}
+                            onClick={() => {
+                              setRating(star);
+                            }}
                           >
                             ★
                           </button>

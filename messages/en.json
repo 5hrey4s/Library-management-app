@@ -97,5 +97,10 @@
     "activity": "Activity",
 
     "wishlist": "Wishlist"
+  },
+  "LocaleSwitcher": {
+    "en": "English",
+    "kn": "Kannada",
+    "label": "Language"
   }
 }

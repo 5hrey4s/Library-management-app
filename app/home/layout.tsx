@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/Navbar";
 import { auth } from "@/auth";
-import "../../globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
+import "../globals.css";
 
 export const metadata: Metadata = {
   title: "Acme Library Management System",
@@ -13,7 +10,7 @@ export const metadata: Metadata = {
     "Streamline your library operations with our powerful and intuitive platform.",
 };
 
-export default async function AdminLayout({
+export default async function HomeLayout({
   children,
   params: { locale },
 }: {

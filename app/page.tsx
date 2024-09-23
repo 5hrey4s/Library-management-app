@@ -13,11 +13,7 @@ type ProvidersType = Record<
   ClientSafeProvider
 > | null;
 
-export default function WelcomePage({
-  params: { locale },
-}: {
-  params: { locale: string };
-}) {
+export default function WelcomePage() {
   const [providers, setProviders] = useState<ProvidersType>(null);
   const t = useTranslations("LandingPage");
 
@@ -38,7 +34,7 @@ export default function WelcomePage({
           <BookOpen className="h-12 w-12 text-[#2F8D46]" />
         </Link>
         <nav className="flex items-center gap-4">
-          <Link href={`${locale}/login`}>
+          <Link href={`/login`}>
             <Button
               variant="ghost"
               className="bg-[#273239] text-white flex items-center"

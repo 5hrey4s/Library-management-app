@@ -1,11 +1,12 @@
-import "../globals.css";
+import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, unstable_setRequestLocale } from "next-intl/server";
+import { getMessages, getLocale } from "next-intl/server";
 const inter = Inter({ subsets: ["latin"] });
 import { routing } from "@/i18n/routing";
+import LocaleSwitcher from "@/components/LocaleSwitcher";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -19,12 +20,10 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-  params: { locale },
 }: {
   children: React.ReactNode;
-  params: { locale: string };
 }) {
-  unstable_setRequestLocale(locale);
+  const locale = await getLocale();
 
   const messages = await getMessages();
 
@@ -34,6 +33,7 @@ export default async function RootLayout({
         <div className="w-full flex-none md:w-64">
           {/* Your content here */}
         </div>
+
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>

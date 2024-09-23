@@ -1,0 +1,100 @@
+{
+    "LandingPage": {
+      "title": "Willkommen in der Bibliothek! Ihr Tor zu endlosem Wissen und Abenteuer erwartet Sie.",
+      "description": "Optimieren Sie Ihre Bibliotheksverwaltung mit unserer leistungsstarken und intuitiven Plattform.",
+      "getStartedButton": "Loslegen",
+      "loginButton": "Anmelden",
+      "signUpButton": "Registrieren"
+    },
+    "navbar": {
+      "logoText": "Bibliothek",
+      "menu": {
+        "allBooks": "Bücher",
+        "myBooks": "Meine Bücher",
+        "members": "Mitglieder",
+        "transactions": "Transaktionen",
+        "myTransactions": "Meine Transaktionen",
+        "todaysDues": "Heute fällig"
+      },
+      "profileDropdown": {
+        "home": "Startseite",
+        "profile": "Profil",
+        "myBooks": "Meine Bücher",
+        "transactionHistory": "Transaktionsverlauf",
+        "activity": "Aktivität",
+        "logout": "Abmelden",
+        "loggingOut": "Abmelden...",
+        "wishlist": "Wunschliste"
+      },
+      "mobileMenu": {
+        "openIcon": "Menü",
+        "closeIcon": "Schließen"
+      }
+    },
+    "home": {
+      "headerTitle": "Entdecken Sie unsere Bibliothekssammlung",
+      "searchPlaceholder": "Bücher suchen...",
+      "searchButtonText": "Suchen",
+  
+      "footer": {
+        "copyright": "© 2024 Acme Bibliothek. Alle Rechte vorbehalten.",
+        "terms": "Nutzungsbedingungen",
+        "privacy": "Datenschutzrichtlinie"
+      }
+    },
+    "ListBooks": {
+      "bookCatalog": "Buchkatalog",
+      "sortBy": "Sortieren nach",
+      "order": "Reihenfolge",
+      "title": "Titel",
+      "author": "Autor",
+      "publisher": "Verlag",
+      "genre": "Genre",
+      "ascending": "Aufsteigend",
+      "descending": "Absteigend",
+      "applyFilters": "Filter anwenden",
+      "noBooksFound": "Keine Bücher gefunden, die Ihren Suchkriterien entsprechen.",
+      "adjustFilters": "Versuchen Sie, Ihre Filter anzupassen, oder durchsuchen Sie unsere gesamte Sammlung."
+    },
+    "PaginationControls": {
+      "firstPage": "Erste Seite",
+      "prevPage": "Vorherige Seite",
+      "page": "Seite",
+      "of": "von",
+      "nextPage": "Nächste Seite",
+      "lastPage": "Letzte Seite",
+      "show": "Anzeigen",
+      "perPage": "pro Seite"
+    },
+    "AddBook": {
+      "addBook": "Buch hinzufügen"
+    },
+    "Profile": {
+      "profileHeader": "Profil",
+      "adminRole": "Admin",
+      "memberRole": "Mitglied",
+      "memberSince": "Mitglied seit {date}",
+      "booksRead": "Gelesene Bücher",
+      "currentlyReading": "Zurzeit gelesen"
+    },
+    "EditProfile": {
+      "editProfile": "Profil bearbeiten",
+      "editProfileDescription": "Ändern Sie hier Ihr Profil. Klicken Sie auf 'Speichern', wenn Sie fertig sind.",
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "email": "E-Mail",
+      "phoneNumber": "Telefonnummer",
+      "saving": "Speichern...",
+      "saveChanges": "Änderungen speichern",
+      "error": "Fehler",
+      "updateSuccess": "Erfolgreich aktualisiert",
+      "profileUpdated": "Profil erfolgreich aktualisiert.",
+      "updateFailed": "Profilaktualisierung fehlgeschlagen."
+    },
+    "NavLinks": {
+      "profile": "Profil",
+      "activity": "Aktivität",
+      "wishlist": "Wunschliste"
+    }
+  }
+  
