@@ -190,6 +190,7 @@ export const deleteBook = async (isbnNo: string) => {
 };
 
 export const updateRequestStatus = async (data: ITransactionBase) => {
+  console.log("inside data");
   try {
     await transactionRepository.handleBookRequest("Pending", data);
     revalidatePath("/home/books");

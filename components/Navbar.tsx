@@ -212,7 +212,7 @@ export default function Navbar({
                     </span>
                   </div>
                 </DropdownMenuLabel>
-                
+
                 <DropdownMenuItem asChild>
                   <Link
                     href={`/profile`}

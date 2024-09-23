@@ -97,6 +97,8 @@ export class TransactionRepository
     data?: ITransactionBase,
     id?: number
   ) {
+    console.log("inside repository");
+
     try {
       console.log("outside");
       if (!id && data) {

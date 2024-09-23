@@ -1,6 +1,6 @@
 "use client";
 
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 import {
   FaTrash,
   FaEdit,
@@ -42,7 +42,6 @@ import BuyButton from "./borrow";
 import {
   addWishList,
   getMeanRating,
-  rateBook,
   removeWishList,
   updateRating,
 } from "@/lib/actions";
@@ -65,7 +64,7 @@ type BookCardProps = {
     role?: string | undefined;
     isLiked: boolean;
     myBooks?: boolean;
-    rating?: number;
+    rating: boolean;
   };
 };
 
@@ -74,7 +73,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isRequested, setRequested] = useState(false);
   const [isLiked, setIsLiked] = useState(data.isLiked);
-  const [rating, setRating] = useState<number | null>(data.rating || null);
+  const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const { toast } = useToast();
 
@@ -136,12 +135,12 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
   };
 
   const handleRatingSubmit = async () => {
+    console.log("inside card");
     // Here you would typically send the rating and review to your backend
-    console.log(`Rating: ${rating}, Review: ${review}`);
-    await rateBook(rating!, book.id, data.userId, review);
     const meanRating = await getMeanRating(book.id);
+    console.log("===========mean rating", meanRating);
     await updateRating(book.id, meanRating);
-    setRating(meanRating);
+    console.log(`Rating: ${rating}, Review: ${review}`);
     toast({
       title: "Rating Submitted",
       description: `You've rated "${data.book.title}" ${rating} stars.`,
@@ -282,7 +281,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
               <div className="absolute top-4 left-4 flex items-center bg-white bg-opacity-75 rounded-full px-2 py-1">
                 <FaStar className="h-4 w-4 text-yellow-400 mr-1" />
                 <span className="text-sm font-semibold text-gray-800">
-                  {(rating ? rating : 0).toFixed(1)}
+                  {rating.toFixed(1)}
                 </span>
               </div>
             </div>
@@ -349,7 +348,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
             </div>
 
             <div className="mt-4 flex justify-center">
-              {data.myBooks && !rating && (
+              {data.myBooks && (
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="outline" className="w-full">
@@ -370,15 +369,11 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                           <button
                             key={star}
                             className={`text-2xl ${
-                              star <= (rating ? rating : 0)
+                              star <= rating
                                 ? "text-yellow-400"
                                 : "text-gray-300"
                             }`}
-                            onClick={(e) => {
-                              e.stopPropagation(); // Prevents the parent from handling the click
-
-                              setRating(star);
-                            }}
+                            onClick={() => setRating(star)}
                           >
                             ★
                           </button>
@@ -391,9 +386,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                         <Textarea
                           id="review"
                           value={review}
-                          onChange={(e: {
-                            target: { value: SetStateAction<string> };
-                          }) => setReview(e.target.value)}
+                          onChange={(e) => setReview(e.target.value)}
                           placeholder="Write your review here..."
                         />
                       </div>

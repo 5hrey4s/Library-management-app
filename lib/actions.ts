@@ -249,12 +249,15 @@ export async function rateBook(
 }
 
 export async function getMeanRating(bookId: number) {
+  console.log("first action function call");
   const meanRating: number | null =
     await ratingsRepository.getMeanRatingByBookId(bookId);
   return meanRating!;
 }
 
 export async function updateRating(bookId: number, meanRating: number) {
+  console.log("second action function call");
   const book: IBook | null = await bookRepository.getById(bookId);
+  console.log(book);
   await bookRepository.update(bookId, { ...book!, rating: meanRating });
 }

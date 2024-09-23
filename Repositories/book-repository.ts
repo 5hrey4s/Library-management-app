@@ -35,6 +35,7 @@ export class BookRepository implements IRepository<IBookBase, IBook> {
   }
 
   async update(id: number, data: IBookBase): Promise<IBook | null> {
+    console.log("inside repo 2");
     const toBeUpdated = Object.fromEntries(
       Object.entries(data).filter(([key, value]) => value !== undefined)
     );
