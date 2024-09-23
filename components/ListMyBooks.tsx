@@ -123,6 +123,7 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
                 userId: user.id,
                 role: role,
                 isLiked: likedBooks.includes(book.id),
+                myBooks: true,
               }}
             />
           ))}

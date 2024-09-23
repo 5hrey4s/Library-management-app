@@ -39,7 +39,12 @@ import EditButton from "../editBookButton";
 import Image from "next/image";
 import { ITransactionBase } from "@/Models/transaction.model";
 import BuyButton from "./borrow";
-import { addWishList, removeWishList } from "@/lib/actions";
+import {
+  addWishList,
+  getMeanRating,
+  rateBook,
+  removeWishList,
+} from "@/lib/actions";
 import {
   Dialog,
   DialogContent,
@@ -131,6 +136,9 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
   const handleRatingSubmit = async () => {
     // Here you would typically send the rating and review to your backend
     console.log(`Rating: ${rating}, Review: ${review}`);
+    await rateBook(rating, book.id, data.userId, review);
+    const meanRating = await getMeanRating(book.id);
+    setRating(meanRating);
     toast({
       title: "Rating Submitted",
       description: `You've rated "${data.book.title}" ${rating} stars.`,

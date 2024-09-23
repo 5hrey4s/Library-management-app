@@ -234,7 +234,7 @@ const TransactionsTable = async ({
                               <AprroveButton
                                 data={{
                                   id: transaction.id,
-                                  Status: "Approved",
+                                  Status: "Issued",
                                 }}
                               />
                             </DropdownMenuItem>

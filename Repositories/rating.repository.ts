@@ -74,4 +74,29 @@ export class RatingsRepository implements IRepository<IRatingBase, IRating> {
       throw err;
     }
   }
+  async getMeanRatingByBookId(bookId: number): Promise<number | null> {
+    try {
+      // Fetch all ratings for the given bookId
+      const ratings: { rating: number }[] = await this.db
+        .select({ rating: Ratings.rating }) // Select only the rating column
+        .from(Ratings)
+        .where(eq(Ratings.bookId, bookId));
+
+      // Check if there are any ratings
+      if (ratings.length === 0) {
+        return null; // Return null if no ratings are found
+      }
+
+      // Calculate the mean of the ratings
+      const totalRating = ratings.reduce(
+        (sum, current) => sum + current.rating,
+        0
+      );
+      const meanRating = totalRating / ratings.length;
+
+      return meanRating;
+    } catch (err) {
+      throw err;
+    }
+  }
 }

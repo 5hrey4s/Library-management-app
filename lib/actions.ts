@@ -231,11 +231,22 @@ export async function todaysDues() {
   return dues;
 }
 
-async function rateBook(rating: number, bookId: number, memberId: number) {
+export async function rateBook(
+  rating: number,
+  bookId: number,
+  memberId: number,
+  review: string = ""
+) {
   await ratingsRepository.create({
     bookId: bookId,
     memberId: memberId,
     rating: rating,
-    review: "",
+    review: review,
   });
+}
+
+export async function getMeanRating(bookId: number) {
+  const meanRating: number | null =
+    await ratingsRepository.getMeanRatingByBookId(bookId);
+  return meanRating!;
 }
