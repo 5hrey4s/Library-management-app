@@ -85,7 +85,7 @@ export class RatingsRepository implements IRepository<IRatingBase, IRating> {
         .select({ rating: Ratings.rating }) // Select only the rating column
         .from(Ratings)
         .where(eq(Ratings.bookId, bookId));
-      
+      console.log(ratings);
       // Check if there are any ratings
       if (ratings.length === 0) {
         return 0; // Return null if no ratings are found
@@ -97,9 +97,10 @@ export class RatingsRepository implements IRepository<IRatingBase, IRating> {
         0
       );
       const meanRating = totalRating / ratings.length;
-
+      console.log(meanRating);
       return meanRating;
     } catch (err) {
+      console.log(err);
       throw err;
     }
   }
