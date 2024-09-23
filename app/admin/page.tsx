@@ -79,6 +79,7 @@ export default async function Home({ searchParams }: HomeProps) {
             genres={genres}
             user={user!}
             likedBooks={likedBooks}
+            timeZone={""}
           />
         </section>
       </main>

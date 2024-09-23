@@ -1,8 +1,10 @@
 "use client";
 
 import { Button } from "./button";
-import { FC, ReactNode } from "react";
-import { FaDollarSign } from "react-icons/fa";
+import { FC, ReactNode, Suspense } from "react";
+import { FaDollarSign, FaRupeeSign } from "react-icons/fa";
+import { Skeleton } from "./skeleton";
+import PriceTag from "../priceTag";
 
 interface BuyButtonProps {
   className?: string;
@@ -11,16 +13,22 @@ interface BuyButtonProps {
   price: number;
 }
 
-const BuyButton: FC<BuyButtonProps> = ({ className, onClick, children, price }) => {
+const BuyButton: FC<BuyButtonProps> = ({
+  className,
+  onClick,
+  children,
+  price,
+}) => {
   return (
-    <Button 
-      className={`${className} flex items-center justify-between px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200`} 
+    <Button
+      className={`${className} flex items-center justify-between px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200`}
       onClick={onClick}
     >
       <span>{children}</span>
       <div className="flex items-center ml-2">
-        <FaDollarSign className="mr-1" />
-        <span>{price.toFixed(2)}</span>
+        <Suspense fallback={<Skeleton />}>
+          <span>{<PriceTag price={price}></PriceTag>}</span>
+        </Suspense>
       </div>
     </Button>
   );

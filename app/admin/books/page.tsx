@@ -8,6 +8,7 @@ import { fetchBooks, fetchGenre, fetchMemberByEmail } from "@/lib/data";
 import { IBookBase } from "@/Models/book-model";
 import { getWishListByMemberId } from "@/lib/actions";
 import { getTranslations } from "next-intl/server";
+import { BooksTable } from "@/components/booksTable";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -61,7 +62,7 @@ export default async function Home({
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="md:w-1/2 mb-8 md:mb-0">
                 <h1 className="text-3xl font-bold mb-4">
-                {t("headerTitle")} {/* Translated header title */}
+                  {t("headerTitle")} {/* Translated header title */}
                 </h1>
                 <div className="flex">
                   <SearchComponent
@@ -78,14 +79,14 @@ export default async function Home({
         <section className="container mx-auto relative py-8">
           <div className="absolute top-0 right-0 -mt-4 mr-4"></div>
 
-          <ListBooks
+          <BooksTable
             pagination={pagination}
             searchParams={searchParams}
             role={session?.user!.role}
             items={items}
             genres={genres}
             user={user!}
-            likedBooks={likedBooks}
+            // likedBooks={likedBooks}
           />
         </section>
       </div>

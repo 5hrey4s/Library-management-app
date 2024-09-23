@@ -32,6 +32,7 @@ export interface ListBooksProps {
   user: IMember;
   genres: string[];
   likedBooks: number[];
+  timeZone: string;
 }
 
 const ListBooks: React.FC<ListBooksProps> = ({
@@ -42,6 +43,7 @@ const ListBooks: React.FC<ListBooksProps> = ({
   user,
   genres,
   likedBooks,
+  timeZone,
 }) => {
   const router = useRouter();
   const currentSearchParams = useSearchParams();
@@ -138,6 +140,7 @@ const ListBooks: React.FC<ListBooksProps> = ({
                 role: role,
                 isLiked: likedBooks.includes(book.id),
                 rating: book.rating,
+                timeZone: timeZone,
               }}
             />
           ))}

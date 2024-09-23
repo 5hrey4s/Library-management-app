@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaTrash,
   FaEdit,
@@ -66,6 +66,7 @@ type BookCardProps = {
     isLiked: boolean;
     myBooks?: boolean;
     rating: number;
+    timeZone: string;
   };
 };
 
@@ -79,6 +80,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
   const [review, setReview] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
+
 
   const handleFlip = (e: React.MouseEvent) => {
     if (!(e.target as HTMLElement).closest("button")) {
@@ -409,6 +411,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
 
             <AlertDialog>
               <AlertDialogTrigger asChild>
+                
                 <BuyButton
                   className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors"
                   price={book.price || 0}

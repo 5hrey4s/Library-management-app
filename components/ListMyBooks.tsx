@@ -126,6 +126,7 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
                 isLiked: likedBooks.includes(book.id),
                 myBooks: true,
                 rating: book.rating,
+                timeZone: "",
               }}
             />
           ))}

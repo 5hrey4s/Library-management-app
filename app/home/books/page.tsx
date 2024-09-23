@@ -23,6 +23,19 @@ export default async function Home({
 }: HomeProps) {
   const t = await getTranslations({ locale, namespace: "home" });
 
+  const timeZone: string = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  console.log(`Time Zone: ${timeZone}`);
+
+  const indianSubcontinentTimeZones: string[] = [
+    "Asia/Calcutta", // India
+    "Asia/Karachi", // Pakistan
+    "Asia/Dhaka", // Bangladesh
+    "Asia/Kathmandu", // Nepal
+    "Asia/Thimphu", // Bhutan
+    "Asia/Colombo", // Sri Lanka
+    "Indian/Maldives", // Maldives
+  ];
+
   const page = parseInt(searchParams["page"] ?? "1");
   const limit = 8;
   const sortBy = (searchParams["sortBy"] as keyof IBookBase) || "title";
@@ -75,7 +88,7 @@ export default async function Home({
             genres={genres}
             user={user!}
             likedBooks={likedBooks}
-            
+            timeZone={timeZone}
           />
         </section>
       </div>

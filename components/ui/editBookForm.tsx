@@ -121,7 +121,7 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
           description: "The book details have been updated.",
           variant: "default",
         });
-        router.replace("/home/books");
+        router.replace("/admin/books");
       } catch (error) {
         console.error(error);
         toast({

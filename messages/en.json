@@ -54,7 +54,10 @@
     "descending": "Descending",
     "applyFilters": "Apply Filters",
     "noBooksFound": "No books found matching your search criteria.",
-    "adjustFilters": "Try adjusting your filters or browse our full collection."
+    "adjustFilters": "Try adjusting your filters or browse our full collection.",
+    "isbn": "ISBN Number",
+    "availableCopies": "Available Copies",
+    "actions": "Actions"
   },
   "PaginationControls": {
     "firstPage": "First page",
