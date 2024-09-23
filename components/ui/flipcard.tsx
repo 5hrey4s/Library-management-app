@@ -283,7 +283,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
               <div className="absolute top-4 left-4 flex items-center bg-white bg-opacity-75 rounded-full px-2 py-1">
                 <FaStar className="h-4 w-4 text-yellow-400 mr-1" />
                 <span className="text-sm font-semibold text-gray-800">
-                  {rating.toFixed(1)}
+                  {data.rating.toFixed(1)}
                 </span>
               </div>
             </div>
@@ -350,7 +350,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
             </div>
 
             <div className="mt-4 flex justify-center">
-              {data.myBooks && (
+              {data.myBooks && !data.rating && (
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="outline" className="w-full">
@@ -371,7 +371,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                           <button
                             key={star}
                             className={`text-2xl ${
-                              star <= rating
+                              star <= data.rating
                                 ? "text-yellow-400"
                                 : "text-gray-300"
                             }`}
@@ -405,50 +405,52 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
               )}
             </div>
 
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <BuyButton
-                  className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors"
-                  price={book.price || 0}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Buy Now
-                </BuyButton>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Confirm Purchase</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Are you sure you want to buy {data.book.title} for $
-                    {book.price || "N/A"}?
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction asChild>
-                    <BuyButton
-                      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors"
-                      price={book.price || 0}
-                      onClick={async (e) => {
-                        e.stopPropagation();
-                        const reqData: ITransactionBase = {
-                          bookId: data.book.id,
-                          memberId: data.userId,
-                        };
-                        await handleBorrow(reqData);
-                        toast({
-                          title: "Purchase Successful",
-                          description: `You have successfully purchased "${data.book.title}".`,
-                          variant: "default",
-                        });
-                      }}
-                    >
-                      Confirm Purchase
-                    </BuyButton>
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            {!data.myBooks && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <BuyButton
+                    className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors"
+                    price={book.price || 0}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Buy Now
+                  </BuyButton>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Confirm Purchase</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to buy {data.book.title} for $
+                      {book.price || "N/A"}?
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction asChild>
+                      <BuyButton
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors"
+                        price={book.price || 0}
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          const reqData: ITransactionBase = {
+                            bookId: data.book.id,
+                            memberId: data.userId,
+                          };
+                          await handleBorrow(reqData);
+                          toast({
+                            title: "Purchase Successful",
+                            description: `You have successfully purchased "${data.book.title}".`,
+                            variant: "default",
+                          });
+                        }}
+                      >
+                        Confirm Purchase
+                      </BuyButton>
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
           </div>
         </div>
       </div>

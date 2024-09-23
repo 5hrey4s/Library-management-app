@@ -31,9 +31,9 @@ export async function middleware(req) {
     } else if (token?.role === "admin") {
       return NextResponse.redirect(new URL(`/admin/books`, req.url));
     }
-    if (token.role !== "admin") {
-      return NextResponse.redirect(new URL("/home", req.url));
-    }
+    // if (token.role !== "admin") {
+    //   return NextResponse.redirect(new URL("/home", req.url));
+    // }
   }
 
   // return NextResponse.next();

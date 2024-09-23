@@ -75,6 +75,7 @@ export default async function Home({
             genres={genres}
             user={user!}
             likedBooks={likedBooks}
+            
           />
         </section>
       </div>
