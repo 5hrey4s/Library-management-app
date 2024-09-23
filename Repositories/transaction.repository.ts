@@ -400,7 +400,7 @@ export class TransactionRepository
         .innerJoin(Books, eq(Transactions.bookId, Books.id))
         .innerJoin(Members, eq(Transactions.memberId, Members.id))
         // Extract the date part from dueDate and match it with today's date
-        .where(like(Transactions.dueDate, `%${today}%`));
+        .where(and(like(Transactions.dueDate, `%${today}%`)));
 
       // Format the data into the `DueBook` structure
       const formattedDues: DueBook[] = dueTransactions.map((transaction) => ({

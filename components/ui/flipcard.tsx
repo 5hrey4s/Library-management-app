@@ -74,8 +74,10 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isRequested, setRequested] = useState(false);
   const [isLiked, setIsLiked] = useState(data.isLiked);
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(data.rating);
+  const [tempRating, setTempRating] = useState(data.rating);
   const [review, setReview] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const handleFlip = (e: React.MouseEvent) => {
@@ -137,18 +139,18 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
 
   const handleRatingSubmit = async () => {
     console.log("inside card");
-    // Here you would typically send the rating and review to your backend
-    await rateBook(rating, book.id, data.userId, review);
+    await rateBook(tempRating, book.id, data.userId, review);
     const meanRating = await getMeanRating(book.id);
     console.log("===========mean rating", meanRating);
     await updateRating(book.id, meanRating);
-    console.log(`Rating: ${rating}, Review: ${review}`);
+    setRating(meanRating);
+    console.log(`Rating: ${tempRating}, Review: ${review}`);
     toast({
       title: "Rating Submitted",
-      description: `You've rated "${data.book.title}" ${rating} stars.`,
+      description: `You've rated "${data.book.title}" ${tempRating} stars.`,
     });
-    // Reset the review field after submission
     setReview("");
+    setIsDialogOpen(false);
   };
 
   const AdminButtons = () => (
@@ -283,7 +285,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
               <div className="absolute top-4 left-4 flex items-center bg-white bg-opacity-75 rounded-full px-2 py-1">
                 <FaStar className="h-4 w-4 text-yellow-400 mr-1" />
                 <span className="text-sm font-semibold text-gray-800">
-                  {data.rating.toFixed(1)}
+                  {rating.toFixed(1)}
                 </span>
               </div>
             </div>
@@ -350,8 +352,8 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
             </div>
 
             <div className="mt-4 flex justify-center">
-              {data.myBooks && !data.rating && (
-                <Dialog>
+              {data.myBooks && (
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                   <DialogTrigger asChild>
                     <Button variant="outline" className="w-full">
                       Rate this book
@@ -371,12 +373,12 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                           <button
                             key={star}
                             className={`text-2xl ${
-                              star <= data.rating
+                              star <= tempRating
                                 ? "text-yellow-400"
                                 : "text-gray-300"
                             }`}
                             onClick={() => {
-                              setRating(star);
+                              setTempRating(star);
                             }}
                           >
                             ★
@@ -405,52 +407,50 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
               )}
             </div>
 
-            {!data.myBooks && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <BuyButton
-                    className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors"
-                    price={book.price || 0}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    Buy Now
-                  </BuyButton>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Confirm Purchase</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Are you sure you want to buy {data.book.title} for $
-                      {book.price || "N/A"}?
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction asChild>
-                      <BuyButton
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors"
-                        price={book.price || 0}
-                        onClick={async (e) => {
-                          e.stopPropagation();
-                          const reqData: ITransactionBase = {
-                            bookId: data.book.id,
-                            memberId: data.userId,
-                          };
-                          await handleBorrow(reqData);
-                          toast({
-                            title: "Purchase Successful",
-                            description: `You have successfully purchased "${data.book.title}".`,
-                            variant: "default",
-                          });
-                        }}
-                      >
-                        Confirm Purchase
-                      </BuyButton>
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <BuyButton
+                  className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors"
+                  price={book.price || 0}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Buy Now
+                </BuyButton>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Confirm Purchase</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to buy {data.book.title} for $
+                    {book.price || "N/A"}?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction asChild>
+                    <BuyButton
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors"
+                      price={book.price || 0}
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        const reqData: ITransactionBase = {
+                          bookId: data.book.id,
+                          memberId: data.userId,
+                        };
+                        await handleBorrow(reqData);
+                        toast({
+                          title: "Purchase Successful",
+                          description: `You have successfully purchased "${data.book.title}".`,
+                          variant: "default",
+                        });
+                      }}
+                    >
+                      Confirm Purchase
+                    </BuyButton>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </div>
