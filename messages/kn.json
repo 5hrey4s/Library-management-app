@@ -1,0 +1,98 @@
+{
+  "LandingPage": {
+    "title": "ನಮಸ್ಕಾರ! ನಿಮ್ಮತ್ತ ಗುರಿ ಹೊಂದಿದ ಅಪಾರ ಜ್ಞಾನ ಮತ್ತು ಸಾಹಸದ ಪ್ರವೇಶ ದ್ವಾರಕ್ಕೆ ಸ್ವಾಗತ.",
+    "description": "ನಮ್ಮ ಶಕ್ತಿಶಾಲಿ ಮತ್ತು ಸುಲಭ ತಂತ್ರಜ್ಞಾನ ಬಳಸಿ ನಿಮ್ಮ ಗ್ರಂಥಾಲಯದ ಕಾರ್ಯಗಳನ್ನು ಸುಗಮಗೊಳಿಸಿ.",
+    "getStartedButton": "ಪ್ರಾರಂಭಿಸಿ",
+    "loginButton": "ಲಾಗಿನ್",
+    "signUpButton": "ನೊಂದಣಿ"
+  },
+  "navbar": {
+    "logoText": "ಗ್ರಂಥಾಲಯ",
+    "menu": {
+      "allBooks": "ಪುಸ್ತಕಗಳು",
+      "myBooks": "ನನ್ನ ಪುಸ್ತಕಗಳು",
+      "members": "ಸದಸ್ಯರು",
+      "transactions": "ಊರಗೊಳಣೆಗಳು",
+      "myTransactions": "ನನ್ನ ಊರಗೊಳಣೆಗಳು",
+      "todaysDues": "ಇಂದು ಬಾಕಿ"
+    },
+    "profileDropdown": {
+      "home": "ಮನೆ",
+      "profile": "ಪ್ರೊಫೈಲ್",
+      "myBooks": "ನನ್ನ ಪುಸ್ತಕಗಳು",
+      "transactionHistory": "ಊರಗೊಳಣೆಯ ಇತಿಹಾಸ",
+      "activity": "ಚಟುವಟಿಕೆ",
+      "logout": "ಲಾಗ್ ಔಟ್",
+      "loggingOut": "ಲಾಗ್ ಔಟ್ ಆಗುತ್ತಿದೆ...",
+      "wishlist": "ಕಾದಿರಿಸಿದದಿಗೆ"
+    },
+    "mobileMenu": {
+      "openIcon": "ಮೆನು",
+      "closeIcon": "ಬಂದಿಡು"
+    }
+  },
+  "home": {
+    "headerTitle": "ನಮ್ಮ ಗ್ರಂಥಾಲಯ ಸಂಗ್ರಹವನ್ನು ಅನ್ವೇಷಿಸಿ",
+    "searchPlaceholder": "ಪುಸ್ತಕಗಳನ್ನು ಹುಡುಕಿ...",
+    "searchButtonText": "ಹುಡುಕಿ",
+    "footer": {
+      "copyright": "© 2024 ಆಕ್ಮೆ ಗ್ರಂಥಾಲಯ. ಎಲ್ಲಾ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.",
+      "terms": "ಸೇವಾ ನಿಯಮಗಳು",
+      "privacy": "ಗೌಪ್ಯತಾ ನೀತಿ"
+    }
+  },
+  "ListBooks": {
+    "bookCatalog": "ಪುಸ್ತಕ ಪಟ್ಟಿಕೆ",
+    "sortBy": "ವಿಂಗಡಿಸಿ",
+    "order": "ಕ್ರಮ",
+    "title": "ಶೀರ್ಷಿಕೆ",
+    "author": "ಲೇಖಕ",
+    "publisher": "ಪ್ರಕಾಶಕ",
+    "genre": "ವರ್ಗ",
+    "ascending": "ಏರುವಿಕ್ರಮ",
+    "descending": "ಇಳಿವಿಕ್ರಮ",
+    "applyFilters": "ಫಿಲ್ಟರ್‌ಗಳನ್ನು ಅನ್ವಯಿಸಿ",
+    "noBooksFound": "ನಿಮ್ಮ ಶೋಧದ ಮೇಲ್ಕಿರಣಕ್ಕೆ ಯಾವುದೇ ಪುಸ್ತಕಗಳು ಸಿಗುತ್ತಿಲ್ಲ.",
+    "adjustFilters": "ನೀವು ನಿಮ್ಮ ಫಿಲ್ಟರ್‌ಗಳನ್ನು ಹೊಂದಿಸಬಹುದು ಅಥವಾ ನಮ್ಮ ಸಂಪೂರ್ಣ ಸಂಗ್ರಹವನ್ನು ಅನುಸರಿಸಿ."
+  },
+  "PaginationControls": {
+    "firstPage": "ಮೊದಲ ಪುಟ",
+    "prevPage": "ಹಿಂದಿನ ಪುಟ",
+    "page": "ಪುಟ",
+    "of": "ನ",
+    "nextPage": "ಮುಂದಿನ ಪುಟ",
+    "lastPage": "ಕೊನೆಯ ಪುಟ",
+    "show": "ತೋರಿಸು",
+    "perPage": "ಪ್ರತಿ ಪುಟ"
+  },
+  "AddBook": {
+    "addBook": "ಪುಸ್ತಕವನ್ನು ಸೇರಿಸಿ"
+  },
+  "Profile": {
+    "profileHeader": "ಪ್ರೊಫೈಲ್",
+    "adminRole": "ನಿರ್ವಾಹಕ",
+    "memberRole": "ಸದಸ್ಯ",
+    "memberSince": "ಸದಸ್ಯತ್ವವು {date} ರಿಂದ",
+    "booksRead": "ಊಹಿಸಿದ ಪುಸ್ತಕಗಳು",
+    "currentlyReading": "ಪ್ರಸ್ತುತ ಓದುತ್ತಿರುವುದು"
+  },
+  "EditProfile": {
+    "editProfile": "ವ್ಯವಸ್ಥೆ ಬದಲಾಯಿಸಿ",
+    "editProfileDescription": "ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ನಲ್ಲಿ ಬದಲಾವಣೆಗಳನ್ನು ಇಲ್ಲಿ ಮಾಡಿ. ನೀವು ಮುಗಿಸಿದ ನಂತರ ಉಳಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ.",
+    "firstName": "ಮೊದಲ ಹೆಸರು",
+    "lastName": "ಅಂತಿಮ ಹೆಸರು",
+    "email": "ಇಮೇಲ್",
+    "phoneNumber": "ಫೋನ್ ಸಂಖ್ಯೆ",
+    "saving": "ಉಳಿಸುತ್ತಿದ್ದಾರೆ...",
+    "saveChanges": "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ",
+    "error": "ತಪ್ಪಾಗಿದೆ",
+    "updateSuccess": "ವಿಶ್ವಾಸಾರ್ಹತೆಯಂತೆ",
+    "profileUpdated": "ಪ್ರೊಫೈಲ್ ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ.",
+    "updateFailed": "ಪ್ರೊಫೈಲ್ ಅನ್ನು ನವೀಕರಿಸಲು ವಿಫಲವಾಗಿದೆ."
+  },
+  "NavLinks": {
+    "profile": "ಪ್ರೊಫೈಲ್",
+    "activity": "ಚಟುವಟಿಕೆ",
+    "wishlist": "ಕಾದಿರಿಸಿದದಿಗೆ"
+  }
+}

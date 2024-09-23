@@ -23,12 +23,12 @@ export default async function Home({ searchParams }: HomeProps) {
   const sortOrder = searchParams["sortOrder"] || "asc";
 
   const offset = (page - 1) * limit;
+  console.log(offset);
   const pageRequest = {
     offset: offset,
     limit: limit,
     search: searchParams["search"] ?? "",
   };
-  console.log(pageRequest);
   const sortOptions = { sortOrder: sortOrder, sortBy: sortBy };
   const { items, pagination } = await fetchBooks(pageRequest, sortOptions);
   const session = await auth();
@@ -57,7 +57,10 @@ export default async function Home({ searchParams }: HomeProps) {
                   Explore Our Library Collection
                 </h1>
                 <div className="flex">
-                  <SearchComponent placeholder="Search books..." />
+                  <SearchComponent
+                    placeholder="Search books..."
+                    searchButtonText={"Search"}
+                  />
                 </div>
               </div>
             </div>
@@ -81,7 +84,7 @@ export default async function Home({ searchParams }: HomeProps) {
       </main>
 
       {/* Footer */}
-      <footer className="flex flex-col sm:flex-row items-center justify-between py-6 px-4 md:px-6 bg-white dark:bg-gray-800">
+      <div className="flex flex-col sm:flex-row items-center justify-between py-6 px-4 md:px-6 bg-white dark:bg-gray-800">
         <p className="text-xs text-gray-500 dark:text-gray-400">
           © 2024 Acme Library. All rights reserved.
         </p>
@@ -99,7 +102,7 @@ export default async function Home({ searchParams }: HomeProps) {
             Privacy
           </Link>
         </nav>
-      </footer>
+      </div>
     </div>
   );
 }

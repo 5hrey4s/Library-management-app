@@ -1,14 +1,13 @@
 "use server";
+
 import Link from "next/link";
 import SearchComponent from "@/components/search";
-import MemberTable from "@/components/MemberTable";
-import Navbar from "@/components/Navbar";
+import { ListBooks } from "@/components/listBooks";
 import { auth } from "@/auth";
-import { Suspense } from "react";
-import TableSkeleton from "@/components/TableSkeleton";
-import { fetchGenre, fetchMemberByEmail, fetchMembers } from "@/lib/data";
+import { fetchBooks, fetchGenre, fetchMemberByEmail } from "@/lib/data";
 import { IBookBase } from "@/Models/book-model";
-import { IMemberBase } from "@/Models/member.model";
+import { getWishListByMemberId } from "@/lib/actions";
+import { getTranslations } from "next-intl/server";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -16,12 +15,18 @@ export interface SearchParams {
 
 interface HomeProps {
   searchParams: SearchParams;
+  params: { locale: string };
 }
 
-export default async function Home({ searchParams }: HomeProps) {
+export default async function Home({
+  searchParams,
+  params: { locale },
+}: HomeProps) {
+  const t = await getTranslations({ locale, namespace: "home" });
+
   const page = parseInt(searchParams["page"] ?? "1");
   const limit = 8;
-  const sortBy = (searchParams["sortBy"] as keyof IMemberBase) || "firstName";
+  const sortBy = (searchParams["sortBy"] as keyof IBookBase) || "title";
   const sortOrder = searchParams["sortOrder"] || "asc";
 
   const offset = (page - 1) * limit;
@@ -30,10 +35,13 @@ export default async function Home({ searchParams }: HomeProps) {
     limit: limit,
     search: searchParams["search"] ?? "",
   };
+  console.log(pageRequest);
   const sortOptions = { sortOrder: sortOrder, sortBy: sortBy };
-  const { items, pagination } = await fetchMembers(pageRequest, sortOptions);
+  const { items, pagination } = await fetchBooks(pageRequest, sortOptions);
   const session = await auth();
+  const genres = await fetchGenre();
   const user = await fetchMemberByEmail(session?.user.email!);
+  const likedBooks = await getWishListByMemberId(user?.id!);
   if (session?.user.role !== "admin") {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -43,55 +51,65 @@ export default async function Home({ searchParams }: HomeProps) {
   }
   return (
     <div className="flex flex-col min-h-screen bg-[#F5F5F7] text-gray-900 dark:text-gray-100">
-      {/* <Navbar logoText="Library" active="Members" role={session?.user!.role} /> */}
+      {/* <Navbar logoText="Library" active="Books" role={session?.user!.role} /> */}
 
-      <main className="flex-1 bg-[#F5F5F7]-50 ">
+      {/* Main Content */}
+      <div className="flex-1">
+        {/* Search Section */}
         <section className="bg-green-50 py-12 rounded-lg">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="md:w-1/2 mb-8 md:mb-0">
                 <h1 className="text-3xl font-bold mb-4">
-                  Explore Our Library Collection{" "}
+                {t("headerTitle")} {/* Translated header title */}
                 </h1>
                 <div className="flex">
-                  <SearchComponent placeholder="Search books..." />
+                  <SearchComponent
+                    placeholder={t("searchPlaceholder")}
+                    searchButtonText={t("searchButtonText")}
+                  />
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="container mx-auto bg-[#F5F5F7] py-8">
-          {/* <ListBooks pageRequest={pageRequest} searchParams={searchParams} /> */}
-          <Suspense fallback={<TableSkeleton columns={5} rows={9} />}>
-            <MemberTable
-              pagination={pagination}
-              searchParams={searchParams}
-              items={items}
-            />
-          </Suspense>
-        </section>
-      </main>
+        {/* Book List Section */}
+        <section className="container mx-auto relative py-8">
+          <div className="absolute top-0 right-0 -mt-4 mr-4"></div>
 
-      <footer className="flex flex-col sm:flex-row items-center justify-between py-6 px-4 md:px-6 bg-white dark:bg-gray-800">
+          <ListBooks
+            pagination={pagination}
+            searchParams={searchParams}
+            role={session?.user!.role}
+            items={items}
+            genres={genres}
+            user={user!}
+            likedBooks={likedBooks}
+          />
+        </section>
+      </div>
+
+      {/* Footer */}
+      <div className="flex flex-col sm:flex-row items-center justify-between py-6 px-4 md:px-6 bg-white dark:bg-gray-800">
         <p className="text-xs text-gray-500 dark:text-gray-400">
           © 2024 Acme Library. All rights reserved.
         </p>
         <nav className="flex gap-4 sm:gap-6">
           <Link
-            className="text-xs text-blue-600 hover:underline dark:text-teal-400 dark:hover:underline"
+            className="text-xs text-blue-600 hover:underline dark:text-teal-400"
             href="#"
           >
             Terms of Service
           </Link>
           <Link
-            className="text-xs text-blue-600 hover:underline dark:text-teal-400 dark:hover:underline"
+            className="text-xs text-blue-600 hover:underline dark:text-teal-400"
             href="#"
           >
             Privacy
           </Link>
         </nav>
-      </footer>
+      </div>
     </div>
   );
 }

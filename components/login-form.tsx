@@ -7,7 +7,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Button } from "./ui/button";
 import { useActionState } from "react";
-import { authenticate } from "@/app/lib/actions";
+import { authenticate } from "@/app/[locale]/lib/actions";
 import GoogleSignIn from "./googleLogin";
 import { Separator } from "./ui/seperater";
 

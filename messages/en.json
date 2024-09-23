@@ -1,0 +1,101 @@
+{
+  "LandingPage": {
+    "title": "Welcome to the Library! Your gateway to endless knowledge and adventure awaits.",
+    "description": "Streamline your library operations with our powerful and intuitive platform.",
+    "getStartedButton": "Get Started",
+    "loginButton": "Login",
+    "signUpButton": "Sign Up"
+  },
+  "navbar": {
+    "logoText": "Library",
+    "menu": {
+      "allBooks": "Books",
+      "myBooks": "My Books",
+      "members": "Members",
+      "transactions": "Transactions",
+      "myTransactions": "My Transactions",
+      "todaysDues": "Due Today"
+    },
+    "profileDropdown": {
+      "home": "Home",
+      "profile": "Profile",
+      "myBooks": "My Books",
+      "transactionHistory": "Transaction History",
+      "activity": "Activity",
+      "logout": "Logout",
+      "loggingOut": "Logging out...",
+      "wishlist": "Wishlist"
+    },
+    "mobileMenu": {
+      "openIcon": "Menu",
+      "closeIcon": "Close"
+    }
+  },
+  "home": {
+    "headerTitle": "Explore Our Library Collection",
+    "searchPlaceholder": "Search books...",
+    "searchButtonText": "Search",
+
+    "footer": {
+      "copyright": "© 2024 Acme Library. All rights reserved.",
+      "terms": "Terms of Service",
+      "privacy": "Privacy Policy"
+    }
+  },
+  "ListBooks": {
+    "bookCatalog": "Book Catalog",
+    "sortBy": "Sort by",
+    "order": "Order",
+    "title": "Title",
+    "author": "Author",
+    "publisher": "Publisher",
+    "genre": "Genre",
+    "ascending": "Ascending",
+    "descending": "Descending",
+    "applyFilters": "Apply Filters",
+    "noBooksFound": "No books found matching your search criteria.",
+    "adjustFilters": "Try adjusting your filters or browse our full collection."
+  },
+  "PaginationControls": {
+    "firstPage": "First page",
+    "prevPage": "Previous page",
+    "page": "Page",
+    "of": "of",
+    "nextPage": "Next page",
+    "lastPage": "Last page",
+    "show": "Show",
+    "perPage": "per page"
+  },
+  "AddBook": {
+    "addBook": "Add Book"
+  },
+  "Profile": {
+    "profileHeader": "Profile",
+    "adminRole": "Admin",
+    "memberRole": "Member",
+    "memberSince": "Member since {date}",
+    "booksRead": "Books Read",
+    "currentlyReading": "Currently Reading"
+  },
+  "EditProfile": {
+    "editProfile": "Edit Profile",
+    "editProfileDescription": "Make changes to your profile here. Click save when you're done.",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phoneNumber": "Phone Number",
+    "saving": "Saving...",
+    "saveChanges": "Save changes",
+    "error": "Error",
+    "updateSuccess": "Update Successful",
+    "profileUpdated": "Profile updated successfully.",
+    "updateFailed": "Failed to update profile."
+  },
+  "NavLinks": {
+    "profile": "Profile",
+
+    "activity": "Activity",
+
+    "wishlist": "Wishlist"
+  }
+}

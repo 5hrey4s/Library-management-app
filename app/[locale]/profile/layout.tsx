@@ -14,12 +14,14 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
+  params: { locale },
 }: {
   children: React.ReactNode;
+  params: { locale: string };
 }) {
   const session = await auth();
   // This would typically come from your data fetching logic
-  
+
   const sideNavItems = [
     { icon: User, label: "Profile", href: "/profile" },
     { icon: Activity, label: "Activity", href: "/profile/activity" },
@@ -33,17 +35,16 @@ export default async function RootLayout({
           logoText="Library"
           role={session?.user?.role}
           userName={session?.user?.name!}
+          locale={locale}
         />
         <div className="flex flex-1">
           <aside className="w-64 hidden md:block bg-[#F0FDF4]">
             <SideNav items={sideNavItems} activeItem="profile" />
           </aside>
-          <main className="flex-1 p-4 bg-gray-100">{children}</main>
+          <div className="flex-1 p-4 bg-gray-100">{children}</div>
         </div>
-        
         <Footer />
       </div>
-      <Toaster />
     </>
   );
 }

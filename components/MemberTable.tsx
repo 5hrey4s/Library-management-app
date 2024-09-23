@@ -1,5 +1,5 @@
 "use client";
-import { SearchParams } from "@/app/home/books/page";
+import { SearchParams } from "@/app/[locale]/home/books/page";
 import { IMember } from "@/Models/member.model";
 import React from "react";
 import {

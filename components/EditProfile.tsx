@@ -15,9 +15,10 @@ import {
 import { Edit2 } from "lucide-react";
 import { editProfile } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslations } from "next-intl"; // Import useTranslations for translations
 
 export default function EditProfile({ user }: { user: any }) {
-  // Initialize state with the custom hook for action management
+  const t = useTranslations("EditProfile"); // Initialize translations for the EditProfile component
   const [errorMessage, formAction, isPending] = useActionState(
     editProfile,
     undefined
@@ -31,10 +32,11 @@ export default function EditProfile({ user }: { user: any }) {
     const response = await formAction(formData);
 
     toast({
-      title: "Error",
-      description: errorMessage || "Failed to update profile.",
-      variant: "destructive",
+      title: t("updateSuccess"),
+      description: t("profileUpdated"),
+      variant: "default",
     });
+    setIsOpen(false); // Close the dialog after a successful update
   };
 
   return (
@@ -44,21 +46,19 @@ export default function EditProfile({ user }: { user: any }) {
           variant="outline"
           className="bg-[#2f8d46] text-white hover:bg-[#1b5e20]"
         >
-          <Edit2 className="mr-2 h-4 w-4" /> Edit Profile
+          <Edit2 className="mr-2 h-4 w-4" /> {t("editProfile")}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-full sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit Profile</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DialogDescription>
+          <DialogTitle>{t("editProfile")}</DialogTitle>
+          <DialogDescription>{t("editProfileDescription")}</DialogDescription>
         </DialogHeader>
         <form action={handleFormAction}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
               <Label htmlFor="firstName" className="text-left sm:text-right">
-                First Name
+                {t("firstName")}
               </Label>
               <Input
                 id="firstName"
@@ -69,7 +69,7 @@ export default function EditProfile({ user }: { user: any }) {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
               <Label htmlFor="lastName" className="text-left sm:text-right">
-                Last Name
+                {t("lastName")}
               </Label>
               <Input
                 id="lastName"
@@ -80,7 +80,7 @@ export default function EditProfile({ user }: { user: any }) {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
               <Label htmlFor="email" className="text-left sm:text-right">
-                Email
+                {t("email")}
               </Label>
               <Input
                 id="email"
@@ -92,7 +92,7 @@ export default function EditProfile({ user }: { user: any }) {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-4">
               <Label htmlFor="phoneNumber" className="text-left sm:text-right">
-                Phone Number
+                {t("phoneNumber")}
               </Label>
               <Input
                 id="phoneNumber"
@@ -109,7 +109,7 @@ export default function EditProfile({ user }: { user: any }) {
               className="bg-[#2f8d46] text-white hover:bg-[#1b5e20]"
               disabled={isPending}
             >
-              {isPending ? "Saving..." : "Save changes"}
+              {isPending ? t("saving") : t("saveChanges")}
             </Button>
           </DialogFooter>
         </form>

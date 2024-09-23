@@ -6,14 +6,20 @@ import Link from "next/link";
 import { getProviders } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { ClientSafeProvider, LiteralUnion } from "next-auth/lib/client";
+import { useTranslations } from "next-intl";
 
 type ProvidersType = Record<
   LiteralUnion<ClientSafeProvider["id"], string>,
   ClientSafeProvider
 > | null;
 
-export default function WelcomePage() {
+export default function WelcomePage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
   const [providers, setProviders] = useState<ProvidersType>(null);
+  const t = useTranslations("LandingPage");
 
   useEffect(() => {
     const setAuthProviders = async () => {
@@ -27,19 +33,18 @@ export default function WelcomePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="px-4 lg:px-6 h-16 fixed w-full bg-[#FFFFFF] dark:bg-gray-800 shadow-md flex items-center justify-between">
+      <div className="px-4 lg:px-6 h-16 fixed w-full bg-[#FFFFFF] dark:bg-gray-800 shadow-md flex items-center justify-between">
         <Link className="flex items-center" href="#">
-          <BookOpen className="h-12 w-12 text-[#2F8D46] " />
-          <span className="sr-only">Acme Library</span>
+          <BookOpen className="h-12 w-12 text-[#2F8D46]" />
         </Link>
         <nav className="flex items-center gap-4">
-          <Link href="/login">
+          <Link href={`${locale}/login`}>
             <Button
               variant="ghost"
               className="bg-[#273239] text-white flex items-center"
             >
               <LogIn className="h-5 w-5 mr-2" />
-              Login
+              {t("loginButton")}
             </Button>
           </Link>
           <Link href="/signup">
@@ -48,28 +53,24 @@ export default function WelcomePage() {
               className="text-white flex items-center w-[120px] bg-[#273239]"
             >
               <UserPlus className="h-5 w-5 mr-2" />
-              Sign Up
+              {t("signUpButton")}
             </Button>
           </Link>
         </nav>
-      </header>
-      <main className="flex-1 pt-20">
-
+      </div>
+      <div className="flex-1 pt-20">
         <section className="w-full py-24 bg-[#f0fdf4] from-teal-500 to-teal-600 text-black text-center">
           <h1 className="text-4xl font-bold sm:text-5xl md:text-6xl">
-            Welcome to the Library! Your gateway to endless knowledge and
-            adventure awaits.
+            {t("title")}
           </h1>
           <p className="mt-4 max-w-lg mx-auto text-lg sm:text-xl">
-            Streamline your library operations with our powerful and intuitive
-            platform.
+            {t("description")}
           </p>
           <Button size="lg" className="mt-8 bg-[#357960] text-white">
-            <Link href="#dashboard">Get Started</Link>
+            <Link href="#dashboard">{t("getStartedButton")}</Link>
           </Button>
         </section>
         <section className="w-full py-16 bg-gray-100 dark:bg-gray-800">
-          
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-gray-100">
               Key Features
@@ -126,8 +127,8 @@ export default function WelcomePage() {
             </div>
           </div>
         </section>
-      </main>
-      <footer className="flex flex-col sm:flex-row py-6 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-4 md:px-6 border-t dark:border-gray-700">
+      </div>
+      <div className="flex flex-col sm:flex-row py-6 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-4 md:px-6 border-t dark:border-gray-700">
         <p className="text-xs">
           © 2023 Acme Library Management System. All rights reserved.
         </p>
@@ -139,7 +140,7 @@ export default function WelcomePage() {
             Privacy
           </Link>
         </nav>
-      </footer>
+      </div>
     </div>
   );
 }

@@ -6,11 +6,12 @@ import { VercelPgDatabase } from "drizzle-orm/vercel-postgres";
 import { asc, desc, eq, like, or } from "drizzle-orm/expressions";
 import { error } from "node:console";
 import { ITransaction, ITransactionBase } from "@/Models/transaction.model";
-import { Books, Transactions } from "@/drizzle/schema";
+import { Books, Members, Transactions } from "@/drizzle/schema";
 import { CountResult } from "@/core/returnTypes";
 import { TransactionSortOptions } from "@/lib/data";
-import { count } from "drizzle-orm/sql";
+import { count, sql } from "drizzle-orm/sql";
 import { and } from "drizzle-orm/expressions";
+import { DueBook } from "@/components/TodaysDues";
 
 export class TransactionRepository
   implements IRepository<ITransactionBase, ITransaction>
@@ -356,5 +357,89 @@ export class TransactionRepository
   }
   async delete(id: number): Promise<ITransaction | null> {
     return null;
+  }
+
+  async getTodaysDueTransactions(): Promise<DueBook[]> {
+    // Get today's date in the required format 'YYYY-MM-DD'
+    const today = new Date().toISOString().split("T")[0]; // 'YYYY-MM-DD'
+    console.log(today);
+    try {
+      // Join Transactions, Books, and Members tables and filter by today's due date
+      const dueTransactions = await this.db
+        .select({
+          id: Transactions.id, // Transaction ID
+          issueDate: Transactions.issueDate,
+          dueDate: Transactions.dueDate,
+          returnDate: Transactions.returnDate,
+          Status: Transactions.Status,
+          memberId: Transactions.memberId,
+          bookId: Transactions.bookId,
+          title: Books.title,
+          author: Books.author,
+          publisher: Books.publisher,
+          genre: Books.genre,
+          isbnNo: Books.isbnNo,
+          numOfPages: Books.numOfPages,
+          totalNumOfCopies: Books.totalNumOfCopies,
+          availableNumberOfCopies: Books.availableNumberOfCopies,
+          image_url: Books.image_url,
+          price: Books.price,
+          firstName: Members.firstName,
+          lastName: Members.lastName,
+          email: Members.email,
+          phoneNumber: Members.phoneNumber,
+          password: Members.password,
+          refreshToken: Members.refreshToken,
+          accessToken: Members.accessToken,
+          user_id: Members.user_id,
+          role: Members.role,
+        })
+        .from(Transactions)
+        .innerJoin(Books, eq(Transactions.bookId, Books.id))
+        .innerJoin(Members, eq(Transactions.memberId, Members.id))
+        // Extract the date part from dueDate and match it with today's date
+        .where(like(Transactions.dueDate, `%${today}%`));
+
+      // Format the data into the `DueBook` structure
+      const formattedDues: DueBook[] = dueTransactions.map((transaction) => ({
+        id: transaction.bookId,
+        title: transaction.title,
+        author: transaction.author,
+        publisher: transaction.publisher,
+        genre: transaction.genre,
+        isbnNo: transaction.isbnNo,
+        numOfPages: transaction.numOfPages,
+        totalNumOfCopies: transaction.totalNumOfCopies,
+        availableNumberOfCopies: transaction.availableNumberOfCopies,
+        image_url: transaction.image_url,
+        price: transaction.price,
+        transaction: {
+          id: transaction.id,
+          issueDate: transaction.issueDate,
+          dueDate: transaction.dueDate,
+          returnDate: transaction.returnDate,
+          Status: transaction.Status,
+          memberId: transaction.memberId,
+          bookId: transaction.bookId,
+        },
+        borrower: {
+          id: transaction.memberId,
+          firstName: transaction.firstName,
+          lastName: transaction.lastName,
+          email: transaction.email,
+          phoneNumber: transaction.phoneNumber,
+          password: transaction.password,
+          refreshToken: transaction.refreshToken,
+          accessToken: transaction.accessToken,
+          user_id: transaction.user_id,
+          role: transaction.role,
+        },
+      }));
+
+      return formattedDues;
+    } catch (error) {
+      console.error("Error fetching due transactions:", error);
+      throw new Error("Could not fetch due transactions.");
+    }
   }
 }

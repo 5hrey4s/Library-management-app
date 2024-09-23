@@ -20,7 +20,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer
+    <div
       className={`sticky bottom-0 z-50 transition-all duration-300 py-4 text-center ${
         isScrolledToBottom
           ? "bg-[#F0FDF4] text-black"
@@ -29,6 +29,6 @@ export default function Footer() {
       style={{ boxShadow: isScrolledToBottom ? "none" : "0 -2px 10px rgba(0, 0, 0, 0.1)" }}
     >
       &copy; 2024 Acme Library. All rights reserved.
-    </footer>
+    </div>
   );
 }

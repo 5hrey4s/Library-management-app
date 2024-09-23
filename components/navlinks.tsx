@@ -1,16 +1,18 @@
 "use client";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { User, Activity, Heart } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 
 export default function NavLinks() {
   const pathname = usePathname();
-  const items = [
-    { icon: User, label: "Profile", href: "/profile" },
-    { icon: Activity, label: "Activity", href: "/profile/activity" },
-    { icon: Heart, label: "Wishlist", href: "/profile/wishlist" },
+  const t = useTranslations("NavLinks");
 
+  const items = [
+    { icon: User, label: "profile", href: "/profile" },
+    { icon: Activity, label: "activity", href: "/profile/activity" },
+    { icon: Heart, label: "wishlist", href: "/profile/wishlist" },
   ];
   return (
     <>
@@ -26,7 +28,7 @@ export default function NavLinks() {
             )}
           >
             <item.icon className="mr-2 h-5 w-5" />
-            {item.label}
+            {t(item.label)}
           </Link>
         </li>
       ))}

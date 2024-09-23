@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { SearchParams } from "@/app/home/books/page";
+import { SearchParams } from "@/app/[locale]/home/books/page";
 import { IRequest } from "@/Models/request.model";
 import { Button } from "@/components/ui/button";
 import { AprroveButton, RejectButton } from "@/components/ui/buttons";

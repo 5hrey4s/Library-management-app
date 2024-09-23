@@ -17,6 +17,7 @@ import cloudinary from "@/cloudinary.config";
 import { ITransactionBase } from "@/Models/transaction.model";
 import { Action } from "@radix-ui/react-toast";
 import { WishlistRepository } from "@/Repositories/WishlistRepository";
+import { DueBook } from "@/components/TodaysDues";
 
 const db = drizzle(sql, { schema });
 
@@ -220,4 +221,10 @@ export async function addWishList(bookId: number, memberId: number) {
 
 export async function removeWishList(bookId: number, memberId: number) {
   await wishlistRepository.removeWishList(bookId, memberId);
+}
+
+export async function todaysDues() {
+  const dues: DueBook[] =
+    await transactionRepository.getTodaysDueTransactions();
+  return dues;
 }

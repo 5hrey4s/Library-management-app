@@ -2,9 +2,10 @@
 
 import * as React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import BookCard from "./ui/flipcard";
 import PaginationControls from "./PaginationControls";
-import { SearchParams } from "@/app/home/books/page";
+import { SearchParams } from "@/app/[locale]/home/books/page";
 import { IBook, IBookBase } from "@/Models/book-model";
 import { IMember } from "@/Models/member.model";
 import {
@@ -16,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Filter, SortAsc, SortDesc } from "lucide-react";
 import AddBook from "./addBook";
 
 export interface ListBooksProps {
@@ -43,12 +45,12 @@ const ListBooks: React.FC<ListBooksProps> = ({
 }) => {
   const router = useRouter();
   const currentSearchParams = useSearchParams();
+  const t = useTranslations("ListBooks");
+
   const page = parseInt(searchParams["page"] ?? "1");
   const perPage = parseInt(searchParams["per_page"] ?? "8");
   const sortBy = (searchParams["sortBy"] as keyof IBookBase) ?? "title";
   const sortOrder = searchParams["sortOrder"] ?? "asc";
-
-  // const isLiked =
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -71,50 +73,61 @@ const ListBooks: React.FC<ListBooksProps> = ({
   const end = start + perPage;
 
   return (
-    <Card className="w-full bg-[#d3c9c9] shadow-sm border border-none rounded-2xl">
-      <CardHeader className="bg-[#D3C9C9]">
+    <Card className="w-full bg-[#E5E8E6] shadow-md border-none rounded-2xl mt-6">
+      <CardHeader className="bg-[#D3D7D5] pt-6 rounded-t-2xl">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-          <CardTitle className="text-3xl font-bold text-gray-800">
-            Book Catalog
+          <CardTitle className="text-3xl font-bold text-[#4A5249]">
+            {t("bookCatalog")}
           </CardTitle>
-          <AddBook />
+          <div className="flex flex-wrap items-center gap-4">
+            <form
+              onSubmit={handleFormSubmit}
+              className="flex flex-wrap items-center gap-2"
+            >
+              <Select name="sortBy" defaultValue={sortBy}>
+                <SelectTrigger className="w-[140px] bg-white border-[#9FA8A0]">
+                  <SelectValue placeholder={t("sortBy")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="title">{t("title")}</SelectItem>
+                  <SelectItem value="author">{t("author")}</SelectItem>
+                  <SelectItem value="publisher">{t("publisher")}</SelectItem>
+                  <SelectItem value="genre">{t("genre")}</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select name="sortOrder" defaultValue={sortOrder}>
+                <SelectTrigger className="w-[140px] bg-white border-[#9FA8A0]">
+                  <SelectValue placeholder={t("order")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="asc">
+                    <div className="flex items-center">
+                      <SortAsc className="w-4 h-4 mr-2" />
+                      {t("ascending")}
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="desc">
+                    <div className="flex items-center">
+                      <SortDesc className="w-4 h-4 mr-2" />
+                      {t("descending")}
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <Button
+                type="submit"
+                variant="default"
+                className="bg-[#9FA8A0] hover:bg-[#8A9389] text-white transition-colors duration-200"
+              >
+                <Filter className="h-4 w-4 mr-2" />
+                {t("filter")}
+              </Button>
+            </form>
+            <AddBook />
+          </div>
         </div>
       </CardHeader>
       <CardContent className="p-6">
-        <form
-          onSubmit={handleFormSubmit}
-          className="mb-8 p-4 bg-[#D3C9C9] flex flex-col sm:flex-row justify-end items-center gap-4"
-        >
-          <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
-            <Select name="sortBy" defaultValue={sortBy}>
-              <SelectTrigger className="w-full sm:w-[180px] bg-[white] border-gray-300">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="title">Title</SelectItem>
-                <SelectItem value="author">Author</SelectItem>
-                <SelectItem value="publisher">Publisher</SelectItem>
-                <SelectItem value="genre">Genre</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select name="sortOrder" defaultValue={sortOrder}>
-              <SelectTrigger className="w-full sm:w-[120px] bg-white border-gray-300">
-                <SelectValue placeholder="Order" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="asc">Ascending</SelectItem>
-                <SelectItem value="desc">Descending</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <Button
-            type="submit"
-            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200"
-          >
-            Apply Filters
-          </Button>
-        </form>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
           {items.map((book) => (
             <BookCard
@@ -129,12 +142,12 @@ const ListBooks: React.FC<ListBooksProps> = ({
           ))}
         </div>
         {items.length === 0 && (
-          <div className="text-center bg-gray-50 rounded-lg border border-gray-200 p-8 mt-8">
-            <p className="text-lg text-gray-600">
-              No books found matching your search criteria.
+          <div className="text-center bg-[#F0F2F1] rounded-lg border border-[#9FA8A0] p-8 mt-8">
+            <p className="text-lg text-[#4A5249]">
+              {t("noBooksFound")}
             </p>
-            <p className="text-sm text-gray-500 mt-2">
-              Try adjusting your filters or browse our full collection.
+            <p className="text-sm text-[#6B746A] mt-2">
+              {t("adjustFilters")}
             </p>
           </div>
         )}

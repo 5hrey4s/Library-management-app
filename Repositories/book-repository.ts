@@ -131,7 +131,7 @@ export class BookRepository implements IRepository<IBookBase, IBook> {
       query.orderBy(sortOrder);
 
       // Log the generated SQL query
-      console.log("Generated SQL Query:", query.toSQL());
+      // console.log("Generated SQL Query:", query.toSQL());
 
       // Execute the query
       selectSql = (await query) as IBook[];
@@ -150,7 +150,7 @@ export class BookRepository implements IRepository<IBookBase, IBook> {
       }
 
       // Log the count query
-      console.log("Count SQL Query:", countQuery.toSQL());
+      // console.log("Count SQL Query:", countQuery.toSQL());
 
       [countResult] = await countQuery;
 

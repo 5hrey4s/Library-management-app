@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import {
   BookOpen,
   ChevronDown,
@@ -16,6 +15,8 @@ import {
   HomeIcon,
   History,
   ActivityIcon,
+  Calendar,
+  HeartIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +29,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import LogoutButton from "@/components/handlelogout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 
 interface NavbarProps {
   logoText?: string;
@@ -41,6 +44,7 @@ interface NavbarProps {
   role?: string;
   userAvatar?: string;
   userName?: string;
+  locale: string;
 }
 
 interface NavItemProps {
@@ -69,9 +73,11 @@ export default function Navbar({
   role,
   userAvatar,
   userName = "user",
+  locale,
 }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const t = useTranslations("navbar");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -97,9 +103,9 @@ export default function Navbar({
   );
 
   return (
-    <header
+    <div
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled ? "shadow-md bg-white" : "bg-green-50"
+        isScrolled ? "shadow-md bg-[#DBD3D3]" : "bg-[#9FA8A0]"
       }`}
     >
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
@@ -107,7 +113,7 @@ export default function Navbar({
           <Link className="flex items-center space-x-2" href="/">
             <BookOpen className="h-8 w-8 text-green-600" />
             <span className="text-xl font-bold text-green-800 dark:text-gray-100">
-              {logoText}
+              {t("logoText")}
             </span>
           </Link>
 
@@ -115,41 +121,49 @@ export default function Navbar({
           <nav className="hidden md:flex items-center space-x-4">
             {showAllBooks && (
               <NavItem
-                href="/home/books"
+                href={`/home/books`}
                 icon={<Book className="h-5 w-5" />}
-                text="Books"
+                text={t("menu.allBooks")}
                 isActive={active === "Books"}
               />
             )}
             {showMyBooks && role === "user" && (
               <NavItem
-                href="/home/books/mybooks"
+                href={`/home/books/mybooks`}
                 icon={<Book className="h-5 w-5" />}
-                text="My Books"
+                text={t("menu.myBooks")}
                 isActive={active === "MyBooks"}
               />
             )}
             {showMembers && role === "admin" && (
               <NavItem
-                href="/admin/members"
+                href={`/admin/members`}
                 icon={<Users className="h-5 w-5" />}
-                text="Members"
+                text={t("menu.members")}
                 isActive={active === "Members"}
               />
             )}
             {showTransactions && role === "admin" && (
               <NavItem
-                href="/admin/transaction"
+                href={`/admin/transaction`}
                 icon={<FileText className="h-5 w-5" />}
-                text="Transactions"
+                text={t("menu.transactions")}
                 isActive={active === "Transactions"}
               />
             )}
             {showMyTransactions && role === "user" && (
               <NavItem
-                href="/home/mytransaction"
+                href={`/home/mytransaction`}
                 icon={<Clock className="h-5 w-5" />}
-                text="My Transactions"
+                text={t("menu.myTransactions")}
+                isActive={active === "MyTransactions"}
+              />
+            )}
+            {role === "admin" && (
+              <NavItem
+                href={`/admin/dues`}
+                icon={<Calendar className="h-5 w-5" />}
+                text={t("menu.todaysDues")}
                 isActive={active === "MyTransactions"}
               />
             )}
@@ -198,50 +212,34 @@ export default function Navbar({
                     </span>
                   </div>
                 </DropdownMenuLabel>
+                
                 <DropdownMenuItem asChild>
                   <Link
-                    href="/home/books"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800"
-                  >
-                    <HomeIcon className="mr-2 h-4 w-4" />
-                    <span>Home</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/profile"
+                    href={`/profile`}
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800"
                   >
                     <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
+                    <span>{t("profileDropdown.profile")}</span>
                   </Link>
                 </DropdownMenuItem>
 
                 <DropdownMenuItem asChild>
                   <Link
-                    href="/home/books/mybooks"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800"
-                  >
-                    <BookOpen className="mr-2 h-4 w-4" />
-                    <span>My Books</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/admin/transaction"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800"
-                  >
-                    <History className="mr-2 h-4 w-4" />
-                    <span>Transaction History</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/profile/activity"
+                    href={`/profile/activity`}
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800"
                   >
                     <ActivityIcon className="mr-2 h-4 w-4" />
-                    <span>Activity</span>
+                    <span>{t("profileDropdown.activity")}</span>
+                  </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={`/profile/wishlist`}
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800"
+                  >
+                    <HeartIcon className="mr-2 h-4 w-4" />
+                    <span>{t("profileDropdown.wishlist")}</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="my-1 border-t border-gray-200" />
@@ -272,41 +270,41 @@ export default function Navbar({
           <nav className="flex flex-col p-4 space-y-2">
             {showAllBooks && (
               <NavItem
-                href="/home/books"
+                href={`/home/books`}
                 icon={<Book className="h-5 w-5" />}
-                text="Books"
+                text={t("menu.allBooks")}
                 isActive={active === "Books"}
               />
             )}
             {showMyBooks && role === "user" && (
               <NavItem
-                href="/home/mybooks"
+                href={`/home/mybooks`}
                 icon={<Book className="h-5 w-5" />}
-                text="My Books"
+                text={t("menu.myBooks")}
                 isActive={active === "MyBooks"}
               />
             )}
             {showMembers && role === "admin" && (
               <NavItem
-                href="/admin/members"
+                href={`/admin/members`}
                 icon={<Users className="h-5 w-5" />}
-                text="Members"
+                text={t("menu.members")}
                 isActive={active === "Members"}
               />
             )}
             {showTransactions && role === "admin" && (
               <NavItem
-                href="/admin/transaction"
+                href={`/admin/transaction`}
                 icon={<FileText className="h-5 w-5" />}
-                text="Transactions"
+                text={t("menu.transactions")}
                 isActive={active === "Transactions"}
               />
             )}
             {showMyTransactions && role === "user" && (
               <NavItem
-                href="/home/mytransactions"
+                href={`/home/mytransactions`}
                 icon={<Clock className="h-5 w-5" />}
-                text="My Transactions"
+                text={t("menu.myTransactions")}
                 isActive={active === "MyTransactions"}
               />
             )}
@@ -321,6 +319,6 @@ export default function Navbar({
           </nav>
         </div>
       )}
-    </header>
+    </div>
   );
 }

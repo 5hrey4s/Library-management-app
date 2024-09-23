@@ -1,5 +1,4 @@
 "use server";
-
 import Link from "next/link";
 import SearchComponent from "@/components/search";
 import { ListBooks } from "@/components/listBooks";
@@ -7,6 +6,7 @@ import { auth } from "@/auth";
 import { fetchBooks, fetchGenre, fetchMemberByEmail } from "@/lib/data";
 import { IBookBase } from "@/Models/book-model";
 import { getWishListByMemberId } from "@/lib/actions";
+import { getTranslations } from "next-intl/server";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -14,9 +14,15 @@ export interface SearchParams {
 
 interface HomeProps {
   searchParams: SearchParams;
+  params: { locale: string };
 }
 
-export default async function Home({ searchParams }: HomeProps) {
+export default async function Home({
+  searchParams,
+  params: { locale },
+}: HomeProps) {
+  const t = await getTranslations({ locale, namespace: "home" });
+
   const page = parseInt(searchParams["page"] ?? "1");
   const limit = 8;
   const sortBy = (searchParams["sortBy"] as keyof IBookBase) || "title";
@@ -36,18 +42,22 @@ export default async function Home({ searchParams }: HomeProps) {
   const likedBooks = await getWishListByMemberId(user?.id!);
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#dbd3d3] text-gray-900">
-      <main className="flex-1">
+    <div className="flex flex-col min-h-screen bg-[#D3C9C9] text-gray-900">
+      <div className="flex-1">
         {/* Search Section */}
         <section className="bg-[#9fa8a0] py-16 rounded-b-3xl shadow-md">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="md:w-1/2 mb-8 md:mb-0">
                 <h1 className="text-4xl font-bold mb-6 text-white">
-                  Explore Our Library Collection
+                  {t("headerTitle")} {/* Translated header title */}
                 </h1>
                 <div className="flex w-full max-w-md">
-                  <SearchComponent placeholder="Search books..." />
+                  <SearchComponent
+                    placeholder={t("searchPlaceholder")}
+                    searchButtonText={t("searchButtonText")}
+                  />
+                  {/* Translated search placeholder */}
                 </div>
               </div>
             </div>
@@ -67,30 +77,30 @@ export default async function Home({ searchParams }: HomeProps) {
             likedBooks={likedBooks}
           />
         </section>
-      </main>
+      </div>
 
       {/* Footer */}
-      <footer className="py-8 px-4 md:px-6 bg-[#9FA8A0] text-white">
+      <div className="py-8 px-4 md:px-6 bg-[#9FA8A0] text-white">
         <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between">
           <p className="text-sm mb-4 sm:mb-0">
-            © 2024 Acme Library. All rights reserved.
+            {t("footer.copyright")} {/* Translated copyright */}
           </p>
           <nav className="flex gap-6">
             <Link
               className="text-sm hover:underline transition-colors duration-200"
               href="#"
             >
-              Terms of Service
+              {t("footer.terms")} {/* Translated terms of service */}
             </Link>
             <Link
               className="text-sm hover:underline transition-colors duration-200"
               href="#"
             >
-              Privacy Policy
+              {t("footer.privacy")} {/* Translated privacy policy */}
             </Link>
           </nav>
         </div>
-      </footer>
+      </div>
     </div>
   );
 }
