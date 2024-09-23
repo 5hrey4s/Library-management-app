@@ -347,7 +347,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
             </div>
 
             <div className="mt-4 flex justify-center">
-              {data.myBooks && rating && (
+              {data.myBooks && !rating && (
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="outline" className="w-full">
@@ -368,7 +368,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                           <button
                             key={star}
                             className={`text-2xl ${
-                              star <= rating
+                              star <= (rating ? rating : 0)
                                 ? "text-yellow-400"
                                 : "text-gray-300"
                             }`}

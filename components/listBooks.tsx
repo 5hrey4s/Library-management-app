@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Filter, SortAsc, SortDesc } from "lucide-react";
 import AddBook from "./addBook";
+import { getMeanRating } from "@/lib/actions";
 
 export interface ListBooksProps {
   pagination: {
@@ -129,7 +130,7 @@ const ListBooks: React.FC<ListBooksProps> = ({
       </CardHeader>
       <CardContent className="p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
-          {items.map((book) => (
+          {items.map(async (book) => (
             <BookCard
               key={book.isbnNo}
               data={{
@@ -137,18 +138,15 @@ const ListBooks: React.FC<ListBooksProps> = ({
                 userId: user.id,
                 role: role,
                 isLiked: likedBooks.includes(book.id),
+                rating: await getMeanRating(book.id),
               }}
             />
           ))}
         </div>
         {items.length === 0 && (
           <div className="text-center bg-[#F0F2F1] rounded-lg border border-[#9FA8A0] p-8 mt-8">
-            <p className="text-lg text-[#4A5249]">
-              {t("noBooksFound")}
-            </p>
-            <p className="text-sm text-[#6B746A] mt-2">
-              {t("adjustFilters")}
-            </p>
+            <p className="text-lg text-[#4A5249]">{t("noBooksFound")}</p>
+            <p className="text-sm text-[#6B746A] mt-2">{t("adjustFilters")}</p>
           </div>
         )}
         <div className="mt-12 flex justify-center">
