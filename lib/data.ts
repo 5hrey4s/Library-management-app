@@ -223,6 +223,7 @@ export async function fetchMyBooks(memberId: number): Promise<IBook[]> {
     availableNumberOfCopies: row.books.availableNumberOfCopies,
     image_url: row.books.image_url,
     price: row.books.price,
+    rating: row.books.rating,
   }));
 }
 

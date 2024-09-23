@@ -19,9 +19,12 @@ import { Action } from "@radix-ui/react-toast";
 import { WishlistRepository } from "@/Repositories/WishlistRepository";
 import { DueBook } from "@/components/TodaysDues";
 import { RatingsRepository } from "@/Repositories/rating.repository";
+import { BookRepository } from "@/Repositories/book-repository";
+import { IBook } from "@/Models/book-model";
 
 const db = drizzle(sql, { schema });
 
+const bookRepository = new BookRepository(db);
 const requestRepository = new RequestRepository(db);
 const transactionRepository = new TransactionRepository(db);
 const memberRepository = new MemberRepository(db);
@@ -249,4 +252,9 @@ export async function getMeanRating(bookId: number) {
   const meanRating: number | null =
     await ratingsRepository.getMeanRatingByBookId(bookId);
   return meanRating!;
+}
+
+export async function updateRating(bookId: number, meanRating: number) {
+  const book: IBook | null = await bookRepository.getById(bookId);
+  await bookRepository.update(bookId, { ...book!, rating: meanRating });
 }

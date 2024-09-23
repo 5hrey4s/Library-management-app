@@ -19,7 +19,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Filter, SortAsc, SortDesc } from "lucide-react";
 import AddBook from "./addBook";
-import { getMeanRating } from "@/lib/actions";
 
 export interface ListBooksProps {
   pagination: {
@@ -130,7 +129,7 @@ const ListBooks: React.FC<ListBooksProps> = ({
       </CardHeader>
       <CardContent className="p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
-          {items.map(async (book) => (
+          {items.map((book) => (
             <BookCard
               key={book.isbnNo}
               data={{
@@ -138,7 +137,7 @@ const ListBooks: React.FC<ListBooksProps> = ({
                 userId: user.id,
                 role: role,
                 isLiked: likedBooks.includes(book.id),
-                rating: await getMeanRating(book.id),
+                rating: book.rating,
               }}
             />
           ))}

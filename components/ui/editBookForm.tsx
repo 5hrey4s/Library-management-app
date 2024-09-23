@@ -38,14 +38,32 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
 
   const validateForm = (formData: FormData): FormErrors => {
     const newErrors: FormErrors = {};
-    const fields = ['title', 'author', 'publisher', 'genre', 'isbnNo', 'numOfPages', 'totalNumOfCopies', 'price']; // Added price to validation fields
-    
-    fields.forEach(field => {
+    const fields = [
+      "title",
+      "author",
+      "publisher",
+      "genre",
+      "isbnNo",
+      "numOfPages",
+      "totalNumOfCopies",
+      "price",
+    ]; // Added price to validation fields
+
+    fields.forEach((field) => {
       const value = formData.get(field) as string;
       if (!value) {
-        newErrors[field as keyof FormErrors] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
-      } else if ((field === 'numOfPages' || field === 'totalNumOfCopies' || field === 'price') && isNaN(Number(value))) {
-        newErrors[field as keyof FormErrors] = `${field.charAt(0).toUpperCase() + field.slice(1)} must be a number`;
+        newErrors[field as keyof FormErrors] = `${
+          field.charAt(0).toUpperCase() + field.slice(1)
+        } is required`;
+      } else if (
+        (field === "numOfPages" ||
+          field === "totalNumOfCopies" ||
+          field === "price") &&
+        isNaN(Number(value))
+      ) {
+        newErrors[field as keyof FormErrors] = `${
+          field.charAt(0).toUpperCase() + field.slice(1)
+        } must be a number`;
       }
     });
 
@@ -92,7 +110,7 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
         totalNumOfCopies: Number(formData.get("totalNumOfCopies")),
         price: Number(formData.get("price")), // Added price field data
         image_url: imageURL,
-        
+        rating: 0,
       };
 
       setIsSubmitting(true);
@@ -108,7 +126,8 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
         console.error(error);
         toast({
           title: "Error updating book",
-          description: "An error occurred while updating the book. Please try again.",
+          description:
+            "An error occurred while updating the book. Please try again.",
           variant: "destructive",
         });
       } finally {
@@ -123,31 +142,66 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-50 to-green-100 p-4">
       <Card className="w-full max-w-lg shadow-xl">
         <CardHeader>
-          <CardTitle className="text-3xl font-semibold text-center">Edit Book Details</CardTitle>
+          <CardTitle className="text-3xl font-semibold text-center">
+            Edit Book Details
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {['title', 'author', 'publisher', 'genre', 'isbnNo', 'numOfPages', 'totalNumOfCopies', 'price'].map((field) => ( // Added price field
-              <div key={field} className="space-y-2">
-                <Label htmlFor={field} className="text-sm font-medium text-gray-700">
-                  {field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1').trim()}
-                </Label>
-                <Input
-                  type={field === 'numOfPages' || field === 'totalNumOfCopies' || field === 'price' ? 'number' : 'text'} // Handle price as a number
-                  name={field}
-                  id={field}
-                  className="w-full"
-                  placeholder={`Enter the ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`}
-                  defaultValue={book[field as keyof IBook] as string | number}
-                />
-                {errors[field as keyof FormErrors] && (
-                  <p className="text-red-600 text-sm">{errors[field as keyof FormErrors]}</p>
-                )}
-              </div>
-            ))}
+            {[
+              "title",
+              "author",
+              "publisher",
+              "genre",
+              "isbnNo",
+              "numOfPages",
+              "totalNumOfCopies",
+              "price",
+            ].map(
+              (
+                field // Added price field
+              ) => (
+                <div key={field} className="space-y-2">
+                  <Label
+                    htmlFor={field}
+                    className="text-sm font-medium text-gray-700"
+                  >
+                    {field.charAt(0).toUpperCase() +
+                      field
+                        .slice(1)
+                        .replace(/([A-Z])/g, " $1")
+                        .trim()}
+                  </Label>
+                  <Input
+                    type={
+                      field === "numOfPages" ||
+                      field === "totalNumOfCopies" ||
+                      field === "price"
+                        ? "number"
+                        : "text"
+                    } // Handle price as a number
+                    name={field}
+                    id={field}
+                    className="w-full"
+                    placeholder={`Enter the ${field
+                      .replace(/([A-Z])/g, " $1")
+                      .toLowerCase()}`}
+                    defaultValue={book[field as keyof IBook] as string | number}
+                  />
+                  {errors[field as keyof FormErrors] && (
+                    <p className="text-red-600 text-sm">
+                      {errors[field as keyof FormErrors]}
+                    </p>
+                  )}
+                </div>
+              )
+            )}
 
             <div className="space-y-2">
-              <Label htmlFor="image" className="text-sm font-medium text-gray-700">
+              <Label
+                htmlFor="image"
+                className="text-sm font-medium text-gray-700"
+              >
                 Book Cover Image
               </Label>
               <div className="flex items-center space-x-2">
@@ -162,15 +216,23 @@ export const EditBook: React.FC<EditBookProps> = ({ book }) => {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => document.getElementById('image')?.click()}
+                  onClick={() => document.getElementById("image")?.click()}
                   className="w-full"
                   disabled={isUploading}
                 >
                   <FaUpload className="mr-2" />
-                  {isUploading ? "Uploading..." : imageURL ? "Change Image" : "Upload Image"}
+                  {isUploading
+                    ? "Uploading..."
+                    : imageURL
+                    ? "Change Image"
+                    : "Upload Image"}
                 </Button>
                 {imageURL && (
-                  <img src={imageURL} alt="Book cover" className="w-16 h-16 object-cover rounded" />
+                  <img
+                    src={imageURL}
+                    alt="Book cover"
+                    className="w-16 h-16 object-cover rounded"
+                  />
                 )}
               </div>
             </div>

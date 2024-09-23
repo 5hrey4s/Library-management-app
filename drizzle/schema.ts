@@ -8,6 +8,7 @@ import {
   uniqueIndex,
   pgEnum,
 } from "drizzle-orm/pg-core";
+import { number } from "zod";
 
 // Books Table
 export const Books = pgTable("books", {
@@ -22,7 +23,7 @@ export const Books = pgTable("books", {
   availableNumberOfCopies: integer("availableNumberOfCopies").notNull(),
   image_url: varchar("image_url", { length: 255 }).notNull(),
   price: integer("price").notNull(),
-  
+  rating: integer("rating").notNull(),
 });
 
 // Members Table
@@ -77,7 +78,7 @@ export const Ratings = pgTable("ratings", {
     .notNull(),
   rating: integer("rating").notNull(), // Rating value 1-5
   review: text("review").notNull(), // Optional review text
-  created_at: varchar("created_at", { length: 100 })
+  created_at: varchar("created_at", { length: 100 }),
 });
 
 // Wishlist Table - New addition

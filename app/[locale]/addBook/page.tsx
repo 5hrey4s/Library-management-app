@@ -76,7 +76,9 @@ const AddBook: React.FC = () => {
           field.charAt(0).toUpperCase() + field.slice(1)
         } is required`;
       } else if (
-        (field === "numOfPages" || field === "totalNumOfCopies" || field === "price") &&
+        (field === "numOfPages" ||
+          field === "totalNumOfCopies" ||
+          field === "price") &&
         isNaN(Number(value))
       ) {
         newErrors[field as keyof FormErrors] = `${
@@ -104,6 +106,7 @@ const AddBook: React.FC = () => {
         totalNumOfCopies: Number(formData.get("totalNumOfCopies")),
         image_url: imageURL,
         price: Number(formData.get("price")), // Adding price field data to the form
+        rating: 0,
       };
 
       setIsSubmitting(true);

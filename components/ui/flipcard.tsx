@@ -44,6 +44,7 @@ import {
   getMeanRating,
   rateBook,
   removeWishList,
+  updateRating,
 } from "@/lib/actions";
 import {
   Dialog,
@@ -139,6 +140,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
     console.log(`Rating: ${rating}, Review: ${review}`);
     await rateBook(rating!, book.id, data.userId, review);
     const meanRating = await getMeanRating(book.id);
+    await updateRating(book.id, meanRating);
     setRating(meanRating);
     toast({
       title: "Rating Submitted",

@@ -125,7 +125,7 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
                 role: role,
                 isLiked: likedBooks.includes(book.id),
                 myBooks: true,
-                rating : await getMeanRating(book.id),
+                rating: book.rating,
               }}
             />
           ))}

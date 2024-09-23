@@ -10,6 +10,7 @@ export interface IBookBase {
   totalNumOfCopies: number;
   image_url: string;
   price: number;
+  rating: number;
 }
 
 export interface IBook extends IBookBase {
