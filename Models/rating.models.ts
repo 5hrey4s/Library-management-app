@@ -11,6 +11,7 @@ export interface IRatingBase {
 // Define the complete rating interface (includes id)
 export interface IRating extends IRatingBase {
   id: number;
+  created_at: string;
 }
 
 // Define the Zod schema for validation

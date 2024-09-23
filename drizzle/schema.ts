@@ -78,7 +78,7 @@ export const Ratings = pgTable("ratings", {
     .notNull(),
   rating: integer("rating").notNull(), // Rating value 1-5
   review: text("review").notNull(), // Optional review text
-  created_at: varchar("created_at", { length: 100 }),
+  created_at: varchar("created_at", { length: 100 }).notNull(),
 });
 
 // Wishlist Table - New addition

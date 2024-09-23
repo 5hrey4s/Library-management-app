@@ -9,6 +9,7 @@ import {
   MemberSortOptions,
   TransactionSortOptions,
 } from "@/lib/data";
+import { formatDate } from "@/core/formatdate";
 
 export class RatingsRepository implements IRepository<IRatingBase, IRating> {
   constructor(private db: VercelPgDatabase<Record<string, unknown>>) {}
@@ -24,17 +25,28 @@ export class RatingsRepository implements IRepository<IRatingBase, IRating> {
   }
 
   async create(data: IRatingBase): Promise<IRating | null> {
+    const currentDate = new Date();
+    const date = new Date(currentDate);
+    const created_at = formatDate(date);
+
     try {
+      const rating: Omit<IRating, "id"> = {
+        bookId: data.bookId,
+        created_at: created_at,
+        memberId: data.memberId,
+        rating: data.rating,
+        review: data.review,
+      };
       const [result] = await this.db
         .insert(Ratings)
-        .values(data)
+        .values(rating)
         .returning({ id: Ratings.id });
-      const [rating]: IRating[] = await this.db
+      const [item]: IRating[] = await this.db
         .select()
         .from(Ratings)
         .where(eq(Ratings.id, result.id));
 
-      return rating;
+      return item;
     } catch (err) {
       throw err;
     }
