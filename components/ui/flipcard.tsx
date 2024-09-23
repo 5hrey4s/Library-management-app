@@ -74,7 +74,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isRequested, setRequested] = useState(false);
   const [isLiked, setIsLiked] = useState(data.isLiked);
-  const [rating, setRating] = useState(data.rating);
+  const [rating, setRating] = useState<number | null>(data.rating || null);
   const [review, setReview] = useState("");
   const { toast } = useToast();
 
@@ -374,7 +374,11 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
                                 ? "text-yellow-400"
                                 : "text-gray-300"
                             }`}
-                            onClick={() => setRating(star)}
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevents the parent from handling the click
+
+                              setRating(star);
+                            }}
                           >
                             ★
                           </button>
