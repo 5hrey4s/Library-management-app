@@ -64,7 +64,7 @@ type BookCardProps = {
     role?: string | undefined;
     isLiked: boolean;
     myBooks?: boolean;
-    rating: boolean;
+    rating: number;
   };
 };
 
