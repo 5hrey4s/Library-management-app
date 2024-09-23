@@ -259,5 +259,16 @@ export async function updateRating(bookId: number, meanRating: number) {
   console.log("second action function call");
   const book: IBook | null = await bookRepository.getById(bookId);
   console.log(book);
-  await bookRepository.update(bookId, { ...book!, rating: meanRating });
+  await bookRepository.update(bookId, {
+    rating: meanRating,
+    author: book!.author,
+    genre: book!.genre,
+    image_url: book!.image_url,
+    isbnNo: book!.isbnNo,
+    numOfPages: book!.numOfPages,
+    price: book!.price,
+    publisher: book!.publisher,
+    title: book!.title,
+    totalNumOfCopies: book!.totalNumOfCopies,
+  });
 }
