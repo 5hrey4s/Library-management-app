@@ -64,7 +64,7 @@ type BookCardProps = {
     role?: string | undefined;
     isLiked: boolean;
     myBooks?: boolean;
-    rating: number;
+    rating?: number;
   };
 };
 
@@ -137,7 +137,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
   const handleRatingSubmit = async () => {
     // Here you would typically send the rating and review to your backend
     console.log(`Rating: ${rating}, Review: ${review}`);
-    await rateBook(rating, book.id, data.userId, review);
+    await rateBook(rating!, book.id, data.userId, review);
     const meanRating = await getMeanRating(book.id);
     setRating(meanRating);
     toast({
@@ -280,7 +280,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
               <div className="absolute top-4 left-4 flex items-center bg-white bg-opacity-75 rounded-full px-2 py-1">
                 <FaStar className="h-4 w-4 text-yellow-400 mr-1" />
                 <span className="text-sm font-semibold text-gray-800">
-                  {rating.toFixed(1)}
+                  {(rating ? rating : 0).toFixed(1)}
                 </span>
               </div>
             </div>
