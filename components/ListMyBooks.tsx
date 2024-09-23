@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IMember } from "@/Models/member.model";
+import { getMeanRating } from "@/lib/actions";
 
 export interface ListMyBooksProps {
   searchParams: SearchParams;
@@ -115,7 +116,7 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
 
         {/* Book Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-          {items.map((book) => (
+          {items.map(async (book) => (
             <BookCard
               key={book.isbnNo}
               data={{
@@ -124,6 +125,7 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
                 role: role,
                 isLiked: likedBooks.includes(book.id),
                 myBooks: true,
+                rating : await getMeanRating(book.id),
               }}
             />
           ))}

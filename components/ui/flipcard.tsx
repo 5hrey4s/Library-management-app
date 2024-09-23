@@ -64,6 +64,7 @@ type BookCardProps = {
     role?: string | undefined;
     isLiked: boolean;
     myBooks?: boolean;
+    rating: number;
   };
 };
 
@@ -72,7 +73,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isRequested, setRequested] = useState(false);
   const [isLiked, setIsLiked] = useState(data.isLiked);
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(data.rating);
   const [review, setReview] = useState("");
   const { toast } = useToast();
 
@@ -346,7 +347,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
             </div>
 
             <div className="mt-4 flex justify-center">
-              {data.myBooks && (
+              {data.myBooks && rating && (
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="outline" className="w-full">

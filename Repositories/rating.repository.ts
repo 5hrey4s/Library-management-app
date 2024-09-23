@@ -12,6 +12,7 @@ import {
 
 export class RatingsRepository implements IRepository<IRatingBase, IRating> {
   constructor(private db: VercelPgDatabase<Record<string, unknown>>) {}
+
   getById(id: number): Promise<IRating | null> {
     throw new Error("Method not implemented.");
   }
@@ -84,7 +85,7 @@ export class RatingsRepository implements IRepository<IRatingBase, IRating> {
 
       // Check if there are any ratings
       if (ratings.length === 0) {
-        return null; // Return null if no ratings are found
+        return 0; // Return null if no ratings are found
       }
 
       // Calculate the mean of the ratings
