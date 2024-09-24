@@ -92,3 +92,27 @@ export const Wishlist = pgTable("wishlist", {
     .notNull(),
   addedAt: varchar("addedAt", { length: 100 }),
 });
+
+export const Professors = pgTable("professors", {
+  id: serial("id").primaryKey(), // Unique professor identifier
+  name: varchar("name", { length: 100 }).notNull(), // Full name of the professor
+  department: varchar("department", { length: 100 }).notNull(), // Professor's department
+  bio: text("bio").notNull(), // A short biography
+  calendlyLink: varchar("calendlyLink", { length: 255 }).notNull(), // Calendly link for scheduling appointments
+  email: varchar("email", { length: 100 }).unique().notNull(), // Unique professor email for identification
+  googleMeetEnabled: varchar("googleMeetEnabled", { length: 10 })
+    .default("true")
+    .notNull(), // Flag to check if Google Meet is enabled
+});
+
+export const Appointments = pgTable("appointments", {
+  id: serial("id").primaryKey(), // Unique appointment ID
+  professorId: integer("professorId")
+    .references(() => Professors.id)
+    .notNull(), // Link to the professor's profile
+  userId: varchar("userId", { length: 255 }).notNull(), // The user's ID who booked the appointment
+  appointmentDate: varchar("appointmentDate", { length: 100 }).notNull(), // Date of the appointment
+  googleMeetLink: varchar("googleMeetLink", { length: 255 }), // Google Meet link for the appointment
+  calendlyLink: varchar("calendlyLink", { length: 255 }).notNull(), // The Calendly link used for scheduling
+  createdAt: varchar("createdAt", { length: 100 }).notNull(), // When the appointment was created
+});

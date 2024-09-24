@@ -10,12 +10,13 @@ import { RequestRepository } from "@/Repositories/request.repository";
 import { revalidatePath } from "next/cache";
 import { asc, desc, eq, like, or } from "drizzle-orm/expressions";
 import { TransactionRepository } from "@/Repositories/transaction.repository";
-import { ITransaction, ITransactionBase } from "@/Models/transaction.model";
 import "@/drizzle/envConfig";
 import { drizzle } from "drizzle-orm/vercel-postgres";
 import { sql } from "@vercel/postgres";
 import * as schema from "../drizzle/schema";
 import { and } from "drizzle-orm/expressions";
+import { ITransaction, ITransactionBase } from "@/Models/transaction.model";
+import { IProfessorBase } from "@/Models/professor.model";
 
 const db = drizzle(sql, { schema });
 
@@ -39,6 +40,10 @@ export interface TransactionSortOptions {
   sortOrder: string;
 }
 
+export interface ProfessorSortOptions {
+  sortBy: keyof IProfessorBase;
+  sortOrder: string;
+}
 export const fetchBooks = async (
   pageRequest: IPageRequest,
   sortOptions: SortOptions

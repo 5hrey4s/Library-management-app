@@ -17,6 +17,7 @@ import {
   ActivityIcon,
   Calendar,
   HeartIcon,
+  UserCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -159,8 +160,15 @@ export default function Navbar({
                 isActive={active === "MyTransactions"}
               />
             )}
+            <NavItem
+              href={`/home/professors`}
+              icon={<UserCheck className="h-5 w-5" />}
+              text={"Professors"}
+              isActive={true}
+            />
             {/* LocaleSwitcher Component */}
-            <LocaleSwitcher /> {/* Locale switcher added to the desktop navigation */}
+            <LocaleSwitcher />{" "}
+            {/* Locale switcher added to the desktop navigation */}
           </nav>
 
           <div className="flex items-center">
@@ -297,6 +305,12 @@ export default function Navbar({
                 isActive={active === "MyTransactions"}
               />
             )}
+            <NavItem
+              href={`/home/professors`}
+              icon={<UserCheck className="h-5 w-5" />}
+              text={"Professors"}
+              isActive={true}
+            />
           </nav>
         </div>
       )}

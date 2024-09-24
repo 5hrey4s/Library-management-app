@@ -89,9 +89,9 @@ const Register: React.FC = () => {
         console.log(error);
 
         // Check if the error message indicates a duplicate email
-        if (error.message && error.message.toLowerCase().includes("duplicate")) {
-          setErrors({ email: "This email is already registered" });
-        } else {
+          if (error.message && error.message.toLowerCase().includes("duplicate")) {
+            setErrors({ email: "This email is already registered" });
+          } else {
           setErrors({ global: error.message });
         }
       } finally {

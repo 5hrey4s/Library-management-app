@@ -2,7 +2,7 @@
 
 import { Button } from "./button";
 import { FC, ReactNode, Suspense } from "react";
-import { FaDollarSign, FaRupeeSign } from "react-icons/fa";
+import { FaRupeeSign } from "react-icons/fa";
 import { Skeleton } from "./skeleton";
 import PriceTag from "../priceTag";
 
@@ -26,9 +26,8 @@ const BuyButton: FC<BuyButtonProps> = ({
     >
       <span>{children}</span>
       <div className="flex items-center ml-2">
-        <Suspense fallback={<Skeleton />}>
-          <span>{<PriceTag price={price}></PriceTag>}</span>
-        </Suspense>
+        <FaRupeeSign className="mr-1" /> {/* Correctly positioned rupee sign */}
+        <span>{price}</span>
       </div>
     </Button>
   );

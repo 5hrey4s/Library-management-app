@@ -89,15 +89,12 @@ export class RatingsRepository implements IRepository<IRatingBase, IRating> {
     }
   }
   async getMeanRatingByBookId(bookId: number): Promise<number | null> {
-    console.log("inside repo");
-
     try {
       // Fetch all ratings for the given bookId
       const ratings: { rating: number }[] = await this.db
         .select({ rating: Ratings.rating }) // Select only the rating column
         .from(Ratings)
         .where(eq(Ratings.bookId, bookId));
-      console.log(ratings);
       // Check if there are any ratings
       if (ratings.length === 0) {
         return 0; // Return null if no ratings are found

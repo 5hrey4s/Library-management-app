@@ -57,7 +57,7 @@ export default async function Home({
       {/* Main Content */}
       <div className="flex-1">
         {/* Search Section */}
-        <section className="bg-green-50 py-12 rounded-lg">
+        <section className="bg-[#9FA8A0] py-12 rounded-lg">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="md:w-1/2 mb-8 md:mb-0">

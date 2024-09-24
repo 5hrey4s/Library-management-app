@@ -140,10 +140,8 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
   };
 
   const handleRatingSubmit = async () => {
-    console.log("inside card");
     await rateBook(tempRating, book.id, data.userId, review);
     const meanRating = await getMeanRating(book.id);
-    console.log("===========mean rating", meanRating);
     await updateRating(book.id, meanRating);
     setRating(meanRating);
     console.log(`Rating: ${tempRating}, Review: ${review}`);

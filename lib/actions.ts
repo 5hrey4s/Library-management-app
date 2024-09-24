@@ -21,6 +21,10 @@ import { DueBook } from "@/components/TodaysDues";
 import { RatingsRepository } from "@/Repositories/rating.repository";
 import { BookRepository } from "@/Repositories/book-repository";
 import { IBook } from "@/Models/book-model";
+import { IProfessorBase } from "@/Models/professor.model";
+import { ProfessorRepository } from "@/Repositories/Professor-repository";
+import { IPageRequest } from "@/core/pagination";
+import { ProfessorSortOptions, SortOptions } from "./data";
 
 const db = drizzle(sql, { schema });
 
@@ -30,6 +34,7 @@ const transactionRepository = new TransactionRepository(db);
 const memberRepository = new MemberRepository(db);
 const wishlistRepository = new WishlistRepository(db);
 const ratingsRepository = new RatingsRepository(db);
+const professorsRepository = new ProfessorRepository(db);
 
 export const create = new MemberRepository(db).create;
 
@@ -249,16 +254,13 @@ export async function rateBook(
 }
 
 export async function getMeanRating(bookId: number) {
-  console.log("first action function call");
   const meanRating: number | null =
     await ratingsRepository.getMeanRatingByBookId(bookId);
   return meanRating!;
 }
 
 export async function updateRating(bookId: number, meanRating: number) {
-  console.log("second action function call");
   const book: IBook | null = await bookRepository.getById(bookId);
-  console.log(book);
   await bookRepository.update(bookId, {
     rating: meanRating,
     author: book!.author,
@@ -271,4 +273,22 @@ export async function updateRating(bookId: number, meanRating: number) {
     title: book!.title,
     totalNumOfCopies: book!.totalNumOfCopies,
   });
+}
+
+export async function addProfessor(data: IProfessorBase) {
+  const professor = await professorsRepository.create(data);
+  return professor;
+}
+
+export async function fetchProfessors(
+  pageRequest: IPageRequest
+  // sortOptions: ProfessorSortOptions
+) {
+  const data = await professorsRepository.list(pageRequest);
+  return data;
+}
+
+export async function fetchProfessorById(id: number) {
+  const professor = await professorsRepository.getById(id);
+  return professor;
 }

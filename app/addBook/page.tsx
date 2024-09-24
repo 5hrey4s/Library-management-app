@@ -118,14 +118,17 @@ const AddBook: React.FC = () => {
           variant: "default",
         });
         router.replace("/home/books");
-      } catch (error) {
+      } catch (error: any) {
         console.error(error);
-        toast({
-          title: "Error adding book",
-          description:
-            "An error occurred while adding the book. Please try again.",
-          variant: "destructive",
-        });
+
+        if (
+          error.message &&
+          error.message.toLowerCase().includes("duplicate")
+        ) {
+          setErrors({ isbnNo: "This ISBN number already exist" });
+        } else {
+          setErrors({ global: error.message });
+        }
       } finally {
         setIsSubmitting(false);
       }
