@@ -31,7 +31,7 @@ export default function ProfessorSection({
               <p>{professor.bio}</p>
             </CardContent>
             <CardFooter>
-              <Link href={`/dashboard/professors/${professor.id}`}>
+              <Link href={`/home/professors/${professor.id}`}>
                 <Button
                   variant="destructive"
                   className="w-full bg-black text-white"
