@@ -46,7 +46,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
       profile(profile) {
         return {
           ...profile,
-          role: "admin",
+          role: "user",
         };
       },
     }),

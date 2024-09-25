@@ -102,4 +102,4 @@ export default function UserAppointments({ userAppointments }: { userAppointment
       </DialogContent>
     </Dialog>
   )
-}
+} 
