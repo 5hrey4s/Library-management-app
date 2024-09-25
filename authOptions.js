@@ -64,7 +64,6 @@ export const authOptions = {
       if (user) {
         const userInDb = await memberRepository.getByEmail(user.email);
         if (userInDb) {
-
           token.role = userInDb.role;
         }
       }
