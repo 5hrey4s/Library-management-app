@@ -1,6 +1,6 @@
 import { IPageRequest, IPagesResponse } from "@/core/pagination";
 import { IRepository } from "@/core/repository";
-import { asc, desc, eq, like, or } from "drizzle-orm/expressions";
+import { asc, desc, eq, ilike, or } from "drizzle-orm/expressions";
 import { CountResult } from "@/core/returnTypes";
 import { IBook, IBookBase } from "@/Models/book-model";
 import { SortOptions } from "@/lib/data";
@@ -97,7 +97,7 @@ export class BookRepository implements IRepository<IBookBase, IBook> {
       const [result]: IBook[] = await this.db
         .select()
         .from(Books)
-        .where(like(Books.isbnNo, isbnNo));
+        .where(ilike(Books.isbnNo, isbnNo));
       return result;
     } catch (err) {
       throw err;
@@ -132,10 +132,10 @@ export class BookRepository implements IRepository<IBookBase, IBook> {
       if (search) {
         query.where(
           or(
-            like(Books.title, `%${search}%`),
-            like(Books.isbnNo, `%${search}%`),
-            like(Books.author, `%${search}%`),
-            like(Books.genre, `%${search}%`)
+            ilike(Books.title, `%${search}%`),
+            ilike(Books.isbnNo, `%${search}%`),
+            ilike(Books.author, `%${search}%`),
+            ilike(Books.genre, `%${search}%`)
           )
         );
       }
@@ -157,10 +157,10 @@ export class BookRepository implements IRepository<IBookBase, IBook> {
       if (search) {
         countQuery.where(
           or(
-            like(Books.title, `%${search}%`),
-            like(Books.isbnNo, `%${search}%`),
-            like(Books.author, `%${search}%`),
-            like(Books.genre, `%${search}%`)
+            ilike(Books.title, `%${search}%`),
+            ilike(Books.isbnNo, `%${search}%`),
+            ilike(Books.author, `%${search}%`),
+            ilike(Books.genre, `%${search}%`)
           )
         );
       }

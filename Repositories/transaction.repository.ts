@@ -3,7 +3,7 @@ import { IPageRequest, IPagesResponse } from "../core/pagination";
 import { IRepository } from "../core/repository";
 import { MySql2Database } from "drizzle-orm/mysql2";
 import { VercelPgDatabase } from "drizzle-orm/vercel-postgres";
-import { asc, desc, eq, like, or } from "drizzle-orm/expressions";
+import { asc, desc, eq, ilike, like, or } from "drizzle-orm/expressions";
 import { error } from "node:console";
 import { ITransaction, ITransactionBase } from "@/Models/transaction.model";
 import { Books, Members, Transactions } from "@/drizzle/schema";
@@ -308,9 +308,9 @@ export class TransactionRepository
           .from(Transactions)
           .where(
             or(
-              like(Transactions.bookId, `%${search}%`),
-              like(Transactions.memberId, `%${search}%`),
-              like(Transactions.Status, `%${search}%`)
+              ilike(Transactions.bookId, `%${search}%`),
+              ilike(Transactions.memberId, `%${search}%`),
+              ilike(Transactions.Status, `%${search}%`)
             )
           )
           .limit(params.limit ?? 0)
@@ -329,8 +329,8 @@ export class TransactionRepository
         .where(
           search
             ? or(
-                like(Transactions.memberId, search),
-                like(Transactions.bookId, search)
+                ilike(Transactions.memberId, search),
+                ilike(Transactions.bookId, search)
               )
             : undefined
         );
@@ -400,7 +400,7 @@ export class TransactionRepository
         .innerJoin(Books, eq(Transactions.bookId, Books.id))
         .innerJoin(Members, eq(Transactions.memberId, Members.id))
         // Extract the date part from dueDate and match it with today's date
-        .where(and(like(Transactions.dueDate, `%${today}%`)));
+        .where(and(ilike(Transactions.dueDate, `%${today}%`)));
 
       // Format the data into the `DueBook` structure
       const formattedDues: DueBook[] = dueTransactions.map((transaction) => ({

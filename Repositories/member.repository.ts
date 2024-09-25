@@ -1,7 +1,7 @@
 import { IPageRequest, IPagesResponse } from "../core/pagination";
 import { IRepository } from "../core/repository";
 import { Members } from "@/drizzle/schema";
-import { asc, desc, eq, like, or } from "drizzle-orm/expressions";
+import { asc, desc, eq, ilike, or } from "drizzle-orm/expressions";
 import { CountResult } from "@/core/returnTypes";
 import { IMember, IMemberBase } from "@/Models/member.model";
 import { MemberSortOptions, SortOptions } from "@/lib/data";
@@ -146,10 +146,10 @@ export class MemberRepository implements IRepository<IMemberBase, IMember> {
           .from(Members)
           .where(
             or(
-              like(Members.email, `%${search}%`),
-              like(Members.firstName, `%${search}%`),
-              like(Members.lastName, `%${search}%`),
-              like(Members.role, `%${search}%`)
+              ilike(Members.email, `%${search}%`),
+              ilike(Members.firstName, `%${search}%`),
+              ilike(Members.lastName, `%${search}%`),
+              ilike(Members.role, `%${search}%`)
             )
           )
           .limit(params.limit ?? 10) // Add a default limit
@@ -171,10 +171,10 @@ export class MemberRepository implements IRepository<IMemberBase, IMember> {
         .where(
           search
             ? or(
-                like(Members.email, `%${search}%`),
-                like(Members.firstName, `%${search}%`),
-                like(Members.lastName, `%${search}%`),
-                like(Members.role, `%${search}%`)
+                ilike(Members.email, `%${search}%`),
+                ilike(Members.firstName, `%${search}%`),
+                ilike(Members.lastName, `%${search}%`),
+                ilike(Members.role, `%${search}%`)
               )
             : undefined
         );

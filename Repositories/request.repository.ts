@@ -2,7 +2,7 @@ import { IPageRequest, IPagesResponse } from "@/core/pagination";
 import { IRepository } from "@/core/repository";
 import { Requests } from "@/drizzle/schema"; // Make sure the Requests schema is correctly defined
 import { MySql2Database } from "drizzle-orm/mysql2";
-import { asc, desc, eq, like, or } from "drizzle-orm/expressions";
+import { asc, desc, eq, ilike, or } from "drizzle-orm/expressions";
 import { VercelPgDatabase } from "drizzle-orm/vercel-postgres";
 import { CountResult } from "@/core/returnTypes";
 import { IRequest, IRequestBase } from "@/Models/request.model";
@@ -104,9 +104,9 @@ export class RequestRepository implements IRepository<IRequestBase, IRequest> {
         .where(
           search
             ? or(
-                like(Requests.bookId, search),
-                like(Requests.memberId, search),
-                like(Requests.status, search)
+                ilike(Requests.bookId, search),
+                ilike(Requests.memberId, search),
+                ilike(Requests.status, search)
               )
             : undefined
         );
