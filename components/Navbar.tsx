@@ -164,7 +164,7 @@ export default function Navbar({
               href={`/home/professors`}
               icon={<UserCheck className="h-5 w-5" />}
               text={"Professors"}
-              isActive={true}
+              isActive={active === "MyTransactions"}
             />
             {/* LocaleSwitcher Component */}
             <LocaleSwitcher />{" "}
@@ -305,9 +305,10 @@ export default function Navbar({
                 isActive={active === "MyTransactions"}
               />
             )}
+
             <NavItem
               href={`/home/professors`}
-              icon={<UserCheck className="h-5 w-5" />}
+              icon={<UserCheck />}
               text={"Professors"}
               isActive={true}
             />

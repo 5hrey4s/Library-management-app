@@ -25,8 +25,10 @@ import { IProfessorBase } from "@/Models/professor.model";
 import { ProfessorRepository } from "@/Repositories/Professor-repository";
 import { IPageRequest } from "@/core/pagination";
 import { ProfessorSortOptions, SortOptions } from "./data";
+import { Appenv } from "@/read-env";
 
 const db = drizzle(sql, { schema });
+const CALENDLY_API_TOKEN = process.env.NEXT_PUBLIC_CALENDLY_API_TOKEN;
 
 const bookRepository = new BookRepository(db);
 const requestRepository = new RequestRepository(db);
@@ -291,4 +293,119 @@ export async function fetchProfessors(
 export async function fetchProfessorById(id: number) {
   const professor = await professorsRepository.getById(id);
   return professor;
+}
+
+export async function getOrganizationUri() {
+  try {
+    const response = await fetch("https://api.calendly.com/users/me", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${CALENDLY_API_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error fetching user info: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.resource.current_organization;
+  } catch (error) {
+    console.error("Error fetching organization URI", error);
+    throw error;
+  }
+}
+
+export async function getUserUri() {
+  try {
+    const response = await fetch("https://api.calendly.com/users/me", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${CALENDLY_API_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Error fetching user info: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.resource.uri; // This is the user's URI
+  } catch (error) {
+    console.error("Error fetching user URI", error);
+    throw error;
+  }
+}
+
+export async function getUsersAppointments(email: string) {
+  try {
+    const userUri = await getOrganizationUri();
+    console.log(userUri);
+    console.log(email);
+    const url = `https://api.calendly.com/scheduled_events?organization=${userUri}&invitee_email=${email}`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${CALENDLY_API_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error fetching user info: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log(data);
+    return data.collection;
+  } catch (error) {
+    console.error("Error fetching user URI", error);
+    throw error;
+  }
+}
+
+// Fetch scheduled events for the user
+export async function getScheduledEvents() {
+  const userUri = await getUserUri(); // Get the logged-in user's URI
+  try {
+    const response = await fetch(
+      `https://api.calendly.com/scheduled_events?user=${encodeURIComponent(
+        userUri
+      )}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${CALENDLY_API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log("Error fetching scheduled events:", errorText);
+      throw new Error(`Error fetching Calendly events: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log("Scheduled events:", data);
+    return data.collection; // Return an array of scheduled events
+  } catch (error) {
+    console.error("Error fetching scheduled events", error);
+    throw error;
+  }
+}
+
+const getRole = async () => {
+  const session = await auth();
+  const role = session?.user.role!;
+  return role;
+};
+
+export async function updateProfessor(id: number, data: IProfessorBase) {
+  const role = await getRole();
+  if (role === "admin") {
+    const professor = await professorsRepository.update(id, data);
+  }
 }

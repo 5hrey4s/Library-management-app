@@ -1,15 +1,11 @@
 "use server";
-
 import { auth } from "@/auth";
 import AddProfessor from "@/components/addProfessor";
 import ProfessorSection from "@/components/ProfessorSection";
-import UserAppointments from "@/components/UserAppointments";
-import {
-  fetchProfessors,
-  getScheduledEvents,
-  getUsersAppointments,
-} from "@/lib/actions";
+import { fetchProfessors, getScheduledEvents } from "@/lib/actions";
 import { IProfessorBase } from "@/Models/professor.model";
+import { IRequestBase } from "@/Models/request.model";
+// import { fetchFilteredProfessors, fetchUserDetails } from "@/lib/actions";
 
 export default async function Page({
   searchParams,
@@ -35,18 +31,28 @@ export default async function Page({
   };
   const sortOptions = { sortOrder, sortBy };
   const scheduledEvents = await getScheduledEvents();
+  // Fetching the list of professors and pagination details
   const { items, pagination } = await fetchProfessors(pageRequest);
-  const userAppointments = await getUsersAppointments(session?.user.email!);
 
+  //   const totalPages = Math.ceil(Number(totalCount) / professorsPerPage);
+  //   if (professors.length === 0) {
+  //     return (
+  //       <>
+  //         <DataNotFound
+  //           title="No Data Available"
+  //           message="It looks like we don't have any data to display at the moment."
+  //           actionLabel="Go Back"
+  //         />
+  //       </>
+  //     );
+  //   }
   return (
     <div className="flex-1 overflow-y-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold">
-          Book an Appointment with a Professor
-        </h2>
-        <UserAppointments userAppointments={userAppointments} />
-      </div>
+      <h2 className="text-3xl font-bold mb-6">
+        Book an Appointment with a Professor
+      </h2>
       {role === "admin" && <AddProfessor />}
+
       <ProfessorSection
         professors={items}
         scheduledEvents={scheduledEvents}
