@@ -1,10 +1,15 @@
 "use client";
+
 import { createMember } from "@/lib/data";
 import React, { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { Input } from "@/components/ui/input";
 import { authenticate } from "@/lib/actions";
+import { Button } from "@/components/ui/button";
+import { FcGoogle } from "react-icons/fc";
+import { signIn } from "next-auth/react";
+import { Separator } from "@/components/ui/separator";
 
 interface FormErrors {
   firstName?: string;
@@ -89,9 +94,9 @@ const Register: React.FC = () => {
         console.log(error);
 
         // Check if the error message indicates a duplicate email
-          if (error.message && error.message.toLowerCase().includes("duplicate")) {
-            setErrors({ email: "This email is already registered" });
-          } else {
+        if (error.message && error.message.toLowerCase().includes("duplicate")) {
+          setErrors({ email: "This email is already registered" });
+        } else {
           setErrors({ global: error.message });
         }
       } finally {
@@ -100,6 +105,10 @@ const Register: React.FC = () => {
     } else {
       setErrors(formErrors);
     }
+  };
+
+  const handleGoogleSignIn = async () => {
+    await signIn("google", { callbackUrl: "/signup/success" });
   };
 
   return (
@@ -207,15 +216,26 @@ const Register: React.FC = () => {
             )}
           </div>
 
-          <button
+          <Button
             type="submit"
-            className="w-full bg-[#357960] text-white py-2 px-4 rounded-md"
+            className="w-full bg-[#357960] text-white py-2 px-4 rounded-md hover:bg-[#2c6651]"
             disabled={isSubmitting}
-            style={{ marginTop: "30px" }}
           >
             {isSubmitting ? "Registering..." : "Register"}
-          </button>
+          </Button>
         </form>
+
+        <div className="mt-6">
+          <Separator className="my-4" />
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={handleGoogleSignIn}
+          >
+            <FcGoogle className="mr-2 h-4 w-4" />
+            Sign up with Google
+          </Button>
+        </div>
       </div>
     </div>
   );

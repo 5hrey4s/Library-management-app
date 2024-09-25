@@ -63,7 +63,7 @@ export default function WelcomePage() {
             {t("description")}
           </p>
           <Button size="lg" className="mt-8 bg-[#357960] text-white">
-            <Link href="#dashboard">{t("getStartedButton")}</Link>
+            <Link href="/login">{t("getStartedButton")}</Link>
           </Button>
         </section>
         <section className="w-full py-16 bg-gray-100 dark:bg-gray-800">
