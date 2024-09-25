@@ -35,9 +35,9 @@ export default async function Home({
   const likedBooks = await getWishListByMemberId(user?.id!);
   const items: IBook[] = await fetchMyBooks(user!.id);
   return (
-    <div className="flex flex-col min-h-screen bg-[#F5F5F7] text-gray-900 dark:text-gray-100">
+    <div className="flex flex-col min-h-screen bg-[#D3C9C9] text-gray-900 dark:text-gray-100">
       <div className="flex-1 bg-[#F5F5F7]-50">
-        <section className="bg-green-50 py-12 rounded-lg">
+        <section className="bg-[#9FA8A0] py-12 ">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="md:w-1/2 mb-8 md:mb-0">
@@ -55,7 +55,8 @@ export default async function Home({
           </div>
         </section>
 
-        <section className="container mx-auto bg-[#F5F5F7] mt-8 relative">
+        <section className="container mx-auto relative py-12 px-4">
+        <div className="absolute top-0 right-0 -mt-4 mr-4"></div>
           <ListMyBooks
             searchParams={searchParams}
             role={session?.user!.role}
@@ -63,7 +64,6 @@ export default async function Home({
             genres={genres}
             user={user!}
             likedBooks={likedBooks}
-            
           />
         </section>
       </div>

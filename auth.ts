@@ -1,7 +1,6 @@
 import NextAuth, { User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
-import mysql from "mysql2/promise";
 import bcrypt from "bcryptjs";
 import { MemberRepository } from "./Repositories/member.repository";
 import { IMember } from "./Models/member.model";
