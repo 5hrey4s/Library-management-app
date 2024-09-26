@@ -10,6 +10,7 @@ import { fetchGenre, fetchMemberByEmail, fetchMembers } from "@/lib/data";
 import { IBookBase } from "@/Models/book-model";
 import { IMemberBase } from "@/Models/member.model";
 import { getTranslations } from "next-intl/server";
+import UnauthorizedAccess from "@/app/unauthorized/unauthorized";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -43,9 +44,7 @@ export default async function Home({
   const user = await fetchMemberByEmail(session?.user.email!);
   if (session?.user.role !== "admin") {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <h1 className="text-2xl font-bold text-red-600">Unauthorized</h1>
-      </div>
+        <UnauthorizedAccess />
     );
   }
   return (

@@ -9,6 +9,7 @@ import { IBookBase } from "@/Models/book-model";
 import { getWishListByMemberId } from "@/lib/actions";
 import { getTranslations } from "next-intl/server";
 import { BooksTable } from "@/components/booksTable";
+import UnauthorizedAccess from "@/app/unauthorized/unauthorized";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -44,12 +45,9 @@ export default async function Home({
   const user = await fetchMemberByEmail(session?.user.email!);
   const likedBooks = await getWishListByMemberId(user?.id!);
   if (session?.user.role !== "admin") {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <h1 className="text-2xl font-bold text-red-600">Unauthorized</h1>
-      </div>
-    );
+    return <UnauthorizedAccess />;
   }
+
   return (
     <div className="flex flex-col min-h-screen bg-[#F5F5F7] text-gray-900 dark:text-gray-100">
       {/* <Navbar logoText="Library" active="Books" role={session?.user!.role} /> */}

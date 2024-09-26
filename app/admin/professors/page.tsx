@@ -1,4 +1,5 @@
 "use server";
+import UnauthorizedAccess from "@/app/unauthorized/unauthorized";
 import { auth } from "@/auth";
 import AddProfessor from "@/components/addProfessor";
 import ProfessorSection from "@/components/ProfessorSection";
@@ -46,12 +47,15 @@ export default async function Page({
   //       </>
   //     );
   //   }
+  if (session?.user.role !== "admin") {
+    return <UnauthorizedAccess />;
+  }
   return (
     <div className="flex-1 overflow-y-auto p-6">
       <h2 className="text-3xl font-bold mb-6">
         Book an Appointment with a Professor
       </h2>
-      {role === "admin" && <AddProfessor />}
+      <AddProfessor />
 
       <ProfessorSection
         professors={items}

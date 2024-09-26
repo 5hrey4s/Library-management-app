@@ -9,6 +9,7 @@ import { IBookBase } from "@/Models/book-model";
 import { getWishListByMemberId, todaysDues } from "@/lib/actions";
 import { getTranslations } from "next-intl/server";
 import { TodaysDues } from "@/components/TodaysDues";
+import UnauthorizedAccess from "@/app/unauthorized/unauthorized";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -24,6 +25,11 @@ export default async function Home({
   params: { locale },
 }: HomeProps) {
   const dues = await todaysDues();
-  console.log(dues);
+  const session = await auth();
+  if (session?.user.role !== "admin") {
+    return (
+        <UnauthorizedAccess />
+    );
+  }
   return <TodaysDues dues={dues} />;
 }

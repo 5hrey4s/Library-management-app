@@ -46,7 +46,6 @@ export default async function Page({
         </h2>
         <UserAppointments userAppointments={userAppointments} />
       </div>
-      {role === "admin" && <AddProfessor />}
       <ProfessorSection
         professors={items}
         scheduledEvents={scheduledEvents}

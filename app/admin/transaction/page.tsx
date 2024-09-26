@@ -8,6 +8,8 @@ import { Suspense } from "react";
 import TableSkeleton from "@/components/TableSkeleton";
 import { ITransactionBase } from "@/Models/transaction.model";
 import { getTranslations } from "next-intl/server";
+import Unauthorized from "@/app/unauthorized/unauthorized";
+import UnauthorizedAccess from "@/app/unauthorized/unauthorized";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -45,9 +47,7 @@ export default async function Home({
   const user = await fetchMemberByEmail(session?.user.email!);
   if (session?.user.role !== "admin") {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <h1 className="text-2xl font-bold text-red-600">Unauthorized</h1>
-      </div>
+        <UnauthorizedAccess />
     );
   }
 
@@ -61,7 +61,7 @@ export default async function Home({
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="md:w-1/2 mb-8 md:mb-0">
                 <h1 className="text-3xl font-bold mb-4">
-                {t("headerTitle")} {/* Translated header title */}
+                  {t("headerTitle")} {/* Translated header title */}
                 </h1>
                 <div className="flex">
                   <SearchComponent
