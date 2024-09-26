@@ -23,7 +23,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { CalendarIcon, BookOpenIcon, Search, ArrowUpDown } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -83,18 +82,8 @@ const MyTransactionsTable = async ({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
-          <div className="relative w-full sm:w-64 mb-4 sm:mb-0">
-            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <Input
-              type="text"
-              name="search"
-              placeholder="Search transactions..."
-              className="pl-8 pr-4 py-2 w-full"
-              defaultValue={searchParams.search || ""}
-            />
-          </div>
-          <div className="relative w-full sm:w-64 mb-4 sm:mb-0">
+        <form className="flex justify-between items-center gap-4 mb-6">
+          <div className="relative w-full sm:w-64">
             <Select name="status" defaultValue={filterStatus}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Filter by status" />

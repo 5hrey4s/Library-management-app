@@ -100,7 +100,11 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         token.role = user.role;
       }
       if (profile && profile.picture) token.image = profile.picture;
-      // console.log("token",token)
+      const member: IMember | null = await fetchMemberByEmail(token.email!);
+      if (member) {
+        token.role = member.role;
+      }
+      console.log("token", token, user);
       return token;
     },
     async session({ session, token }) {
