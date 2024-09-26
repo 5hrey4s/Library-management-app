@@ -164,13 +164,13 @@ const TransactionsTable = async ({
                     <TableCell>
                       <div className="flex items-center">
                         <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
-                        {new Date(transaction.issueDate).toLocaleDateString()}
+                        {transaction.issueDate.split(",")[1]}
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center">
                         <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
-                        {new Date(transaction.dueDate).toLocaleDateString()}
+                        {transaction.dueDate.split(",")[1]}
                       </div>
                     </TableCell>
                     <TableCell>

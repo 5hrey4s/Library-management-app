@@ -24,7 +24,8 @@
       "activity": "Activity",
       "logout": "Logout",
       "loggingOut": "Logging out...",
-      "wishlist": "Wishlist"
+      "wishlist": "Wishlist",
+      "professors":"Professors"
     },
     "mobileMenu": {
       "openIcon": "Menu",

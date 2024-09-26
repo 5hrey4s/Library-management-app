@@ -246,9 +246,9 @@ export class TransactionRepository
           .from(Transactions)
           .where(
             or(
-              like(Transactions.bookId, `%${search}%`),
-              like(Transactions.memberId, `%${search}%`),
-              like(Transactions.Status, `%${search}%`)
+              ilike(Transactions.bookId, `%${search}%`),
+              ilike(Transactions.memberId, `%${search}%`),
+              ilike(Transactions.Status, `%${search}%`)
             )
           )
           .limit(params.limit ?? 10) // Add a default limit
@@ -270,9 +270,9 @@ export class TransactionRepository
         .where(
           search
             ? or(
-                like(Transactions.bookId, `%${search}%`),
-                like(Transactions.memberId, `%${search}%`),
-                like(Transactions.Status, `%${search}%`)
+                ilike(Transactions.bookId, `%${search}%`),
+                ilike(Transactions.memberId, `%${search}%`),
+                ilike(Transactions.Status, `%${search}%`)
               )
             : undefined
         );

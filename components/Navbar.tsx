@@ -333,13 +333,7 @@ export default function Navbar({
                     isActive={active === "Professors"}
                     onClick={() => setIsMobileMenuOpen(false)}
                   />
-                  <NavItem
-                    href={`/settings`}
-                    icon={<Settings className="h-5 w-5" />}
-                    text={t("profileDropdown.settings")}
-                    isActive={active === "Settings"}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  />
+                
                   <div className="mt-4">
                     <LocaleSwitcher />
                   </div>

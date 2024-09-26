@@ -11,6 +11,7 @@ import { IBookBase } from "@/Models/book-model";
 import { IMemberBase } from "@/Models/member.model";
 import { getTranslations } from "next-intl/server";
 import UnauthorizedAccess from "@/app/unauthorized/unauthorized";
+import { revalidatePath } from "next/cache";
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -31,7 +32,6 @@ export default async function Home({
   const limit = 8;
   const sortBy = (searchParams["sortBy"] as keyof IMemberBase) || "firstName";
   const sortOrder = searchParams["sortOrder"] || "asc";
-
   const offset = (page - 1) * limit;
   const pageRequest = {
     offset: offset,

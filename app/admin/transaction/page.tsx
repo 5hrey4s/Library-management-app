@@ -43,18 +43,16 @@ export default async function Home({
     pageRequest,
     sortOptions
   );
+  console.log(items);
   const session = await auth();
   const user = await fetchMemberByEmail(session?.user.email!);
   if (session?.user.role !== "admin") {
-    return (
-        <UnauthorizedAccess />
-    );
+    return <UnauthorizedAccess />;
   }
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F5F5F7] text-gray-900 dark:text-gray-100">
       {/* <Navbar logoText="Library" active="Transactions" role = {session?.user!.role}/> */}
-
       <div className="flex-1 bg-[#F5F5F7]-50 ">
         <section className="bg-green-50 py-12 rounded-lg">
           <div className="container mx-auto px-4">
