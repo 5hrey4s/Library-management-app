@@ -83,7 +83,7 @@ export async function handleApprove(data: { id: number; Status: string }) {
     {} as ITransactionBase,
     data.id
   );
-  revalidatePath("/admin/transactions");
+  revalidatePath("/admin/transaction");
   return transaction;
 }
 
@@ -93,7 +93,7 @@ export async function handleReject(id: any) {
     {} as ITransactionBase,
     id
   );
-  revalidatePath("/admin/transactions");
+  revalidatePath("/admin/transaction");
   return transaction;
 }
 
@@ -206,7 +206,6 @@ export async function uploadImage(file: File) {
 }
 
 export async function cancelBookRequest(transactionId: number): Promise<void> {
-  console.log("Actions");
   await transactionRepository.handleBookRequest(
     "Cancelled",
     {} as ITransactionBase,
