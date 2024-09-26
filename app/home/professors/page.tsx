@@ -40,18 +40,25 @@ export default async function Page({
   console.log("userAppointments============", userAppointments);
 
   return (
-    <div className="flex-1 overflow-y-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold">
+    <div className="flex-1 overflow-y-auto p-4 md:p-6">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+        <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-0">
           Book an Appointment with a Professor
         </h2>
-        <UserAppointments userAppointments={userAppointments} />
+        <div className="w-full md:w-auto">
+          <UserAppointments userAppointments={userAppointments} />
+        </div>
       </div>
-      <ProfessorSection
-        professors={items}
-        scheduledEvents={scheduledEvents}
-        role={role!}
-      />
+
+      {/* Professor Section */}
+      <div className="w-full">
+        <ProfessorSection
+          professors={items}
+          scheduledEvents={scheduledEvents}
+          role={role!}
+        />
+      </div>
     </div>
   );
 }

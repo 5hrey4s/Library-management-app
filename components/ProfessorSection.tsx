@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -7,11 +8,14 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./ui/card";
+} from "@/components/ui/card";
 import Link from "next/link";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { IProfessor } from "@/Models/professor.model";
-import EditProfessor from "./ui/editProfessor";
+import EditProfessor from "@/components/ui/editProfessor";
+import { Search, BookOpen } from "lucide-react";
 
 interface ScheduledEvent {
   name: string;
@@ -29,53 +33,61 @@ export default function ProfessorSection({
   scheduledEvents: ScheduledEvent[];
   role: string;
 }) {
-  const [selectedProfessor, setSelectedProfessor] = useState<IProfessor | null>(
-    null
-  );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("");
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString("en-US", {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-    });
-  };
+  const departments = useMemo(() => {
+    return Array.from(new Set(professors.map(p => p.department)));
+  }, [professors]);
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "active":
-        return "bg-green-500";
-      case "canceled":
-        return "bg-red-500";
-      default:
-        return "bg-gray-500";
-    }
-  };
+  const filteredProfessors = useMemo(() => {
+    return professors.filter(professor => 
+      professor.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (selectedDepartment === "" || professor.department === selectedDepartment)
+    );
+  }, [professors, searchTerm, selectedDepartment]);
 
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-3xl font-bold mb-6 text-center text-primary">
         Professor Directory
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {professors.map((professor) => (
+      <div className="mb-6 flex flex-col sm:flex-row gap-4">
+        <div className="relative flex-grow">
+          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <Input
+            type="text"
+            placeholder="Search professors..."
+            className="pl-8"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+          <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectValue placeholder="Department" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">All Departments</SelectItem>
+            {departments.map(dept => (
+              <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredProfessors.map((professor) => (
           <Card
             key={professor.id}
-            className="relative flex flex-col animate-fade-in-up border shadow-lg hover:shadow-xl transition-all duration-300 bg-card"
+            className="flex flex-col animate-fade-in-up border shadow-lg hover:shadow-xl transition-all duration-300 bg-card"
           >
-            <CardHeader>
-              {/* Edit button placed at the top right corner */}
-              <div className="absolute top-2 right-2">
-                {role == "admin" && <EditProfessor id={professor.id} />}
-                {/* Edit Professor button */}
-              </div>
-
-              <CardTitle className="text-xl font-bold">
-                {professor.name}
-              </CardTitle>
+            <CardHeader className="relative">
+              {role === "admin" && (
+                <div className="absolute top-2 right-2">
+                  <EditProfessor id={professor.id} />
+                </div>
+              )}
+              <CardTitle className="text-xl font-bold">{professor.name}</CardTitle>
               <CardDescription className="text-sm text-muted-foreground">
                 {professor.department}
               </CardDescription>
@@ -84,11 +96,9 @@ export default function ProfessorSection({
               <p className="text-sm line-clamp-3">{professor.bio}</p>
             </CardContent>
             <CardFooter className="flex flex-col space-y-3">
-              <Link
-                href={`/home/professors/${professor.id}`}
-                className="w-full"
-              >
-                <Button variant="default" className="w-full">
+              <Link href={`/home/professors/${professor.id}`} className="w-full">
+                <Button variant="default" className="w-full bg-primary hover:bg-primary/90">
+                  <BookOpen className="mr-2 h-4 w-4" />
                   Book Appointment
                 </Button>
               </Link>
@@ -96,6 +106,11 @@ export default function ProfessorSection({
           </Card>
         ))}
       </div>
+      {filteredProfessors.length === 0 && (
+        <p className="text-center text-muted-foreground mt-6">
+          No professors found matching your search criteria.
+        </p>
+      )}
     </div>
   );
 }
