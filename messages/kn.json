@@ -14,7 +14,8 @@
       "members": "ಸದಸ್ಯರು",
       "transactions": "ಊರಗೊಳಣೆಗಳು",
       "myTransactions": "ನನ್ನ ಊರಗೊಳಣೆಗಳು",
-      "todaysDues": "ಇಂದು ಬಾಕಿ"
+      "todaysDues": "ಇಂದು ಬಾಕಿ",
+      "settings": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
     },
     "profileDropdown": {
       "home": "ಮನೆ",
@@ -25,7 +26,8 @@
       "logout": "ಲಾಗ್ ಔಟ್",
       "loggingOut": "ಲಾಗ್ ಔಟ್ ಆಗುತ್ತಿದೆ...",
       "wishlist": "ಕಾದಿರಿಸಿದದಿಗೆ",
-      "professors": "ಪ್ರಾಧ್ಯಾಪಕರು"
+      "professors": "ಪ್ರಾಧ್ಯಾಪಕರು",
+      "settings": "settings"
     },
     "mobileMenu": {
       "openIcon": "ಮೆನು",

@@ -14,7 +14,8 @@
       "members": "Members",
       "transactions": "Transactions",
       "myTransactions": "My Transactions",
-      "todaysDues": "Due Today"
+      "todaysDues": "Due Today",
+      "settings": "settings"
     },
     "profileDropdown": {
       "home": "Home",
@@ -25,7 +26,8 @@
       "logout": "Logout",
       "loggingOut": "Logging out...",
       "wishlist": "Wishlist",
-      "professors":"Professors"
+      "professors": "Professors",
+      "settings":"settings"
     },
     "mobileMenu": {
       "openIcon": "Menu",

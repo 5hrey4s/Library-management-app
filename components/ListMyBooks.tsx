@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IMember } from "@/Models/member.model";
 import { getMeanRating } from "@/lib/actions";
+import { Filter, SortAsc, SortDesc } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 export interface ListMyBooksProps {
   searchParams: SearchParams;
@@ -23,6 +25,7 @@ export interface ListMyBooksProps {
   user: IMember;
   genres: string[];
   likedBooks: number[];
+  locale: string;
 }
 
 export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
@@ -32,6 +35,7 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
   user,
   genres,
   likedBooks,
+  locale,
 }) => {
   const page = parseInt(searchParams["page"] ?? "1");
   const perPage = parseInt(searchParams["per_page"] ?? "8");
@@ -39,6 +43,7 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
   const sortOrder = searchParams["sortOrder"] ?? "asc";
   const searchTerm = searchParams["searchTerm"] ?? "";
   const genreFilter = searchParams["genre"] ?? "all";
+  const t = await getTranslations({ locale, namespace: "ListBooks" });
 
   // Sort books
   const sortedItems = [...items].sort((a, b) => {
@@ -67,7 +72,7 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
   // Fetch bookIds for the current entries
 
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-[#E5E8E6]">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">My Books</CardTitle>
       </CardHeader>
@@ -76,7 +81,7 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
         <form className="mb-6 space-y-4 md:space-y-0 justify-end md:flex md:flex-wrap md:items-end md:gap-4">
           <div className="flex flex-wrap items-center  gap-2">
             <Select name="sortBy" defaultValue={sortBy}>
-              <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectTrigger className="w-[140px] bg-white border-[#9FA8A0]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
@@ -87,16 +92,28 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
               </SelectContent>
             </Select>
             <Select name="sortOrder" defaultValue={sortOrder}>
-              <SelectTrigger className="w-full sm:w-[100px]">
+              <SelectTrigger className="w-[140px] bg-white border-[#9FA8A0]">
                 <SelectValue placeholder="Order" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="asc">Ascending</SelectItem>
-                <SelectItem value="desc">Descending</SelectItem>
+                <SelectContent>
+                  <SelectItem value="asc">
+                    <div className="flex items-center">
+                      <SortAsc className="w-4 h-4 mr-2" />
+                      {t("ascending")}
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="desc">
+                    <div className="flex items-center">
+                      <SortDesc className="w-4 h-4 mr-2" />
+                      {t("descending")}
+                    </div>
+                  </SelectItem>
+                </SelectContent>
               </SelectContent>
             </Select>
             <Select name="genre" defaultValue={genreFilter}>
-              <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectTrigger className="w-[140px] bg-white border-[#9FA8A0]">
                 <SelectValue placeholder="Filter by genre" />
               </SelectTrigger>
               <SelectContent className="max-h-[200px] overflow-y-auto">
@@ -109,8 +126,13 @@ export const ListMyBooks: React.FC<ListMyBooksProps> = async ({
               </SelectContent>
             </Select>
           </div>
-          <Button type="submit" className="w-full md:w-auto">
-            Apply
+          <Button
+            type="submit"
+            variant="default"
+            className="bg-[#9FA8A0] hover:bg-[#8A9389] text-white transition-colors duration-200"
+          >
+            <Filter className="h-4 w-4 mr-2" />
+            {t("applyFilters")}
           </Button>
         </form>
 

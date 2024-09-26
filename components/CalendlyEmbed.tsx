@@ -41,7 +41,7 @@ import { InlineWidget } from "react-calendly";
 
 interface CalendlyWidgetProps {
   calendlyLink: string;
-  prefill: { email: string; name: string };
+  prefill?: { email: string; name: string };
 }
 
 const CalendlyEmbed: React.FC<CalendlyWidgetProps> = ({

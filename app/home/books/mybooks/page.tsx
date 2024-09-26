@@ -37,26 +37,26 @@ export default async function Home({
   return (
     <div className="flex flex-col min-h-screen bg-[#D3C9C9] text-gray-900 dark:text-gray-100">
       <div className="flex-1 bg-[#F5F5F7]-50">
-        <section className="bg-[#9FA8A0] py-12 ">
+        <section className="bg-[#9fa8a0] py-16 rounded-b-3xl shadow-md">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="md:w-1/2 mb-8 md:mb-0">
-                <h1 className="text-3xl font-bold mb-4">
+                <h1 className="text-4xl font-bold mb-6 text-black">
                   {t("headerTitle")} {/* Translated header title */}
                 </h1>
-                <div className="flex">
+                <div className="flex w-full max-w-md">
                   <SearchComponent
                     placeholder={t("searchPlaceholder")}
                     searchButtonText={t("searchButtonText")}
                   />
+                  {/* Translated search placeholder */}
                 </div>
               </div>
             </div>
           </div>
         </section>
-
         <section className="container mx-auto relative py-12 px-4">
-        <div className="absolute top-0 right-0 -mt-4 mr-4"></div>
+          <div className="absolute top-0 right-0 -mt-4 mr-4"></div>
           <ListMyBooks
             searchParams={searchParams}
             role={session?.user!.role}
@@ -64,6 +64,8 @@ export default async function Home({
             genres={genres}
             user={user!}
             likedBooks={likedBooks}
+            locale={locale}
+
           />
         </section>
       </div>

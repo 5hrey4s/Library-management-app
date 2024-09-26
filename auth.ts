@@ -104,7 +104,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
       if (member) {
         token.role = member.role;
       }
-      console.log("token", token, user);
+      // console.log("token", token, user);
       return token;
     },
     async session({ session, token }) {

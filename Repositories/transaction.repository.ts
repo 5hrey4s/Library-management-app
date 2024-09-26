@@ -237,20 +237,15 @@ export class TransactionRepository
       // Fallback to default sort
       sortOrder = asc(Transactions.issueDate); // Default sort by title in ascending order
     }
-
+    console.log(sortOptions, sortOrder);
     try {
       // Build the query with search, pagination, and sorting
+      console.log("search=========>", search);
       if (search) {
         selectSql = (await this.db
           .select()
           .from(Transactions)
-          .where(
-            or(
-              ilike(Transactions.bookId, `%${search}%`),
-              ilike(Transactions.memberId, `%${search}%`),
-              ilike(Transactions.Status, `%${search}%`)
-            )
-          )
+          .where(or(ilike(Transactions.Status, `%${search}%`)))
           .limit(params.limit ?? 10) // Add a default limit
           .offset(params.offset ?? 0)
           .orderBy(sortOrder)) as ITransaction[];
@@ -268,13 +263,7 @@ export class TransactionRepository
         .select({ count: count() })
         .from(Transactions)
         .where(
-          search
-            ? or(
-                ilike(Transactions.bookId, `%${search}%`),
-                ilike(Transactions.memberId, `%${search}%`),
-                ilike(Transactions.Status, `%${search}%`)
-              )
-            : undefined
+          search ? or(ilike(Transactions.Status, `%${search}%`)) : undefined
         );
 
       const countMember = (countResult as any).count;
@@ -289,8 +278,7 @@ export class TransactionRepository
         },
       };
     } catch (error) {
-      console.log(error);
-      throw new Error("Not found");
+      throw error;
     }
   }
 
@@ -346,6 +334,7 @@ export class TransactionRepository
         },
       };
     } catch (error) {
+      console.log(error);
       throw new Error("Not found");
     }
   }

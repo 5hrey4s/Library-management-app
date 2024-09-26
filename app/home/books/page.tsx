@@ -62,7 +62,7 @@ export default async function Home({
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="md:w-1/2 mb-8 md:mb-0">
-                <h1 className="text-4xl font-bold mb-6 text-white">
+                <h1 className="text-4xl font-bold mb-6 text-black">
                   {t("headerTitle")} {/* Translated header title */}
                 </h1>
                 <div className="flex w-full max-w-md">

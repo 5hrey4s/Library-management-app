@@ -37,6 +37,7 @@ export default async function Page({
   const scheduledEvents = await getScheduledEvents();
   const { items, pagination } = await fetchProfessors(pageRequest);
   const userAppointments = await getUsersAppointments(session?.user.email!);
+  console.log("userAppointments============", userAppointments);
 
   return (
     <div className="flex-1 overflow-y-auto p-6">
