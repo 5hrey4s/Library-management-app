@@ -24,6 +24,7 @@ import { IBook } from "@/Models/book-model";
 import {
   IProfessor,
   IProfessorBase,
+  ProfessorBaseSchema,
   ProfessorSchema,
 } from "@/Models/professor.model";
 import { ProfessorRepository } from "@/Repositories/Professor-repository";
@@ -503,7 +504,7 @@ export async function addProfessor(
   formData: FormData
 ) {
   console.log("In add professor");
-  const validateFields = ProfessorSchema.safeParse({
+  const validateFields = ProfessorBaseSchema.safeParse({
     name: formData.get("name"),
     bio: formData.get("bio"),
     email: formData.get("email"),

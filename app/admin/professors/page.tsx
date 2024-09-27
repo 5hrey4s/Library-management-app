@@ -1,7 +1,7 @@
 "use server";
+import AddProfessor from "@/app/addProfessor/page";
 import UnauthorizedAccess from "@/app/unauthorized/unauthorized";
 import { auth } from "@/auth";
-import AddProfessor from "@/components/addProfessor";
 import ProfessorSection from "@/components/ProfessorSection";
 import { fetchProfessors, getScheduledEvents } from "@/lib/actions";
 import { IProfessorBase } from "@/Models/professor.model";

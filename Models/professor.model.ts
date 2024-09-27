@@ -20,9 +20,9 @@ export const ProfessorBaseSchema = z.object({
   name: z.string().min(1, "Name is required"),           // Full name of the professor
   department: z.string().min(1, "Department is required"),// Professor's department
   bio: z.string().min(1, "Bio is required"),              // Short biography
-  calendlyLink: z.string().url("Invalid Calendly URL"),   // Calendly link for scheduling appointments
+  // calendlyLink: z.string().url("Invalid Calendly URL"),   // Calendly link for scheduling appointments
   email: z.string().email("Invalid email format"),        // Professor's email
-  googleMeetEnabled: z.boolean().optional().default(true) // Optional Google Meet setting, defaults to true
+  // googleMeetEnabled: z.boolean().optional().default(true) // Optional Google Meet setting, defaults to true
 });
 
 // Zod schema for the full professor interface with ID
