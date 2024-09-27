@@ -104,8 +104,6 @@ export async function handleReject(id: any) {
 }
 
 export async function createMember(data: IMemberBase): Promise<IMember | null> {
-  console.log(data);
-
   try {
     const [result] = await db
       .insert(Members)
@@ -130,7 +128,6 @@ export const authenticateGoogleSignin = async (
   try {
     // Check if the user exists in database
     let user: IMember | null = (await memberRepository.getByEmail(email))!;
-    console.log(user);
     if (!user) {
       return null;
     } else {
@@ -452,7 +449,6 @@ export async function getScheduledEvents() {
     }
 
     const data = await response.json();
-    console.log("Scheduled events:", data);
     return data.collection; // Return an array of scheduled events
   } catch (error) {
     console.error("Error fetching scheduled events", error);
@@ -473,81 +469,130 @@ export async function updateProfessor(id: number, data: IProfessorBase) {
   }
 }
 
-export async function inviteProfessor(emailValue: string) {
-  const organizationUrl = await getUserUri();
-  const uuid = organizationUrl.split("/").pop();
+// export async function inviteProfessor(emailValue: string) {
+//   const organizationUrl = await getUserUri();
+//   const uuid = organizationUrl.split("/").pop();
+//   try {
+//     const response = await fetch(
+//       `https://api.calendly.com/organizations/${uuid}/invitations`,
+//       {
+//         method: "POST",
+//         headers: {
+//           Authorization: `Bearer ${CALENDLY_API_TOKEN}`,
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({ email: emailValue }),
+//       }
+//     );
+//     console.log("Organizations", response);
+//     if (!response.ok) {
+//       throw new Error(`Error fetching user info: ${response.statusText}`);
+//     }
+//     const data = await response.json();
+//     return data.resource.status;
+//   } catch (error) {
+//     console.error("Error inviting professor", error);
+//   }
+// }
+
+// export async function addProfessor(
+//   prevState: { message: string; errors: any },
+//   formData: FormData
+// ) {
+//   console.log("In add professor");
+//   const validateFields = ProfessorBaseSchema.safeParse({
+//     name: formData.get("name"),
+//     bio: formData.get("bio"),
+//     email: formData.get("email"),
+//     department: formData.get("department"),
+//   });
+
+//   if (!validateFields.success) {
+//     console.log("Failure");
+//     console.log(validateFields.error.flatten().fieldErrors);
+//     return {
+//       errors: validateFields.error.flatten().fieldErrors,
+//       message: "Missing Fields. Failed to Add professor.",
+//     };
+//   }
+//   const { name, bio, email, department } = validateFields.data;
+
+//   if (!name || !bio || !email || !department) {
+//     console.log("All fields are required");
+//     return { message: "All Fields are required", errors: {} };
+//   }
+
+//   try {
+//     const existingProfessor = await fetchProfessorByEmail(email);
+//     if (existingProfessor) {
+//       console.log("Professor already exists.");
+//       return { message: "Professor already exists.", errors: {} };
+//     }
+
+//     const status = await inviteProfessor(email);
+//     console.log(status);
+
+//     const createdProfessor = await professorsRepository.create({
+//       name,
+//       email,
+//       bio,
+//       department,
+//       calendlyLink: "",
+//     });
+//     console.log(`Professor ${createdProfessor!.name} created successfully!`);
+//     return { message: "Success", errors: {} };
+//   } catch (error) {
+//     console.log("Error during registration:", error);
+//     return { message: "Error during registration:", errors: {} };
+//   }
+// }
+
+export async function inviteProfessor(
+  prevState: { message: string },
+  formData: FormData
+) {
   try {
-    const response = await fetch(
-      `https://api.calendly.com/organizations/${uuid}/invitations`,
+    const email = formData.get("email") as string;
+    const data: Omit<IProfessor, "id"> = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      department: formData.get("department") as string,
+      bio: formData.get("bio") as string,
+      calendlyLink: "",
+    };
+
+    const orgUri: string = await getOrganizationUri();
+    const uuid = orgUri.split("/").pop();
+
+    const invitationResult = await fetch(
+      `https://api.calendly.com/organizations/${uuid!}/invitations`,
       {
         method: "POST",
         headers: {
           Authorization: `Bearer ${CALENDLY_API_TOKEN}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: emailValue }),
+        body: JSON.stringify({
+          email: email,
+        }),
       }
     );
-    console.log("Organizations", response);
-    if (!response.ok) {
-      throw new Error(`Error fetching user info: ${response.statusText}`);
-    }
-    const data = await response.json();
-    return data.resource.status;
-  } catch (error) {
-    console.error("Error inviting professor", error);
-  }
-}
-
-export async function addProfessor(
-  prevState: { message: string; errors: any },
-  formData: FormData
-) {
-  console.log("In add professor");
-  const validateFields = ProfessorBaseSchema.safeParse({
-    name: formData.get("name"),
-    bio: formData.get("bio"),
-    email: formData.get("email"),
-    department: formData.get("department"),
-  });
-
-  if (!validateFields.success) {
-    console.log("Failure");
-    console.log(validateFields.error.flatten().fieldErrors);
-    return {
-      errors: validateFields.error.flatten().fieldErrors,
-      message: "Missing Fields. Failed to Add professor.",
-    };
-  }
-  const { name, bio, email, department } = validateFields.data;
-
-  if (!name || !bio || !email || !department) {
-    console.log("All fields are required");
-    return { message: "All Fields are required", errors: {} };
-  }
-
-  try {
-    const existingProfessor = await fetchProfessorByEmail(email);
-    if (existingProfessor) {
-      console.log("Professor already exists.");
-      return { message: "Professor already exists.", errors: {} };
+    console.log(invitationResult, invitationResult.ok);
+    if (invitationResult.ok) {
+      const createdMember = await professorsRepository.create(data);
+      if (!createdMember) {
+        return { message: "Failed to create professor." };
+      }
+      return { message: "Professor created successfully!" };
     }
 
-    const status = await inviteProfessor(email);
-    console.log(status);
-
-    const createdProfessor = await professorsRepository.create({
-      name,
-      email,
-      bio,
-      department,
-      calendlyLink: "",
-    });
-    console.log(`Professor ${createdProfessor!.name} created successfully!`);
-    return { message: "Success", errors: {} };
-  } catch (error) {
-    console.log("Error during registration:", error);
-    return { message: "Error during registration:", errors: {} };
+    return { message: "Failed to create professor." };
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      console.log(err.flatten());
+      return { message: err.errors[0].message || "Invalid input" };
+    }
+    return { message: (err as Error).message };
   }
 }
 

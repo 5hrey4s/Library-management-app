@@ -1,10 +1,9 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -13,18 +12,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { addProfessor } from "@/lib/actions";
+import { inviteProfessor } from "@/lib/actions";
 import { Loader2, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 
 export default function AddProfessor() {
-  const initialState: { message: string; errors: any } = {
+  const initialState: { message: string } = {
     message: "",
-    errors: {},
   };
   const [state, formAction, isPending] = useActionState(
-    addProfessor,
+    inviteProfessor,
     initialState
   );
   const router = useRouter();
@@ -37,9 +35,9 @@ export default function AddProfessor() {
     if (state.message === "Success") {
       toast({
         title: "Success",
-        description: "Book added successfully to the library.",
+        description: "Professor added successfully.",
         duration: 2000,
-        className: "bg-green-100 border-green-500 text-green-800 shadow-lg",
+        className: "bg-[#8A9389] border-[#696f68] text-white shadow-lg",
       });
     } else if (state.message && state.message !== "Success") {
       setIsOpen(true);
@@ -58,39 +56,35 @@ export default function AddProfessor() {
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     formAction(formData);
   };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+        <Button className="bg-[#8A9389] hover:bg-[#696f68] text-white">
           <Plus className="mr-2 h-4 w-4" />
           Add Professor
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-orange-50 border-orange-200">
+      <DialogContent className="sm:max-w-[425px] bg-[#F5F5F7] border-[#8A9389]">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-orange-800">
+          <DialogTitle className="text-2xl font-bold text-[#4A4F4D]">
             Add New Professor
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-orange-700">
+            <Label htmlFor="name" className="text-[#4A4F4D]">
               Name
             </Label>
             <Input
               id="name"
               name="name"
               required
-              className="border-orange-200 focus:border-orange-500 focus:ring-orange-500"
+              className="border-[#8A9389] focus:border-[#696f68] focus:ring-[#696f68]"
             />
-            {state.errors?.name ? (
-              <p className="text-red-500 text-sm">{state.errors.name}</p>
-            ) : (
-              <div className="min-h-1"></div>
-            )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-orange-700">
+            <Label htmlFor="email" className="text-[#4A4F4D]">
               Email
             </Label>
             <Input
@@ -98,49 +92,34 @@ export default function AddProfessor() {
               name="email"
               type="email"
               required
-              className="border-orange-200 focus:border-orange-500 focus:ring-orange-500"
+              className="border-[#8A9389] focus:border-[#696f68] focus:ring-[#696f68]"
             />
-            {state.errors?.email ? (
-              <p className="text-red-500 text-sm">{state.errors.email}</p>
-            ) : (
-              <div className="min-h-1"></div>
-            )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="department" className="text-orange-700">
+            <Label htmlFor="department" className="text-[#4A4F4D]">
               Department
             </Label>
             <Input
               id="department"
               name="department"
               required
-              className="border-orange-200 focus:border-orange-500 focus:ring-orange-500"
+              className="border-[#8A9389] focus:border-[#696f68] focus:ring-[#696f68]"
             />
-            {state.errors?.department ? (
-              <p className="text-red-500 text-sm">{state.errors.department}</p>
-            ) : (
-              <div className="min-h-1"></div>
-            )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="bio" className="text-orange-700">
+            <Label htmlFor="bio" className="text-[#4A4F4D]">
               Bio
             </Label>
             <Textarea
               id="bio"
               name="bio"
               required
-              className="border-orange-200 focus:border-orange-500 focus:ring-orange-500"
+              className="border-[#8A9389] focus:border-[#696f68] focus:ring-[#696f68]"
             />
-            {state.errors?.bio ? (
-              <p className="text-red-500 text-sm">{state.errors.bio}</p>
-            ) : (
-              <div className="min-h-1"></div>
-            )}
           </div>
           <Button
             type="submit"
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+            className="w-full bg-[#8A9389] hover:bg-[#696f68] text-white"
           >
             {isPending ? (
               <>
