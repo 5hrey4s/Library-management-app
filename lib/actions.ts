@@ -550,3 +550,74 @@ export async function addProfessor(
     return { message: "Error during registration:", errors: {} };
   }
 }
+
+export async function refreshCalendlyLink(email: string) {
+  try {
+    const orgUri: string = await getOrganizationUri();
+    const uuid = orgUri.split("/").pop();
+
+    const invitationsResponse = await fetch(
+      `https://api.calendly.com/organizations/${uuid}/invitations?email=${encodeURIComponent(
+        email
+      )}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${CALENDLY_API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!invitationsResponse.ok) {
+      throw new Error(
+        `Error fetching invitations: ${invitationsResponse.statusText}`
+      );
+    }
+
+    const invitationsData = await invitationsResponse.json();
+    const invitation = invitationsData.collection[0];
+
+    if (invitation && invitation.status === "accepted") {
+      const userResponse = await fetch(invitation.user, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${CALENDLY_API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!userResponse.ok) {
+        throw new Error(`Error fetching user: ${userResponse.statusText}`);
+      }
+
+      const userData = await userResponse.json();
+      const calendlyLink = userData.resource.scheduling_url;
+
+      const professor = await professorsRepository.getByEmail(email);
+
+      if (professor) {
+        await professorsRepository.update(professor.id, {
+          ...professor,
+          calendlyLink: calendlyLink,
+        });
+        return {
+          success: true,
+          message: "Calendly link updated successfully.",
+        };
+      } else {
+        throw new Error("Professor not found in the database.");
+      }
+    } else {
+      return {
+        success: false,
+        message: "Invitation not accepted or not found.",
+      };
+    }
+  } catch (error) {
+    console.error("Error in checkInvitationAndUpdateCalendlyLink:", error);
+    throw error;
+  } finally {
+    revalidatePath("/admin/professors");
+  }
+}

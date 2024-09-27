@@ -12,10 +12,17 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { IProfessor } from "@/Models/professor.model";
 import EditProfessor from "@/components/ui/editProfessor";
 import { Search, BookOpen } from "lucide-react";
+import { refreshCalendlyLink } from "@/lib/actions";
 
 interface ScheduledEvent {
   name: string;
@@ -36,14 +43,19 @@ export default function ProfessorSection({
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
 
+  const handleRefresh = async (email: string) => {
+    await refreshCalendlyLink(email);
+  };
   const departments = useMemo(() => {
-    return Array.from(new Set(professors.map(p => p.department)));
+    return Array.from(new Set(professors.map((p) => p.department)));
   }, [professors]);
 
   const filteredProfessors = useMemo(() => {
-    return professors.filter(professor => 
-      professor.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedDepartment === "" || professor.department === selectedDepartment)
+    return professors.filter(
+      (professor) =>
+        professor.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (selectedDepartment === "" ||
+          professor.department === selectedDepartment)
     );
   }, [professors, searchTerm, selectedDepartment]);
 
@@ -63,14 +75,19 @@ export default function ProfessorSection({
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+        <Select
+          value={selectedDepartment}
+          onValueChange={setSelectedDepartment}
+        >
           <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Department" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="ghost">All Departments</SelectItem>
-            {departments.map(dept => (
-              <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+            {departments.map((dept) => (
+              <SelectItem key={dept} value={dept}>
+                {dept}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -87,7 +104,9 @@ export default function ProfessorSection({
                   <EditProfessor id={professor.id} />
                 </div>
               )}
-              <CardTitle className="text-xl font-bold">{professor.name}</CardTitle>
+              <CardTitle className="text-xl font-bold">
+                {professor.name}
+              </CardTitle>
               <CardDescription className="text-sm text-muted-foreground">
                 {professor.department}
               </CardDescription>
@@ -96,12 +115,30 @@ export default function ProfessorSection({
               <p className="text-sm line-clamp-3">{professor.bio}</p>
             </CardContent>
             <CardFooter className="flex flex-col space-y-3">
-              <Link href={`/home/professors/${professor.id}`} className="w-full">
-                <Button variant="default" className="w-full bg-primary hover:bg-primary/90">
+              {professor.calendlyLink && (
+                <Link
+                  href={`/home/professors/${professor.id}`}
+                  className="w-full"
+                >
+                  <Button
+                    variant="default"
+                    className="w-full bg-primary hover:bg-primary/90"
+                  >
+                    <BookOpen className="mr-2 h-4 w-4" />
+                    Book Appointment
+                  </Button>
+                </Link>
+              )}
+              {role === "admin" && (
+                <Button
+                  variant="default"
+                  className="w-full bg-primary hover:bg-primary/90"
+                  onClick={() => handleRefresh(professor.email)}
+                >
                   <BookOpen className="mr-2 h-4 w-4" />
-                  Book Appointment
+                  Refresh
                 </Button>
-              </Link>
+              )}
             </CardFooter>
           </Card>
         ))}
