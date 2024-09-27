@@ -21,11 +21,12 @@ import { DueBook } from "@/components/TodaysDues";
 import { RatingsRepository } from "@/Repositories/rating.repository";
 import { BookRepository } from "@/Repositories/book-repository";
 import { IBook } from "@/Models/book-model";
-import { IProfessorBase } from "@/Models/professor.model";
+import { IProfessor, IProfessorBase } from "@/Models/professor.model";
 import { ProfessorRepository } from "@/Repositories/Professor-repository";
 import { IPageRequest } from "@/core/pagination";
 import { ProfessorSortOptions, SortOptions } from "./data";
 import { Appenv } from "@/read-env";
+import { z } from "zod";
 
 const db = drizzle(sql, { schema });
 const CALENDLY_API_TOKEN = process.env.NEXT_PUBLIC_CALENDLY_API_TOKEN;
@@ -460,5 +461,50 @@ export async function updateProfessor(id: number, data: IProfessorBase) {
   const role = await getRole();
   if (role === "admin") {
     const professor = await professorsRepository.update(id, data);
+  }
+}
+
+export async function inviteProfessor(prevState: any, formData: FormData) {
+  try {
+    const email = formData.get("email") as string;
+    const data: Omit<IProfessor, "id"> = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      department: formData.get("department") as string,
+      bio: formData.get("shortBio") as string,
+      calendlyLink: "",
+    };
+
+    const orgUri: string = await getOrganizationUri();
+    const uuid = orgUri.split("/").pop();
+
+    const invitationResult = await fetch(
+      `https://api.calendly.com/organizations/${uuid!}/invitations`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${CALENDLY_API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+        }),
+      }
+    );
+
+    if (invitationResult.ok) {
+      const createdMember = await professorsRepository.create(data);
+      if (!createdMember) {
+        return { message: "Failed to create professor." };
+      }
+      return { message: "Professor created successfully!" };
+    }
+    return { message: "Failed to create professor." };
+  } catch (err: any) {
+    if (err instanceof z.ZodError) {
+      console.log(err.flatten());
+      return { message: err.errors[0].message || "Invalid input" };
+    }
+    return { message: (err as Error).message };
   }
 }

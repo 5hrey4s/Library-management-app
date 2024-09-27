@@ -78,6 +78,7 @@ export default function UserAppointments({
   const handleAction = (type: "cancel" | "reschedule", link: string) => {
     setSelectedAction({ type, link });
   };
+
   return (
     <>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -130,7 +131,7 @@ export default function UserAppointments({
                     </div>
                   </CardContent>
                   <Separator />
-                  <CardFooter className="p-4 flex justify-between">
+                  <CardFooter className="p-4 flex flex-col sm:flex-row sm:justify-between space-y-2 sm:space-y-0 sm:space-x-2">
                     {appointment.meetLink && (
                       <Button
                         variant="link"
@@ -141,11 +142,7 @@ export default function UserAppointments({
                         disabled={appointment.status === "canceled"} // Conditionally disable the button
                       >
                         <a
-                          href={
-                            appointment.status === "canceled"
-                              ? "#"
-                              : appointment.meetLink
-                          } // Disable the link by setting href to "#"
+                          href={appointment.status === "canceled" ? "#" : appointment.meetLink} // Disable the link by setting href to "#"
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => {
@@ -158,7 +155,7 @@ export default function UserAppointments({
                         </a>
                       </Button>
                     )}
-                    <div className="space-x-2">
+                    <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
                       <Button
                         variant="outline"
                         size="sm"

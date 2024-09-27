@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, useActionState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IProfessorBase } from "@/Models/professor.model";
-import { addProfessor } from "@/lib/actions";
+import { addProfessor, inviteProfessor } from "@/lib/actions";
 
 interface FormErrors {
   name?: string;
@@ -24,7 +24,10 @@ const AddProfessor: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const router = useRouter();
   const { toast } = useToast();
-
+  const [errorMessage, formAction, isPending] = useActionState(
+    inviteProfessor,
+    { message: "" }
+  );
   const validateForm = (formData: FormData): FormErrors => {
     const newErrors: FormErrors = {};
     const fields = ["name", "department", "bio", "calendlyLink", "email"];
@@ -42,7 +45,6 @@ const AddProfessor: React.FC = () => {
         newErrors[field as keyof FormErrors] = "Invalid email format";
       }
     });
-
     return newErrors;
   };
 
@@ -56,12 +58,12 @@ const AddProfessor: React.FC = () => {
         name: formData.get("name") as string,
         department: formData.get("department") as string,
         bio: formData.get("bio") as string,
-        calendlyLink: formData.get("calendlyLink") as string,
+        calendlyLink: "",
         email: formData.get("email") as string,
         googleMeetEnabled:
           (formData.get("googleMeetEnabled") as string) || "true", // Default to true
       };
-
+      // await inviteProfessor()
       setIsSubmitting(true);
       try {
         await addProfessor(data);
@@ -96,7 +98,7 @@ const AddProfessor: React.FC = () => {
               { field: "name", label: "Full Name" },
               { field: "department", label: "Department" },
               { field: "bio", label: "Biography" },
-              { field: "calendlyLink", label: "Calendly Link" },
+              // { field: "calendlyLink", label: "Calendly Link" },
               { field: "email", label: "Email" },
             ].map(({ field, label }) => (
               <div key={field} className="space-y-2">
