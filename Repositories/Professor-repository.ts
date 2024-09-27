@@ -57,6 +57,15 @@ export class ProfessorRepository
     return professor || null;
   }
 
+  async getByEmail(email: string): Promise<IProfessor | null> {
+    const [professor]: IProfessor[] = await this.db
+      .select()
+      .from(Professors)
+      .where(eq(Professors.email, email));
+
+    return professor || null;
+  }
+
   async list(params: IPageRequest): Promise<IPagesResponse<IProfessor>> {
     const search = params.search ? params.search.toLowerCase() : "";
     let selectSql: IProfessor[];
