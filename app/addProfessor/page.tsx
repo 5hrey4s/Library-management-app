@@ -63,7 +63,7 @@ const AddProfessor: React.FC = () => {
         googleMeetEnabled:
           (formData.get("googleMeetEnabled") as string) || "true", // Default to true
       };
-      // await inviteProfessor()
+      formAction(formData);
       setIsSubmitting(true);
       try {
         await addProfessor(data);
