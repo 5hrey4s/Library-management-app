@@ -125,7 +125,7 @@ const ListBooks: React.FC<ListBooksProps> = ({
                 {t("applyFilters")}
               </Button>
             </form>
-            {user.role === "admin" && <AddBook />}
+            {user.role==="admin" && <AddBook />}
           </div>
         </div>
       </CardHeader>

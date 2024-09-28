@@ -41,7 +41,7 @@ export default function ProfessorSection({
   role: string;
 }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("all");
 
   const handleRefresh = async (email: string) => {
     await refreshCalendlyLink(email);
@@ -54,7 +54,7 @@ export default function ProfessorSection({
     return professors.filter(
       (professor) =>
         professor.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (selectedDepartment === "" ||
+        (selectedDepartment === "all" ||
           professor.department === selectedDepartment)
     );
   }, [professors, searchTerm, selectedDepartment]);
