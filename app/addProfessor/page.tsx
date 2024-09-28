@@ -32,14 +32,14 @@ export default function AddProfessor() {
   useEffect(() => {
     console.log(state.message);
     setIsOpen(false);
-    if (state.message === "Success") {
+    if (state.message === "Professor created successfully!") {
       toast({
         title: "Success",
-        description: "Professor added successfully.",
+        description: state.message,
         duration: 2000,
         className: "bg-[#8A9389] border-[#696f68] text-white shadow-lg",
       });
-    } else if (state.message && state.message !== "Success") {
+    } else if (state.message && state.message !== "Professor created successfully!") {
       setIsOpen(true);
       toast({
         title: "Failure",

@@ -99,7 +99,9 @@ export default function Navbar({
   return (
     <div
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled ? "shadow-md bg-white" : "bg-white bg-opacity-90 backdrop-blur-sm"
+        isScrolled
+          ? "shadow-md bg-white"
+          : "bg-white bg-opacity-90 backdrop-blur-sm"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -171,7 +173,7 @@ export default function Navbar({
 
           <div className="flex items-center space-x-4">
             <LocaleSwitcher />
-            
+
             {/* Desktop user dropdown */}
             <div className="hidden md:block">
               <DropdownMenu>
@@ -182,10 +184,13 @@ export default function Navbar({
                   >
                     <Avatar className="w-8 h-8">
                       <AvatarImage src={userAvatar} alt={userName} />
-                      <AvatarFallback>{userName.charAt(0).toUpperCase()}</AvatarFallback>
+                      <AvatarFallback>
+                        {userName.charAt(0).toUpperCase()}
+                      </AvatarFallback>
                     </Avatar>
                     <span className="font-medium text-gray-700">
-                      {userName.charAt(0).toUpperCase() + userName.slice(1).toLowerCase()}
+                      {userName.charAt(0).toUpperCase() +
+                        userName.slice(1).toLowerCase()}
                     </span>
                     <ChevronDown className="h-4 w-4 text-gray-500" />
                   </Button>
@@ -326,14 +331,25 @@ export default function Navbar({
                     isActive={active === "Activity"}
                     onClick={() => setIsMobileMenuOpen(false)}
                   />
-                  <NavItem
-                    href={`/home/professors`}
-                    icon={<UserCheck className="h-5 w-5" />}
-                    text={"Professors"}
-                    isActive={active === "Professors"}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  />
-                
+                  {role === "user" && (
+                    <NavItem
+                      href={`/home/professors`}
+                      icon={<UserCheck className="h-5 w-5" />}
+                      text={"Professors"}
+                      isActive={active === "Professors"}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    />
+                  )}
+                  {role === "admin" && (
+                    <NavItem
+                      href={`/admin/professors`}
+                      icon={<UserCheck className="h-5 w-5" />}
+                      text={"Professors"}
+                      isActive={active === "Professors"}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    />
+                  )}
+
                   <div className="mt-4">
                     <LocaleSwitcher />
                   </div>
