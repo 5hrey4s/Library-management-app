@@ -129,7 +129,7 @@ export default function ProfessorSection({
                   </Button>
                 </Link>
               )}
-              {role === "admin" && (
+              {role === "admin" && !professor.calendlyLink && (
                 <Button
                   variant="default"
                   className="w-full bg-primary hover:bg-primary/90"
