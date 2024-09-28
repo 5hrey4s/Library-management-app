@@ -163,12 +163,24 @@ export default function Navbar({
                 isActive={active === "Dues"}
               />
             )}
-            <NavItem
-              href={`/home/professors`}
-              icon={<UserCheck className="h-5 w-5" />}
-              text={"Professors"}
-              isActive={active === "Professors"}
-            />
+            {role === "user" && (
+              <NavItem
+                href={`/home/professors`}
+                icon={<UserCheck className="h-5 w-5" />}
+                text={"Professors"}
+                isActive={active === "Professors"}
+                onClick={() => setIsMobileMenuOpen(false)}
+              />
+            )}
+            {role === "admin" && (
+              <NavItem
+                href={`/admin/professors`}
+                icon={<UserCheck className="h-5 w-5" />}
+                text={"Professors"}
+                isActive={active === "Professors"}
+                onClick={() => setIsMobileMenuOpen(false)}
+              />
+            )}
           </nav>
 
           <div className="flex items-center space-x-4">
@@ -235,15 +247,28 @@ export default function Navbar({
                       <span>{t("profileDropdown.wishlist")}</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`/settings`}
-                      className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
-                    >
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>{t("profileDropdown.settings")}</span>
-                    </Link>
-                  </DropdownMenuItem>
+                  {role === "user" && (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/home/professors`}
+                        className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
+                      >
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>{t("profileDropdown.settings")}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {role === "admin" && (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/admin/professors`}
+                        className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
+                      >
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>{t("profileDropdown.settings")}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuSeparator className="my-1 border-gray-200" />
                   <DropdownMenuItem asChild>
                     <LogoutButton className="flex items-center w-full px-2 py-1.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-md transition-colors duration-150" />
