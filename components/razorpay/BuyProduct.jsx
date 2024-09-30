@@ -89,7 +89,9 @@ const BuyProduct = ({ user, professorId }) => {
           if (verificationResult?.message === "success") {
             console.log("Redirecting to payment success...");
             router.replace(
-              `${user.role === "admin" ? "admin" : "user"}/professors`
+              `${
+                user.role === "admin" ? "admin" : "user"
+              }/professors/${professorId}`
             );
           } else {
             console.error("Payment verification failed.");
