@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Buy from "./Buy";
 import { useRouter } from "next/navigation";
 
-const BuyProduct = () => {
+const BuyProduct = ({ user, professorId }) => {
   const router = useRouter();
   const [razorpayReady, setRazorpayReady] = useState(false);
 
@@ -76,6 +76,9 @@ const BuyProduct = () => {
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_signature: response.razorpay_signature,
+                userId: user.id,
+                professorId: professorId,
+                amount: order.amount,
               }),
             }
           );
@@ -85,8 +88,8 @@ const BuyProduct = () => {
 
           if (verificationResult?.message === "success") {
             console.log("Redirecting to payment success...");
-            router.push(
-              "/paymentsuccess?paymentid=" + response.razorpay_payment_id
+            router.replace(
+              `${user.role === "admin" ? "admin" : "user"}/professors`
             );
           } else {
             console.error("Payment verification failed.");

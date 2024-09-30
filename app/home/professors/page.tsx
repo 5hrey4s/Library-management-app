@@ -9,6 +9,7 @@ import {
   getScheduledEvents,
   getUsersAppointments,
 } from "@/lib/actions";
+import { fetchMemberByEmail } from "@/lib/data";
 import { IProfessorBase } from "@/Models/professor.model";
 
 export default async function Page({
@@ -26,6 +27,7 @@ export default async function Page({
   const sortBy = (searchParams?.sortBy as keyof IProfessorBase) || "title";
   const sortOrder = searchParams?.sortOrder || "asc";
   const session = await auth();
+  const user = await fetchMemberByEmail(session?.user.email!);
   const role = session?.user.role;
   const offset = (page - 1) * limit;
   const pageRequest = {
@@ -57,6 +59,7 @@ export default async function Page({
           professors={items}
           scheduledEvents={scheduledEvents}
           role={role!}
+          user={user!}
         />
       </div>
     </div>

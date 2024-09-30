@@ -31,6 +31,8 @@ import { ProfessorRepository } from "@/Repositories/Professor-repository";
 import { IPageRequest } from "@/core/pagination";
 import { Appenv } from "@/read-env";
 import { z } from "zod";
+import { PaymentRepository } from "@/Repositories/payments.repository";
+import { IPayment, IPaymentBase } from "@/Models/payments.model";
 
 const db = drizzle(sql, { schema });
 const CALENDLY_API_TOKEN = process.env.NEXT_PUBLIC_CALENDLY_API_TOKEN;
@@ -42,6 +44,7 @@ const memberRepository = new MemberRepository(db);
 const wishlistRepository = new WishlistRepository(db);
 const ratingsRepository = new RatingsRepository(db);
 const professorsRepository = new ProfessorRepository(db);
+const paymentsRepository = new PaymentRepository(db);
 
 export const create = new MemberRepository(db).create;
 
@@ -664,4 +667,9 @@ export async function refreshCalendlyLink(email: string) {
   } finally {
     revalidatePath("/admin/professors");
   }
+}
+
+export async function addPayments(data: IPaymentBase) {
+  const payment = await paymentsRepository.create(data);
+  return payment;
 }

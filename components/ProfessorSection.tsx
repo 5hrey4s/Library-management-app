@@ -25,6 +25,7 @@ import { Search, BookOpen } from "lucide-react";
 import { refreshCalendlyLink } from "@/lib/actions";
 import BuyProduct from "./razorpay/BuyProduct";
 import BuyButton from "./ui/borrow";
+import { IMember } from "@/Models/member.model";
 
 interface ScheduledEvent {
   name: string;
@@ -37,10 +38,12 @@ export default function ProfessorSection({
   professors,
   scheduledEvents,
   role,
+  user,
 }: {
   professors: IProfessor[];
   scheduledEvents: ScheduledEvent[];
   role: string;
+  user: IMember;
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("all");
@@ -131,7 +134,7 @@ export default function ProfessorSection({
                 //   </Button>
                 // </Link>
 
-                <BuyProduct></BuyProduct>
+                <BuyProduct professorId={professor.id} user={user}></BuyProduct>
               )}
               {role === "admin" && !professor.calendlyLink && (
                 <Button
