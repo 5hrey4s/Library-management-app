@@ -7,6 +7,8 @@ import { getProviders } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { ClientSafeProvider, LiteralUnion } from "next-auth/lib/client";
 import { useTranslations } from "next-intl";
+import Buy from "@/components/razorpay/Buy";
+import BuyProduct from "@/components/razorpay/BuyProduct";
 
 type ProvidersType = Record<
   LiteralUnion<ClientSafeProvider["id"], string>,
@@ -65,6 +67,7 @@ export default function WelcomePage() {
           <Button size="lg" className="mt-8 bg-[#357960] text-white">
             <Link href="/login">{t("getStartedButton")}</Link>
           </Button>
+          <BuyProduct></BuyProduct>
         </section>
         <section className="w-full py-16 bg-gray-100 dark:bg-gray-800">
           <div className="container mx-auto px-4">
