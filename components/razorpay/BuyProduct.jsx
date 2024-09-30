@@ -90,7 +90,7 @@ const BuyProduct = ({ user, professorId }) => {
             console.log("Redirecting to payment success...");
             router.replace(
               `${
-                user.role === "admin" ? "admin" : "user"
+                user.role === "admin" ? "/admin" : "/user"
               }/professors/${professorId}`
             );
           } else {
