@@ -17,6 +17,7 @@ import * as schema from "../drizzle/schema";
 import { and } from "drizzle-orm/expressions";
 import { ITransaction, ITransactionBase } from "@/Models/transaction.model";
 import { IProfessorBase } from "@/Models/professor.model";
+import { IPaymentBase } from "@/Models/payments.model";
 
 const db = drizzle(sql, { schema });
 
@@ -40,8 +41,13 @@ export interface TransactionSortOptions {
   sortOrder: string;
 }
 
-export interface ProfessorSortOptions {
-  sortBy: keyof IProfessorBase;
+export interface TransactionSortOptions {
+  sortBy: keyof ITransactionBase;
+  sortOrder: string;
+}
+
+export interface PaymentSortOptions {
+  sortBy: keyof IPaymentBase;
   sortOrder: string;
 }
 export const fetchBooks = async (

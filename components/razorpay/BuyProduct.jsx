@@ -66,7 +66,7 @@ const BuyProduct = () => {
           console.log("Payment response:", response);
 
           const verificationResponse = await fetch(
-            "https://library-management-app-six.vercel.app/paymentverify",
+            "https://library-management-app-six.vercel.app/api/paymentverify",
             {
               method: "POST",
               headers: {

@@ -29,7 +29,6 @@ import {
 } from "@/Models/professor.model";
 import { ProfessorRepository } from "@/Repositories/Professor-repository";
 import { IPageRequest } from "@/core/pagination";
-import { ProfessorSortOptions, SortOptions } from "./data";
 import { Appenv } from "@/read-env";
 import { z } from "zod";
 
@@ -558,7 +557,7 @@ export async function inviteProfessor(
       email: formData.get("email") as string,
       department: formData.get("department") as string,
       bio: formData.get("bio") as string,
-      calendlyLink: "",
+      calendlyLink: formData.get("calendlyLink") as string,
     };
 
     const orgUri: string = await getOrganizationUri();

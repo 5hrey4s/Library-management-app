@@ -23,6 +23,8 @@ import { IProfessor } from "@/Models/professor.model";
 import EditProfessor from "@/components/ui/editProfessor";
 import { Search, BookOpen } from "lucide-react";
 import { refreshCalendlyLink } from "@/lib/actions";
+import BuyProduct from "./razorpay/BuyProduct";
+import BuyButton from "./ui/borrow";
 
 interface ScheduledEvent {
   name: string;
@@ -116,18 +118,20 @@ export default function ProfessorSection({
             </CardContent>
             <CardFooter className="flex flex-col space-y-3">
               {professor.calendlyLink && (
-                <Link
-                  href={`/home/professors/${professor.id}`}
-                  className="w-full"
-                >
-                  <Button
-                    variant="default"
-                    className="w-full bg-primary hover:bg-primary/90"
-                  >
-                    <BookOpen className="mr-2 h-4 w-4" />
-                    Book Appointment
-                  </Button>
-                </Link>
+                // <Link
+                //   href={`/home/professors/${professor.id}`}
+                //   className="w-full"
+                // >
+                //   <Button
+                //     variant="default"
+                //     className="w-full bg-primary hover:bg-primary/90"
+                //   >
+                //     <BookOpen className="mr-2 h-4 w-4" />
+                //     Book Appointment
+                //   </Button>
+                // </Link>
+
+                <BuyProduct></BuyProduct>
               )}
               {role === "admin" && !professor.calendlyLink && (
                 <Button

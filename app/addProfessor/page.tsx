@@ -39,7 +39,10 @@ export default function AddProfessor() {
         duration: 2000,
         className: "bg-[#8A9389] border-[#696f68] text-white shadow-lg",
       });
-    } else if (state.message && state.message !== "Professor created successfully!") {
+    } else if (
+      state.message &&
+      state.message !== "Professor created successfully!"
+    ) {
       setIsOpen(true);
       toast({
         title: "Failure",
@@ -113,6 +116,17 @@ export default function AddProfessor() {
             <Textarea
               id="bio"
               name="bio"
+              required
+              className="border-[#8A9389] focus:border-[#696f68] focus:ring-[#696f68]"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="bio" className="text-[#4A4F4D]">
+              Calendly Link
+            </Label>
+            <Textarea
+              id="calendlyLink"
+              name="calendlyLink"
               required
               className="border-[#8A9389] focus:border-[#696f68] focus:ring-[#696f68]"
             />

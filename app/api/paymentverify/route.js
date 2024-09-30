@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import Razorpay from "razorpay";
 import crypto from "crypto";
+import { Appenv } from "@/read-env";
 // import Payment from "../../../database/model/Payment";
 // import dbConnect from '../../../database/database';
 
 // Make sure to load environment variables properly
 const instance = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_V8RbPCpR6oZ2Db", // fallback in case env var is not set
-    key_secret: process.env.RAZORPAY_KEY_SECRET || "wHt8UgTsSVsG5PnVDz7J5yo5", // fallback in case env var is not set
+    key_id: Appenv.RAZORPAY_KEY_ID || "rzp_test_V8RbPCpR6oZ2Db", // fallback in case env var is not set
+    key_secret: Appenv.RAZORPAY_KEY_SECRET || "wHt8UgTsSVsG5PnVDz7J5yo5", // fallback in case env var is not set
 });
 
 export async function POST(req, res) {
