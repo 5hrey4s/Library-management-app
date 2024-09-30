@@ -1,6 +1,6 @@
 import { IPageRequest, IPagesResponse } from "@/core/pagination";
 import { IRepository } from "@/core/repository";
-import { asc, desc, eq, ilike, or } from "drizzle-orm/expressions";
+import { and, asc, desc, eq, ilike, or } from "drizzle-orm/expressions";
 import { CountResult } from "@/core/returnTypes";
 import { PaymentSortOptions, SortOptions } from "@/lib/data";
 import { Payments } from "@/drizzle/schema"; // Ensure you have the correct path
@@ -17,7 +17,7 @@ export class PaymentRepository implements IRepository<IPaymentBase, IPayment> {
       ...data,
       createdAt: formatDate(new Date()), // Set createdAt to the current date
     };
-    
+
     try {
       // Insert the payment data and return the 'id' column
       const [result] = await this.db
@@ -53,7 +53,10 @@ export class PaymentRepository implements IRepository<IPaymentBase, IPayment> {
         ...filteredData,
       };
 
-      await this.db.update(Payments).set(toBeUpdated).where(eq(Payments.id, id));
+      await this.db
+        .update(Payments)
+        .set(toBeUpdated)
+        .where(eq(Payments.id, id));
       const [result]: IPayment[] = await this.db
         .select()
         .from(Payments)
@@ -97,6 +100,26 @@ export class PaymentRepository implements IRepository<IPaymentBase, IPayment> {
         .select()
         .from(Payments)
         .where(eq(Payments.orderId, orderId));
+      return result ?? null; // Return found payment or null
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async checkPayment(
+    userId: number,
+    professorId: number
+  ): Promise<IPayment | null> {
+    try {
+      const [result] = await this.db
+        .select()
+        .from(Payments)
+        .where(
+          and(
+            eq(Payments.userId, userId),
+            eq(Payments.professorId, professorId)
+          )
+        );
       return result ?? null; // Return found payment or null
     } catch (err) {
       throw err;
@@ -176,7 +199,9 @@ export class PaymentRepository implements IRepository<IPaymentBase, IPayment> {
 
   async getTotalCount(): Promise<number> {
     try {
-      const [countResult] = await this.db.select({ count: count() }).from(Payments);
+      const [countResult] = await this.db
+        .select({ count: count() })
+        .from(Payments);
       return (countResult as any).count; // Return total count
     } catch (err) {
       throw err;

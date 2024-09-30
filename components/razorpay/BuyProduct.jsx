@@ -2,12 +2,14 @@
 import React, { useEffect, useState } from "react";
 import Buy from "./Buy";
 import { useRouter } from "next/navigation";
+import { checkPayment } from "@/lib/actions";
 
 const BuyProduct = ({ user, professorId }) => {
   const router = useRouter();
   const [razorpayReady, setRazorpayReady] = useState(false);
 
-  useEffect(() => {
+  useEffect(async () => {
+    const payment = await checkPayment(user.id, professorId);
     const loadRazorpayScript = () => {
       return new Promise((resolve) => {
         const script = document.createElement("script");

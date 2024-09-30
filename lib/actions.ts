@@ -673,3 +673,8 @@ export async function addPayments(data: IPaymentBase) {
   const payment = await paymentsRepository.create(data);
   return payment;
 }
+
+export async function checkPayment(userId: number, professorId: number) {
+  const payment = await paymentsRepository.checkPayment(userId, professorId);
+  return payment;
+}
