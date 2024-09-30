@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Buy from "./Buy";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 const BuyProduct = () => {
   const router = useRouter();
@@ -10,8 +10,8 @@ const BuyProduct = () => {
   useEffect(() => {
     const loadRazorpayScript = () => {
       return new Promise((resolve) => {
-        const script = document.createElement('script');
-        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
         script.onload = () => {
           setRazorpayReady(true);
           resolve();
@@ -34,7 +34,9 @@ const BuyProduct = () => {
 
     try {
       // Make API call to the serverless API
-      const response = await fetch("http://localhost:3000/api/razorpay");
+      const response = await fetch(
+        "https://library-management-app-six.vercel.app/api/razorpay"
+      );
 
       if (!response.ok) {
         console.error("Failed to fetch:", response.status, response.statusText);
@@ -63,24 +65,29 @@ const BuyProduct = () => {
         handler: async function (response) {
           console.log("Payment response:", response);
 
-          const verificationResponse = await fetch("http://localhost:3000/api/paymentverify", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_signature: response.razorpay_signature,
-            }),
-          });
+          const verificationResponse = await fetch(
+            "https://library-management-app-six.vercel.app/paymentverify",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
+            }
+          );
 
           const verificationResult = await verificationResponse.json();
           console.log("Verification response:", verificationResult);
 
           if (verificationResult?.message === "success") {
             console.log("Redirecting to payment success...");
-            router.push("/paymentsuccess?paymentid=" + response.razorpay_payment_id);
+            router.push(
+              "/paymentsuccess?paymentid=" + response.razorpay_payment_id
+            );
           } else {
             console.error("Payment verification failed.");
           }
