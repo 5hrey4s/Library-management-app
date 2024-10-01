@@ -30,7 +30,7 @@ const BuyProduct = ({ user, professorId }) => {
     };
 
     loadRazorpayScript();
-  }, []);
+  }, [user, professorId]);
 
   const makePayment = async ({ productId = null }) => {
     if (!razorpayReady) {
