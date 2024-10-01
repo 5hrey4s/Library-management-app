@@ -38,15 +38,13 @@
 
 import { deductCredit } from "@/lib/actions";
 import React from "react";
-import { InlineWidget, useCalendlyEventListener } from "react-calendly";
+import { InlineWidget } from "react-calendly";
 
 interface CalendlyWidgetProps {
   calendlyLink: string;
   prefill?: { email: string; name: string };
 }
-useCalendlyEventListener({
-  onEventScheduled:  () => deductCredit,
-});
+
 
 const CalendlyEmbed: React.FC<CalendlyWidgetProps> = ({
   calendlyLink,
