@@ -10,6 +10,7 @@ const BuyProduct = ({ user, professorId }) => {
 
   useEffect(async () => {
     const payment = await checkPayment(user.id, professorId);
+    console.log(payment, user, professorId);
     if (payment) {
       router.replace(
         `${
