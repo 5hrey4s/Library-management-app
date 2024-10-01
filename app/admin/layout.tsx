@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/Navbar";
 import { auth } from "@/auth";
 import "../globals.css";
+import { fetchMemberByEmail } from "@/lib/data";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +22,7 @@ export default async function AdminLayout({
   params: { locale: string };
 }) {
   const session = await auth();
+  const user = await fetchMemberByEmail(session?.user.email!);
   return (
     <div lang="en">
       <Navbar
@@ -28,6 +30,7 @@ export default async function AdminLayout({
         role={session?.user!.role}
         userName={session?.user.name!}
         locale={locale}
+        user={user!}
       />
 
       {children}

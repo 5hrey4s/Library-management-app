@@ -4,7 +4,7 @@ import Buy from "./Buy";
 import { useRouter } from "next/navigation";
 import { checkPayment } from "@/lib/actions";
 
-const BuyProduct = ({ user, professorId }) => {
+const BuyProduct = ({ user }) => {
   const router = useRouter();
   const [razorpayReady, setRazorpayReady] = useState(false);
 
@@ -25,15 +25,15 @@ const BuyProduct = ({ user, professorId }) => {
   }, []);
 
   const makePayment = async ({ productId = null }) => {
-    const payment = await checkPayment(user.id, professorId);
-    console.log(payment, user, professorId);
-    if (payment) {
-      router.replace(
-        `${
-          user.role === "admin" ? "/admin" : "/home"
-        }/professors/${professorId}`
-      );
-    }
+    // const payment = await checkPayment(user.id, professorId);
+    // console.log(payment, user, professorId);
+    // if (payment) {
+    //   router.replace(
+    //     `${
+    //       user.role === "admin" ? "/admin" : "/home"
+    //     }/professors/${professorId}`
+    //   );
+    // }
     if (!razorpayReady) {
       console.error("Razorpay is not ready");
       return; // Ensure Razorpay is loaded before proceeding
@@ -87,7 +87,6 @@ const BuyProduct = ({ user, professorId }) => {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_signature: response.razorpay_signature,
                 userId: user.id,
-                professorId: professorId,
                 amount: order.amount,
               }),
             }
@@ -98,11 +97,11 @@ const BuyProduct = ({ user, professorId }) => {
 
           if (verificationResult?.message === "success") {
             console.log("Redirecting to payment success...");
-            return router.replace(
-              `${
-                user.role === "admin" ? "/admin" : "/home"
-              }/professors/${professorId}`
-            );
+            // return router.replace(
+            //   `${
+            //     user.role === "admin" ? "/admin" : "/home"
+            //   }/professors/${professorId}`
+            // );
           } else {
             console.error("Payment verification failed.");
           }

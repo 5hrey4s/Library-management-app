@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import { Appenv } from "@/read-env";
-import { addPayments } from "@/lib/actions";
+import { addCredit, addPayments } from "@/lib/actions";
 // import Payment from "../../../database/model/Payment";
 // import dbConnect from '../../../database/database';
 
@@ -20,7 +20,6 @@ export async function POST(req, res) {
       razorpay_payment_id,
       razorpay_signature,
       amount,
-      professorId,
       userId,
     } = await req.json();
 
@@ -57,14 +56,15 @@ export async function POST(req, res) {
       //   razorpay_payment_id,
       //   razorpay_signature,
       // });
-      await addPayments({
-        amount: amount,
-        orderId: razorpay_order_id,
-        PaymentId: razorpay_payment_id,
-        paymentStatus: "success",
-        professorId: professorId,
-        userId: userId,
-      });
+      // await addPayments({
+      //   amount: amount,
+      //   orderId: razorpay_order_id,
+      //   PaymentId: razorpay_payment_id,
+      //   paymentStatus: "success",
+      //   professorId: professorId,
+      //   userId: userId,
+      // });
+      await addCredit(userId);
       return NextResponse.json({ message: "success" }, { status: 200 });
     } else {
       console.error("Payment verification failed");

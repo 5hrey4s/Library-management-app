@@ -33,6 +33,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
+import Buy from "./razorpay/Buy";
+import BuyProduct from "./razorpay/BuyProduct";
+import { IMember } from "@/Models/member.model";
+import { addCredit } from "@/lib/actions";
 
 interface NavbarProps {
   logoText?: string;
@@ -46,6 +50,7 @@ interface NavbarProps {
   userAvatar?: string;
   userName?: string;
   locale: string;
+  user: IMember;
 }
 
 interface NavItemProps {
@@ -68,9 +73,11 @@ export default function Navbar({
   userAvatar,
   userName = "user",
   locale,
+  user,
 }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [credit, setCredit] = useState(user.credits);
   const t = useTranslations("navbar");
 
   useEffect(() => {
@@ -96,6 +103,11 @@ export default function Navbar({
       <span className="font-medium">{text}</span>
     </Link>
   );
+
+  const handleAddCredit = async (userId: number) => {
+    const user = await addCredit(userId);
+    setCredit(user!.credits);
+  };
 
   return (
     <div
@@ -187,19 +199,9 @@ export default function Navbar({
                 className={`text-sm font-medium text-gray-700
                 `}
               >
-                Credits: {100}
+                Credits: {credit}
               </span>
-              <Button
-                variant="outline"
-                size="sm"
-                // onClick={handleBuyCredit}
-                className={`
-                    bg-green-100 text-green-800 hover:bg-green-200
-                `}
-              >
-                <CreditCard className="mr-2 h-4 w-4" />
-                Buy Credit
-              </Button>
+              <BuyProduct user={user}></BuyProduct>
             </div>
           </nav>
 
@@ -302,7 +304,15 @@ export default function Navbar({
                       <span>{100}</span>
                     </div>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => null}>
+                  <DropdownMenuItem
+                    onSelect={async () => {
+                      try {
+                        await handleAddCredit(user.id);
+                      } catch (error) {
+                        console.error("Error adding credit:", error);
+                      }
+                    }}
+                  >
                     <Button
                       variant="outline"
                       size="sm"
@@ -416,17 +426,23 @@ export default function Navbar({
                   <div
                     className={`flex items-center justify-between text-gray-700`}
                   >
-                    <span>Credits: {100}</span>
-                    <Button
+                    <span>Credits: {credit}</span>
+                    {/* <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => null}
-                      className={`
-                          bg-green-100 text-green-800 hover:bg-green-200`}
+                      onClick={async () => {
+                        try {
+                          await handleAddCredit(user.id);
+                        } catch (error) {
+                          console.error("Error adding credit:", error);
+                        }
+                      }}
+                      className="bg-green-100 text-green-800 hover:bg-green-200"
                     >
                       <CreditCard className="mr-2 h-4 w-4" />
                       Buy Credit
-                    </Button>
+                    </Button> */}
+                    <BuyProduct user={user} />
                   </div>
                   <div className="mt-4">
                     <LocaleSwitcher />

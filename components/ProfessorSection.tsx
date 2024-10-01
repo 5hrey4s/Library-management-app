@@ -121,20 +121,19 @@ export default function ProfessorSection({
             </CardContent>
             <CardFooter className="flex flex-col space-y-3">
               {professor.calendlyLink && (
-                // <Link
-                //   href={`/home/professors/${professor.id}`}
-                //   className="w-full"
-                // >
-                //   <Button
-                //     variant="default"
-                //     className="w-full bg-primary hover:bg-primary/90"
-                //   >
-                //     <BookOpen className="mr-2 h-4 w-4" />
-                //     Book Appointment
-                //   </Button>
-                // </Link>
+                <Link
+                  href={`/home/professors/${professor.id}`}
+                  className="w-full"
+                >
+                  <Button
+                    variant="default"
+                    className="w-full bg-primary hover:bg-primary/90"
+                  >
+                    <BookOpen className="mr-2 h-4 w-4" />
+                    Book Appointment
+                  </Button>
+                </Link>
 
-                <BuyProduct professorId={professor.id} user={user}></BuyProduct>
               )}
               {role === "admin" && !professor.calendlyLink && (
                 <Button

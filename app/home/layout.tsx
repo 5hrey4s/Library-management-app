@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/Navbar";
 import { auth } from "@/auth";
 import "../globals.css";
+import { fetchMemberByEmail } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Acme Library Management System",
@@ -18,6 +19,7 @@ export default async function HomeLayout({
   params: { locale: string };
 }) {
   const session = await auth();
+  const user = await fetchMemberByEmail(session?.user.email!);
   return (
     <div lang="en">
       <Navbar
@@ -25,6 +27,7 @@ export default async function HomeLayout({
         role={session?.user!.role}
         userName={session?.user.name!}
         locale={locale}
+        user={user!}
       />
 
       {children}

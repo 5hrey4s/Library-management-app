@@ -33,6 +33,7 @@ import { Appenv } from "@/read-env";
 import { z } from "zod";
 import { PaymentRepository } from "@/Repositories/payments.repository";
 import { IPayment, IPaymentBase } from "@/Models/payments.model";
+import { fetchMemberByEmail } from "./data";
 
 const db = drizzle(sql, { schema });
 const CALENDLY_API_TOKEN = process.env.NEXT_PUBLIC_CALENDLY_API_TOKEN;
@@ -677,4 +678,48 @@ export async function addPayments(data: IPaymentBase) {
 export async function checkPayment(userId: number, professorId: number) {
   const payment = await paymentsRepository.checkPayment(userId, professorId);
   return payment;
+}
+
+export async function addCredit(userId: number) {
+  const member = await memberRepository.getById(userId);
+  const data: IMemberBase = {
+    accessToken: member!.accessToken,
+    credits: member!.credits + 10,
+    email: member!.email,
+    firstName: member!.firstName,
+    lastName: member!.lastName,
+    password: member!.password,
+    phoneNumber: member!.phoneNumber,
+    refreshToken: member!.refreshToken,
+    role: member!.role,
+    user_id: member!.user_id,
+  };
+
+  const result = await memberRepository.update(userId, data);
+  const session = await auth();
+  const user = await fetchMemberByEmail(session?.user.email!);
+  revalidatePath(`/${user!.role === "admin" ? "admin" : "home"}/professors`);
+  return result;
+}
+
+export async function deductCredit(userId: number) {
+  const member = await memberRepository.getById(userId);
+  const data: IMemberBase = {
+    accessToken: member!.accessToken,
+    credits: member!.credits - 10,
+    email: member!.email,
+    firstName: member!.firstName,
+    lastName: member!.lastName,
+    password: member!.password,
+    phoneNumber: member!.phoneNumber,
+    refreshToken: member!.refreshToken,
+    role: member!.role,
+    user_id: member!.user_id,
+  };
+
+  const result = await memberRepository.update(userId, data);
+  const session = await auth();
+  const user = await fetchMemberByEmail(session?.user.email!);
+  revalidatePath(`/${user!.role === "admin" ? "admin" : "home"}/professors`);
+  return result;
 }

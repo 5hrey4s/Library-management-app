@@ -6,6 +6,7 @@ import { User, Activity, Settings } from "lucide-react";
 import { auth } from "@/auth";
 import Footer from "@/components/ui/footer";
 import BookCard from "@/components/ui/flipcard";
+import { fetchMemberByEmail } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Acme Library",
@@ -20,6 +21,10 @@ export default async function RootLayout({
   params: { locale: string };
 }) {
   const session = await auth();
+  const user = await fetchMemberByEmail(session?.user.email!);
+
+  // This would typically come from your data fetching logic
+
   // This would typically come from your data fetching logic
 
   const sideNavItems = [
@@ -36,6 +41,7 @@ export default async function RootLayout({
           role={session?.user?.role}
           userName={session?.user?.name!}
           locale={locale}
+          user={user!}
         />
         <div className="flex flex-1">
           <aside className="w-64 hidden md:block bg-[#F0FDF4]">

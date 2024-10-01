@@ -36,14 +36,17 @@
 
 "use client";
 
+import { deductCredit } from "@/lib/actions";
 import React from "react";
-import { InlineWidget } from "react-calendly";
+import { InlineWidget, useCalendlyEventListener } from "react-calendly";
 
 interface CalendlyWidgetProps {
   calendlyLink: string;
   prefill?: { email: string; name: string };
 }
-
+useCalendlyEventListener({
+  onEventScheduled: async () => deductCredit,
+});
 const CalendlyEmbed: React.FC<CalendlyWidgetProps> = ({
   calendlyLink,
   prefill,
