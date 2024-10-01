@@ -9,15 +9,6 @@ const BuyProduct = ({ user, professorId }) => {
   const [razorpayReady, setRazorpayReady] = useState(false);
 
   useEffect(async () => {
-    const payment = await checkPayment(user.id, professorId);
-    console.log(payment, user, professorId);
-    if (payment) {
-      router.replace(
-        `${
-          user.role === "admin" ? "/admin" : "/user"
-        }/professors/${professorId}`
-      );
-    }
     const loadRazorpayScript = () => {
       return new Promise((resolve) => {
         const script = document.createElement("script");
@@ -31,9 +22,18 @@ const BuyProduct = ({ user, professorId }) => {
     };
 
     loadRazorpayScript();
-  }, [user, professorId]);
+  }, []);
 
   const makePayment = async ({ productId = null }) => {
+    const payment = await checkPayment(user.id, professorId);
+    console.log(payment, user, professorId);
+    if (payment) {
+      router.replace(
+        `${
+          user.role === "admin" ? "/admin" : "/user"
+        }/professors/${professorId}`
+      );
+    }
     if (!razorpayReady) {
       console.error("Razorpay is not ready");
       return; // Ensure Razorpay is loaded before proceeding
