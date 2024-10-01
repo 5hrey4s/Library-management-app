@@ -15,7 +15,7 @@ const Buy = ({ makePayment }) => {
           isLoading ? "opacity-50 cursor-not-allowed" : ""
         }`}
       >
-        {isLoading ? "Processing..." : "Book Appointment"}
+        {isLoading ? "Processing..." : "Buy Credits"}
       </button>
     </>
   );

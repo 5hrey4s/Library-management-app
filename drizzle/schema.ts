@@ -38,6 +38,7 @@ export const Members = pgTable("members", {
   accessToken: varchar("accessToken", { length: 255 }),
   user_id: varchar("user_id", { length: 255 }).notNull(),
   role: varchar("role", { length: 255 }).notNull(),
+  credits: integer("credits").notNull(),
 });
 
 // Transactions Table

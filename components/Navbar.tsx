@@ -16,6 +16,9 @@ import {
   UserCheck,
   LogOut,
   Settings,
+  Sun,
+  Moon,
+  CreditCard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +35,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
+import { useTheme } from "@/components/ThemeContext";
 
 interface NavbarProps {
   logoText?: string;
@@ -71,6 +75,7 @@ export default function Navbar({
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const t = useTranslations("navbar");
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -86,7 +91,11 @@ export default function Navbar({
       href={href}
       className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-all duration-200 ${
         isActive
-          ? "bg-green-100 text-green-800 shadow-sm"
+          ? theme === "dark"
+            ? "bg-green-800 text-green-100 shadow-sm"
+            : "bg-green-100 text-green-800 shadow-sm"
+          : theme === "dark"
+          ? "text-gray-300 hover:bg-green-900 hover:text-green-100 hover:shadow-sm"
           : "text-gray-700 hover:bg-green-50 hover:text-green-800 hover:shadow-sm"
       }`}
       onClick={onClick}
@@ -100,15 +109,27 @@ export default function Navbar({
     <div
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
         isScrolled
-          ? "shadow-md bg-white"
+          ? theme === "dark"
+            ? "shadow-md bg-gray-900"
+            : "shadow-md bg-white"
+          : theme === "dark"
+          ? "bg-gray-900 bg-opacity-90 backdrop-blur-sm"
           : "bg-white bg-opacity-90 backdrop-blur-sm"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link className="flex items-center space-x-2" href="/">
-            <BookOpen className="h-8 w-8 text-green-600" />
-            <span className="text-xl font-bold text-gray-900">
+            <BookOpen
+              className={`h-8 w-8 ${
+                theme === "dark" ? "text-green-400" : "text-green-600"
+              }`}
+            />
+            <span
+              className={`text-xl font-bold ${
+                theme === "dark" ? "text-white" : "text-gray-900"
+              }`}
+            >
               {t("logoText")}
             </span>
           </Link>
@@ -181,6 +202,45 @@ export default function Navbar({
                 onClick={() => setIsMobileMenuOpen(false)}
               />
             )}
+            <div className="flex items-center space-x-2">
+              <span
+                className={`text-sm font-medium ${
+                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                }`}
+              >
+                Credits: {100}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                // onClick={handleBuyCredit}
+                className={`${
+                  theme === "dark"
+                    ? "bg-green-700 text-white hover:bg-green-600"
+                    : "bg-green-100 text-green-800 hover:bg-green-200"
+                }`}
+              >
+                <CreditCard className="mr-2 h-4 w-4" />
+                Buy Credit
+              </Button>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className={`ml-2 ${
+                theme === "dark"
+                  ? "text-yellow-400 hover:text-yellow-300"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
+              <span className="sr-only">Toggle theme</span>
+            </Button>
           </nav>
 
           <div className="flex items-center space-x-4">
@@ -192,7 +252,11 @@ export default function Navbar({
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="flex items-center space-x-2 hover:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-full"
+                    className={`flex items-center space-x-2 ${
+                      theme === "dark"
+                        ? "hover:bg-gray-800 focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                        : "hover:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                    } rounded-full`}
                   >
                     <Avatar className="w-8 h-8">
                       <AvatarImage src={userAvatar} alt={userName} />
@@ -200,30 +264,58 @@ export default function Navbar({
                         {userName.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="font-medium text-gray-700">
+                    <span
+                      className={`font-medium ${
+                        theme === "dark" ? "text-gray-300" : "text-gray-700"
+                      }`}
+                    >
                       {userName.charAt(0).toUpperCase() +
                         userName.slice(1).toLowerCase()}
                     </span>
-                    <ChevronDown className="h-4 w-4 text-gray-500" />
+                    <ChevronDown
+                      className={`h-4 w-4 ${
+                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
-                  className="w-56 p-2 bg-white border border-gray-200 rounded-lg shadow-lg"
+                  className={`w-56 p-2 ${
+                    theme === "dark"
+                      ? "bg-gray-800 border-gray-700"
+                      : "bg-white border-gray-200"
+                  } rounded-lg shadow-lg`}
                 >
-                  <DropdownMenuLabel className="px-2 py-1.5 text-sm font-semibold text-gray-900">
+                  <DropdownMenuLabel
+                    className={`px-2 py-1.5 text-sm font-semibold ${
+                      theme === "dark" ? "text-gray-100" : "text-gray-900"
+                    }`}
+                  >
                     <div className="flex flex-col">
                       <span>{userName}</span>
-                      <span className="text-xs font-normal text-gray-500">
+                      <span
+                        className={`text-xs font-normal ${
+                          theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      >
                         {role === "admin" ? "Administrator" : "User"}
                       </span>
                     </div>
                   </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="my-1 border-gray-200" />
+                  <DropdownMenuSeparator
+                    className={`my-1 ${
+                      theme === "dark" ? "border-gray-700" : "border-gray-200"
+                    }`}
+                  />
                   <DropdownMenuItem asChild>
                     <Link
                       href={`/profile`}
-                      className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
+                      className={`flex items-center px-2 py-1.5 text-sm ${
+                        theme === "dark"
+                          ? "text-gray-300 hover:bg-gray-700 hover:text-gray-100"
+                          : "text-gray-700 hover:bg-green-50 hover:text-green-800"
+                      } rounded-md transition-colors duration-150`}
                     >
                       <User className="mr-2 h-4 w-4" />
                       <span>{t("profileDropdown.profile")}</span>
@@ -232,7 +324,11 @@ export default function Navbar({
                   <DropdownMenuItem asChild>
                     <Link
                       href={`/profile/activity`}
-                      className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
+                      className={`flex items-center px-2 py-1.5 text-sm ${
+                        theme === "dark"
+                          ? "text-gray-300 hover:bg-gray-700 hover:text-gray-100"
+                          : "text-gray-700 hover:bg-green-50 hover:text-green-800"
+                      } rounded-md transition-colors duration-150`}
                     >
                       <Activity className="mr-2 h-4 w-4" />
                       <span>{t("profileDropdown.activity")}</span>
@@ -241,7 +337,11 @@ export default function Navbar({
                   <DropdownMenuItem asChild>
                     <Link
                       href={`/profile/wishlist`}
-                      className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
+                      className={`flex items-center px-2 py-1.5 text-sm ${
+                        theme === "dark"
+                          ? "text-gray-300 hover:bg-gray-700 hover:text-gray-100"
+                          : "text-gray-700 hover:bg-green-50 hover:text-green-800"
+                      } rounded-md transition-colors duration-150`}
                     >
                       <Heart className="mr-2 h-4 w-4" />
                       <span>{t("profileDropdown.wishlist")}</span>
@@ -251,7 +351,11 @@ export default function Navbar({
                     <DropdownMenuItem asChild>
                       <Link
                         href={`/home/professors`}
-                        className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
+                        className={`flex items-center px-2 py-1.5 text-sm ${
+                          theme === "dark"
+                            ? "text-gray-300 hover:bg-gray-700 hover:text-gray-100"
+                            : "text-gray-700 hover:bg-green-50 hover:text-green-800"
+                        } rounded-md transition-colors duration-150`}
                       >
                         <Settings className="mr-2 h-4 w-4" />
                         <span>{t("profileDropdown.settings")}</span>
@@ -262,16 +366,55 @@ export default function Navbar({
                     <DropdownMenuItem asChild>
                       <Link
                         href={`/admin/professors`}
-                        className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
+                        className={`flex items-center px-2 py-1.5 text-sm ${
+                          theme === "dark"
+                            ? "text-gray-300 hover:bg-gray-700 hover:text-gray-100"
+                            : "text-gray-700 hover:bg-green-50 hover:text-green-800"
+                        } rounded-md transition-colors duration-150`}
                       >
                         <Settings className="mr-2 h-4 w-4" />
                         <span>{t("profileDropdown.settings")}</span>
                       </Link>
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuSeparator className="my-1 border-gray-200" />
+                  <DropdownMenuSeparator
+                    className={`my-1 ${
+                      theme === "dark" ? "border-gray-700" : "border-gray-200"
+                    }`}
+                  />
                   <DropdownMenuItem asChild>
-                    <LogoutButton className="flex items-center w-full px-2 py-1.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-md transition-colors duration-150" />
+                    <LogoutButton
+                      className={`flex items-center w-full px-2 py-1.5 text-sm ${
+                        theme === "dark"
+                          ? "text-red-400 hover:bg-red-900 hover:text-red-100"
+                          : "text-red-600 hover:bg-red-50 hover:text-red-700"
+                      } rounded-md transition-colors duration-150`}
+                    />
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator
+                    className={`my-1 ${
+                      theme === "dark" ? "border-gray-700" : "border-gray-200"
+                    }`}
+                  />
+                  <DropdownMenuItem>
+                    <div
+                      className={`flex items-center justify-between w-full ${
+                        theme === "dark" ? "text-gray-300" : "text-gray-700"
+                      }`}
+                    >
+                      <span>Credits:</span>
+                      <span>{100}</span>
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => null}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start"
+                    >
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      Buy Credit
+                    </Button>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -285,10 +428,19 @@ export default function Navbar({
                   className="md:hidden"
                   onClick={() => setIsMobileMenuOpen(true)}
                 >
-                  <Menu className="h-6 w-6 text-gray-700" />
+                  <Menu
+                    className={`h-6 w-6 ${
+                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+              <SheetContent
+                side="right"
+                className={`w-[300px] sm:w-[400px] ${
+                  theme === "dark" ? "bg-gray-900" : "bg-white"
+                }`}
+              >
                 <nav className="flex flex-col space-y-4 mt-8">
                   <NavItem
                     href={`/profile`}
@@ -374,11 +526,53 @@ export default function Navbar({
                       onClick={() => setIsMobileMenuOpen(false)}
                     />
                   )}
+                  <div
+                    className={`flex items-center justify-between ${
+                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  >
+                    <span>Credits: {100}</span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => null}
+                      className={`${
+                        theme === "dark"
+                          ? "bg-green-700 text-white hover:bg-green-600"
+                          : "bg-green-100 text-green-800 hover:bg-green-200"
+                      }`}
+                    >
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      Buy Credit
+                    </Button>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    onClick={toggleTheme}
+                    className={`flex items-center justify-center w-full ${
+                      theme === "dark"
+                        ? "text-yellow-400 hover:text-yellow-300"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    {theme === "dark" ? (
+                      <Sun className="h-5 w-5 mr-2" />
+                    ) : (
+                      <Moon className="h-5 w-5 mr-2" />
+                    )}
+                    {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                  </Button>
 
                   <div className="mt-4">
                     <LocaleSwitcher />
                   </div>
-                  <LogoutButton className="flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md mt-4" />
+                  <LogoutButton
+                    className={`flex items-center w-full px-3 py-2 text-sm ${
+                      theme === "dark"
+                        ? "text-red-400 hover:bg-red-900"
+                        : "text-red-600 hover:bg-red-50"
+                    } rounded-md mt-4`}
+                  />
                 </nav>
               </SheetContent>
             </Sheet>

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { FcGoogle } from "react-icons/fc";
 import { signIn } from "next-auth/react";
 import { Separator } from "@/components/ui/separator";
+import { IMemberBase } from "@/Models/member.model";
 
 interface FormErrors {
   firstName?: string;
@@ -71,7 +72,7 @@ const Register: React.FC = () => {
     const formErrors = validateForm(formData);
 
     if (Object.keys(formErrors).length === 0) {
-      const data = {
+      const data: IMemberBase = {
         firstName: formData.get("firstName") as string,
         lastName: formData.get("lastName") as string,
         email: formData.get("email") as string,
@@ -81,6 +82,7 @@ const Register: React.FC = () => {
         role: "user",
         accessToken: null,
         user_id: "",
+        credits: 0,
       };
 
       setIsSubmitting(true);
@@ -94,7 +96,10 @@ const Register: React.FC = () => {
         console.log(error);
 
         // Check if the error message indicates a duplicate email
-        if (error.message && error.message.toLowerCase().includes("duplicate")) {
+        if (
+          error.message &&
+          error.message.toLowerCase().includes("duplicate")
+        ) {
           setErrors({ email: "This email is already registered" });
         } else {
           setErrors({ global: error.message });

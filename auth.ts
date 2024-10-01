@@ -85,6 +85,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                 accessToken: "",
                 refreshToken: "",
                 user_id: "",
+                credits: 0,
               });
             }
           }
