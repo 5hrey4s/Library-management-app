@@ -195,7 +195,7 @@ export default function Navbar({
 
           <div className="flex items-center space-x-4">
             <CreditDisplay />
-            <BuyProduct user={user} />
+            <BuyProduct user={user} onCreditUpdate={setCredit} />
             <LocaleSwitcher />
 
             {/* Desktop user dropdown */}
@@ -207,10 +207,13 @@ export default function Navbar({
                 >
                   <Avatar className="w-8 h-8">
                     <AvatarImage src={userAvatar} alt={userName} />
-                    <AvatarFallback>{userName.charAt(0).toUpperCase()}</AvatarFallback>
+                    <AvatarFallback>
+                      {userName.charAt(0).toUpperCase()}
+                    </AvatarFallback>
                   </Avatar>
                   <span className="font-medium text-gray-700 hidden sm:inline">
-                    {userName.charAt(0).toUpperCase() + userName.slice(1).toLowerCase()}
+                    {userName.charAt(0).toUpperCase() +
+                      userName.slice(1).toLowerCase()}
                   </span>
                   <ChevronDown className="h-4 w-4 text-gray-500" />
                 </Button>
@@ -287,15 +290,19 @@ export default function Navbar({
                   <div className="flex items-center space-x-2 mb-4">
                     <Avatar className="w-10 h-10">
                       <AvatarImage src={userAvatar} alt={userName} />
-                      <AvatarFallback>{userName.charAt(0).toUpperCase()}</AvatarFallback>
+                      <AvatarFallback>
+                        {userName.charAt(0).toUpperCase()}
+                      </AvatarFallback>
                     </Avatar>
                     <div>
                       <p className="font-medium text-gray-900">{userName}</p>
-                      <p className="text-sm text-gray-500">{role === "admin" ? "Administrator" : "User"}</p>
+                      <p className="text-sm text-gray-500">
+                        {role === "admin" ? "Administrator" : "User"}
+                      </p>
                     </div>
                   </div>
                   <CreditDisplay />
-                  <BuyProduct user={user} />
+                  <BuyProduct user={user} onCreditUpdate={setCredit} />
                   <NavItem
                     href={`/profile`}
                     icon={<User className="h-5 w-5" />}
@@ -303,24 +310,6 @@ export default function Navbar({
                     isActive={active === "Profile"}
                     onClick={() => setIsMobileMenuOpen(false)}
                   />
-                  {showAllBooks && (
-                    <NavItem
-                      href={`/home/books`}
-                      icon={<Book className="h-5 w-5" />}
-                      text={t("menu.allBooks")}
-                      isActive={active === "Books"}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    />
-                  )}
-                  {showMyBooks && role === "user" && (
-                    <NavItem
-                      href={`/home/books/mybooks`}
-                      icon={<Book className="h-5 w-5" />}
-                      text={t("menu.myBooks")}
-                      isActive={active === "MyBooks"}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    />
-                  )}
                   {showMembers && role === "admin" && (
                     <NavItem
                       href={`/admin/members`}

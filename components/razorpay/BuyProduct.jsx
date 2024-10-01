@@ -1,14 +1,17 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
-import Buy from "./Buy";
+import { Button } from "@/components/ui/button";
+import { CreditCard } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { checkPayment } from "@/lib/actions";
+import { IMember } from "@/Models/member.model";
 
-const BuyProduct = ({ user }) => {
+const BuyProduct = ({ user, onCreditUpdate }) => {
   const router = useRouter();
   const [razorpayReady, setRazorpayReady] = useState(false);
 
-  useEffect(async () => {
+  useEffect(() => {
     const loadRazorpayScript = () => {
       return new Promise((resolve) => {
         const script = document.createElement("script");
@@ -24,57 +27,38 @@ const BuyProduct = ({ user }) => {
     loadRazorpayScript();
   }, []);
 
-  const makePayment = async ({ productId = null }) => {
-    // const payment = await checkPayment(user.id, professorId);
-    // console.log(payment, user, professorId);
-    // if (payment) {
-    //   router.replace(
-    //     `${
-    //       user.role === "admin" ? "/admin" : "/home"
-    //     }/professors/${professorId}`
-    //   );
-    // }
+  const makePayment = async () => {
     if (!razorpayReady) {
       console.error("Razorpay is not ready");
-      return; // Ensure Razorpay is loaded before proceeding
+      return;
     }
 
     const key = "rzp_test_V8RbPCpR6oZ2Db";
-    console.log("Razorpay Key:", key);
 
     try {
-      // Make API call to the serverless API
       const response = await fetch(
         "https://library-management-app-six.vercel.app/api/razorpay"
       );
 
       if (!response.ok) {
-        console.error("Failed to fetch:", response.status, response.statusText);
-        return; // Handle the error appropriately
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const json = await response.json();
-      console.log("API response:", json);
-
       const { order } = json;
 
       if (!order) {
-        console.error("Order not found in the response");
-        return; // Handle the error appropriately
+        throw new Error("Order not found in the response");
       }
-
-      console.log("Order ID:", order.id);
 
       const options = {
         key: key,
-        name: "mmantratech",
+        name: "Library Management",
         currency: order.currency,
         amount: order.amount,
         order_id: order.id,
-        description: "Understanding RazorPay Integration",
+        description: "Credit Purchase",
         handler: async function (response) {
-          console.log("Payment response:", response);
-
           const verificationResponse = await fetch(
             "https://library-management-app-six.vercel.app/api/paymentverify",
             {
@@ -93,23 +77,18 @@ const BuyProduct = ({ user }) => {
           );
 
           const verificationResult = await verificationResponse.json();
-          console.log("Verification response:", verificationResult);
 
           if (verificationResult?.message === "success") {
-            console.log("Redirecting to payment success...");
-            // return router.replace(
-            //   `${
-            //     user.role === "admin" ? "/admin" : "/home"
-            //   }/professors/${professorId}`
-            // );
+            console.log("Payment successful");
+            onCreditUpdate(user.credits + order.amount / 100); // Assuming 1 credit = 1 currency unit
           } else {
             console.error("Payment verification failed.");
           }
         },
         prefill: {
-          name: "mmantratech",
-          email: "mmantratech@gmail.com",
-          contact: "000000000",
+          name: user.name,
+          email: user.email,
+          contact: user.phone || "",
         },
       };
 
@@ -117,8 +96,7 @@ const BuyProduct = ({ user }) => {
       paymentObject.open();
 
       paymentObject.on("payment.failed", function (response) {
-        alert("Payment failed. Please try again. Contact support for help.");
-        console.error("Payment failed:", response);
+        console.error("Payment failed:", response.error);
       });
     } catch (error) {
       console.error("Error during payment process:", error);
@@ -126,9 +104,13 @@ const BuyProduct = ({ user }) => {
   };
 
   return (
-    <>
-      <Buy makePayment={makePayment} />
-    </>
+    <Button
+      onClick={makePayment}
+      className="bg-green-500 hover:bg-green-600 text-white"
+    >
+      <CreditCard className="mr-2 h-4 w-4" />
+      Buy Credits
+    </Button>
   );
 };
 
