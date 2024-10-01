@@ -122,7 +122,9 @@ export default function ProfessorSection({
             <CardFooter className="flex flex-col space-y-3">
               {professor.calendlyLink && (
                 <Link
-                  href={`/home/professors/${professor.id}`}
+                  href={`/${role === "admin" ? "admin" : "home"}/professors/${
+                    professor.id
+                  }`}
                   className="w-full"
                 >
                   <Button
@@ -133,7 +135,6 @@ export default function ProfessorSection({
                     Book Appointment
                   </Button>
                 </Link>
-
               )}
               {role === "admin" && !professor.calendlyLink && (
                 <Button
