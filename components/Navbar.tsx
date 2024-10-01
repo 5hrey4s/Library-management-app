@@ -182,24 +182,25 @@ export default function Navbar({
                 onClick={() => setIsMobileMenuOpen(false)}
               />
             )}
-            <DropdownMenuItem>
-              <div
-                className={`flex items-center justify-between w-full text-gray-700`}
+            <div className="flex items-center space-x-2">
+              <span
+                className={`text-sm font-medium text-gray-700
+                `}
               >
-                <span>Credits:</span>
-                <span>{100}</span>
-              </div>
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => null}>
+                Credits: {100}
+              </span>
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full justify-start"
+                // onClick={handleBuyCredit}
+                className={`
+                    bg-green-100 text-green-800 hover:bg-green-200
+                `}
               >
                 <CreditCard className="mr-2 h-4 w-4" />
                 Buy Credit
               </Button>
-            </DropdownMenuItem>
+            </div>
           </nav>
 
           <div className="flex items-center space-x-4">
