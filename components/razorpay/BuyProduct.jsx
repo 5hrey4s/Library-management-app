@@ -10,6 +10,13 @@ const BuyProduct = ({ user, professorId }) => {
 
   useEffect(async () => {
     const payment = await checkPayment(user.id, professorId);
+    if (payment) {
+      router.replace(
+        `${
+          user.role === "admin" ? "/admin" : "/user"
+        }/professors/${professorId}`
+      );
+    }
     const loadRazorpayScript = () => {
       return new Promise((resolve) => {
         const script = document.createElement("script");
