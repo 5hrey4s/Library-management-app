@@ -49,7 +49,7 @@ export default async function Page({
           Book an Appointment with a Professor
         </h2>
         <div className="w-full md:w-auto">
-          <UserAppointments userAppointments={userAppointments} />
+          <UserAppointments userAppointments={userAppointments} user={user!} />
         </div>
       </div>
 

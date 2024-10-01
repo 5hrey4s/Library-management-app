@@ -22,6 +22,7 @@ import {
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import CalendlyEmbed from "@/components/CalendlyEmbed";
+import { IMember } from "@/Models/member.model";
 
 interface UserAppointment {
   event: string;
@@ -43,8 +44,10 @@ interface Invitee {
 
 export default function UserAppointments({
   userAppointments,
+  user,
 }: {
   userAppointments: UserAppointment[];
+  user: IMember;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedAction, setSelectedAction] = useState<{
@@ -142,7 +145,11 @@ export default function UserAppointments({
                         disabled={appointment.status === "canceled"} // Conditionally disable the button
                       >
                         <a
-                          href={appointment.status === "canceled" ? "#" : appointment.meetLink} // Disable the link by setting href to "#"
+                          href={
+                            appointment.status === "canceled"
+                              ? "#"
+                              : appointment.meetLink
+                          } // Disable the link by setting href to "#"
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => {
@@ -203,7 +210,7 @@ export default function UserAppointments({
             </DialogTitle>
           </DialogHeader>
           {selectedAction && (
-            <CalendlyEmbed calendlyLink={selectedAction.link} />
+            <CalendlyEmbed calendlyLink={selectedAction.link} user={user} />
           )}
         </DialogContent>
       </Dialog>
