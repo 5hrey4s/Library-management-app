@@ -21,11 +21,18 @@ import {
 } from "@/components/ui/select";
 import { IProfessor } from "@/Models/professor.model";
 import EditProfessor from "@/components/ui/editProfessor";
-import { Search, BookOpen } from "lucide-react";
+import { Search, BookOpen, X } from "lucide-react";
 import { refreshCalendlyLink } from "@/lib/actions";
 import BuyProduct from "./razorpay/BuyProduct";
-import BuyButton from "./ui/borrow";
 import { IMember } from "@/Models/member.model";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface ScheduledEvent {
   name: string;
@@ -46,11 +53,14 @@ export default function ProfessorSection({
   user: IMember;
 }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [credit, setCredit] = useState(user.credits);
   const [selectedDepartment, setSelectedDepartment] = useState("all");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleRefresh = async (email: string) => {
     await refreshCalendlyLink(email);
   };
+
   const departments = useMemo(() => {
     return Array.from(new Set(professors.map((p) => p.department)));
   }, [professors]);
@@ -63,6 +73,17 @@ export default function ProfessorSection({
           professor.department === selectedDepartment)
     );
   }, [professors, searchTerm, selectedDepartment]);
+
+  const handleBookAppointment = (professorId: string) => {
+    if (credit <= 0) {
+      setIsModalOpen(true);
+    } else {
+      // Navigate to appointment booking page
+      window.location.href = `/${
+        role === "admin" ? "admin" : "home"
+      }/professors/${professorId}`;
+    }
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -121,20 +142,14 @@ export default function ProfessorSection({
             </CardContent>
             <CardFooter className="flex flex-col space-y-3">
               {professor.calendlyLink && (
-                <Link
-                  href={`/${role === "admin" ? "admin" : "home"}/professors/${
-                    professor.id
-                  }`}
-                  className="w-full"
+                <Button
+                  variant="default"
+                  className="w-full bg-primary hover:bg-primary/90"
+                  onClick={() => handleBookAppointment(String(professor.id))}
                 >
-                  <Button
-                    variant="default"
-                    className="w-full bg-primary hover:bg-primary/90"
-                  >
-                    <BookOpen className="mr-2 h-4 w-4" />
-                    Book Appointment
-                  </Button>
-                </Link>
+                  <BookOpen className="mr-2 h-4 w-4" />
+                  Book Appointment
+                </Button>
               )}
               {role === "admin" && !professor.calendlyLink && (
                 <Button
@@ -155,6 +170,28 @@ export default function ProfessorSection({
           No professors found matching your search criteria.
         </p>
       )}
+
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Insufficient Credits</DialogTitle>
+            <DialogDescription>
+              You need at least 1 credit to book an appointment. Would you like
+              to purchase credits?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4">
+            <BuyProduct user={user} onCreditUpdate={setCredit} />
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => setIsModalOpen(false)}
+            className="mt-2"
+          >
+            Cancel
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
