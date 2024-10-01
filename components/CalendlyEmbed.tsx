@@ -45,8 +45,9 @@ interface CalendlyWidgetProps {
   prefill?: { email: string; name: string };
 }
 useCalendlyEventListener({
-  onEventScheduled: async () => deductCredit,
+  onEventScheduled:  () => deductCredit,
 });
+
 const CalendlyEmbed: React.FC<CalendlyWidgetProps> = ({
   calendlyLink,
   prefill,
