@@ -106,7 +106,7 @@ const BuyProduct = ({ user, onCreditUpdate }) => {
   return (
     <Button
       onClick={makePayment}
-      className="bg-green-500 hover:bg-green-600 text-white"
+      className="bg-green-500 hover:bg-green-600 text-white w-full"
     >
       <CreditCard className="mr-2 h-4 w-4" />
       Buy Credits
