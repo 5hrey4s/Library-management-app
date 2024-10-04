@@ -20,6 +20,8 @@ export interface AppEnv {
   CLOUDINARY_API_KEY: string;
   CLOUDINARY_API_SECRET: string;
   CLOUDINARY_URL: string;
+  RAZORPAY_KEY_ID: string;
+  RAZORPAY_KEY_SECRET: string;
 }
 
 export const Appenv = process.env as unknown as AppEnv;

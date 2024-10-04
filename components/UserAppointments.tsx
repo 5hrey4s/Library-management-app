@@ -22,6 +22,7 @@ import {
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import CalendlyEmbed from "@/components/CalendlyEmbed";
+import { IMember } from "@/Models/member.model";
 
 interface UserAppointment {
   event: string;
@@ -43,8 +44,10 @@ interface Invitee {
 
 export default function UserAppointments({
   userAppointments,
+  user,
 }: {
   userAppointments: UserAppointment[];
+  user: IMember;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedAction, setSelectedAction] = useState<{
@@ -78,6 +81,7 @@ export default function UserAppointments({
   const handleAction = (type: "cancel" | "reschedule", link: string) => {
     setSelectedAction({ type, link });
   };
+
   return (
     <>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -130,7 +134,7 @@ export default function UserAppointments({
                     </div>
                   </CardContent>
                   <Separator />
-                  <CardFooter className="p-4 flex justify-between">
+                  <CardFooter className="p-4 flex flex-col sm:flex-row sm:justify-between space-y-2 sm:space-y-0 sm:space-x-2">
                     {appointment.meetLink && (
                       <Button
                         variant="link"
@@ -158,7 +162,7 @@ export default function UserAppointments({
                         </a>
                       </Button>
                     )}
-                    <div className="space-x-2">
+                    <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
                       <Button
                         variant="outline"
                         size="sm"
@@ -206,7 +210,7 @@ export default function UserAppointments({
             </DialogTitle>
           </DialogHeader>
           {selectedAction && (
-            <CalendlyEmbed calendlyLink={selectedAction.link} />
+            <CalendlyEmbed calendlyLink={selectedAction.link} user={user} />
           )}
         </DialogContent>
       </Dialog>

@@ -21,11 +21,19 @@ import { DueBook } from "@/components/TodaysDues";
 import { RatingsRepository } from "@/Repositories/rating.repository";
 import { BookRepository } from "@/Repositories/book-repository";
 import { IBook } from "@/Models/book-model";
-import { IProfessorBase } from "@/Models/professor.model";
+import {
+  IProfessor,
+  IProfessorBase,
+  ProfessorBaseSchema,
+  ProfessorSchema,
+} from "@/Models/professor.model";
 import { ProfessorRepository } from "@/Repositories/Professor-repository";
 import { IPageRequest } from "@/core/pagination";
-import { ProfessorSortOptions, SortOptions } from "./data";
 import { Appenv } from "@/read-env";
+import { z } from "zod";
+import { PaymentRepository } from "@/Repositories/payments.repository";
+import { IPayment, IPaymentBase } from "@/Models/payments.model";
+import { fetchMemberByEmail } from "./data";
 
 const db = drizzle(sql, { schema });
 const CALENDLY_API_TOKEN = process.env.NEXT_PUBLIC_CALENDLY_API_TOKEN;
@@ -37,6 +45,7 @@ const memberRepository = new MemberRepository(db);
 const wishlistRepository = new WishlistRepository(db);
 const ratingsRepository = new RatingsRepository(db);
 const professorsRepository = new ProfessorRepository(db);
+const paymentsRepository = new PaymentRepository(db);
 
 export const create = new MemberRepository(db).create;
 
@@ -98,8 +107,6 @@ export async function handleReject(id: any) {
 }
 
 export async function createMember(data: IMemberBase): Promise<IMember | null> {
-  console.log(data);
-
   try {
     const [result] = await db
       .insert(Members)
@@ -124,7 +131,6 @@ export const authenticateGoogleSignin = async (
   try {
     // Check if the user exists in database
     let user: IMember | null = (await memberRepository.getByEmail(email))!;
-    console.log(user);
     if (!user) {
       return null;
     } else {
@@ -276,8 +282,12 @@ export async function updateRating(bookId: number, meanRating: number) {
   });
 }
 
-export async function addProfessor(data: IProfessorBase) {
-  const professor = await professorsRepository.create(data);
+// export async function addProfessor(data: IProfessorBase) {
+//   const professor = await professorsRepository.create(data);
+//   return professor;
+// }
+export async function fetchProfessorByEmail(email: string) {
+  const professor = await professorsRepository.getByEmail(email);
   return professor;
 }
 
@@ -442,7 +452,6 @@ export async function getScheduledEvents() {
     }
 
     const data = await response.json();
-    console.log("Scheduled events:", data);
     return data.collection; // Return an array of scheduled events
   } catch (error) {
     console.error("Error fetching scheduled events", error);
@@ -461,4 +470,256 @@ export async function updateProfessor(id: number, data: IProfessorBase) {
   if (role === "admin") {
     const professor = await professorsRepository.update(id, data);
   }
+}
+
+// export async function inviteProfessor(emailValue: string) {
+//   const organizationUrl = await getUserUri();
+//   const uuid = organizationUrl.split("/").pop();
+//   try {
+//     const response = await fetch(
+//       `https://api.calendly.com/organizations/${uuid}/invitations`,
+//       {
+//         method: "POST",
+//         headers: {
+//           Authorization: `Bearer ${CALENDLY_API_TOKEN}`,
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({ email: emailValue }),
+//       }
+//     );
+//     console.log("Organizations", response);
+//     if (!response.ok) {
+//       throw new Error(`Error fetching user info: ${response.statusText}`);
+//     }
+//     const data = await response.json();
+//     return data.resource.status;
+//   } catch (error) {
+//     console.error("Error inviting professor", error);
+//   }
+// }
+
+// export async function addProfessor(
+//   prevState: { message: string; errors: any },
+//   formData: FormData
+// ) {
+//   console.log("In add professor");
+//   const validateFields = ProfessorBaseSchema.safeParse({
+//     name: formData.get("name"),
+//     bio: formData.get("bio"),
+//     email: formData.get("email"),
+//     department: formData.get("department"),
+//   });
+
+//   if (!validateFields.success) {
+//     console.log("Failure");
+//     console.log(validateFields.error.flatten().fieldErrors);
+//     return {
+//       errors: validateFields.error.flatten().fieldErrors,
+//       message: "Missing Fields. Failed to Add professor.",
+//     };
+//   }
+//   const { name, bio, email, department } = validateFields.data;
+
+//   if (!name || !bio || !email || !department) {
+//     console.log("All fields are required");
+//     return { message: "All Fields are required", errors: {} };
+//   }
+
+//   try {
+//     const existingProfessor = await fetchProfessorByEmail(email);
+//     if (existingProfessor) {
+//       console.log("Professor already exists.");
+//       return { message: "Professor already exists.", errors: {} };
+//     }
+
+//     const status = await inviteProfessor(email);
+//     console.log(status);
+
+//     const createdProfessor = await professorsRepository.create({
+//       name,
+//       email,
+//       bio,
+//       department,
+//       calendlyLink: "",
+//     });
+//     console.log(`Professor ${createdProfessor!.name} created successfully!`);
+//     return { message: "Success", errors: {} };
+//   } catch (error) {
+//     console.log("Error during registration:", error);
+//     return { message: "Error during registration:", errors: {} };
+//   }
+// }
+
+export async function inviteProfessor(
+  prevState: { message: string },
+  formData: FormData
+) {
+  try {
+    const email = formData.get("email") as string;
+    const data: Omit<IProfessor, "id"> = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      department: formData.get("department") as string,
+      bio: formData.get("bio") as string,
+      calendlyLink: formData.get("calendlyLink") as string,
+    };
+
+    const orgUri: string = await getOrganizationUri();
+    const uuid = orgUri.split("/").pop();
+
+    const invitationResult = await fetch(
+      `https://api.calendly.com/organizations/${uuid!}/invitations`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${CALENDLY_API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+        }),
+      }
+    );
+    console.log(invitationResult, invitationResult.ok);
+    if (invitationResult.ok) {
+      const createdMember = await professorsRepository.create(data);
+      if (!createdMember) {
+        return { message: "Failed to create professor." };
+      }
+      return { message: "Professor created successfully!" };
+    }
+
+    return { message: "Failed to create professor." };
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      console.log(err.flatten());
+      return { message: err.errors[0].message || "Invalid input" };
+    }
+    return { message: (err as Error).message };
+  }
+}
+
+export async function refreshCalendlyLink(email: string) {
+  try {
+    const orgUri: string = await getOrganizationUri();
+    const uuid = orgUri.split("/").pop();
+
+    const invitationsResponse = await fetch(
+      `https://api.calendly.com/organizations/${uuid}/invitations?email=${encodeURIComponent(
+        email
+      )}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${CALENDLY_API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!invitationsResponse.ok) {
+      throw new Error(
+        `Error fetching invitations: ${invitationsResponse.statusText}`
+      );
+    }
+
+    const invitationsData = await invitationsResponse.json();
+    const invitation = invitationsData.collection[0];
+
+    if (invitation && invitation.status === "accepted") {
+      const userResponse = await fetch(invitation.user, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${CALENDLY_API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!userResponse.ok) {
+        throw new Error(`Error fetching user: ${userResponse.statusText}`);
+      }
+
+      const userData = await userResponse.json();
+      const calendlyLink = userData.resource.scheduling_url;
+
+      const professor = await professorsRepository.getByEmail(email);
+
+      if (professor) {
+        await professorsRepository.update(professor.id, {
+          ...professor,
+          calendlyLink: calendlyLink,
+        });
+        return {
+          success: true,
+          message: "Calendly link updated successfully.",
+        };
+      } else {
+        throw new Error("Professor not found in the database.");
+      }
+    } else {
+      return {
+        success: false,
+        message: "Invitation not accepted or not found.",
+      };
+    }
+  } catch (error) {
+    console.error("Error in checkInvitationAndUpdateCalendlyLink:", error);
+    throw error;
+  } finally {
+    revalidatePath("/admin/professors");
+  }
+}
+
+export async function addPayments(data: IPaymentBase) {
+  const payment = await paymentsRepository.create(data);
+  return payment;
+}
+
+export async function checkPayment(userId: number, professorId: number) {
+  const payment = await paymentsRepository.checkPayment(userId, professorId);
+  return payment;
+}
+
+export async function addCredit(userId: number) {
+  const member = await memberRepository.getById(userId);
+  const data: IMemberBase = {
+    accessToken: member!.accessToken,
+    credits: member!.credits + 10,
+    email: member!.email,
+    firstName: member!.firstName,
+    lastName: member!.lastName,
+    password: member!.password,
+    phoneNumber: member!.phoneNumber,
+    refreshToken: member!.refreshToken,
+    role: member!.role,
+    user_id: member!.user_id,
+  };
+
+  const result = await memberRepository.update(userId, data);
+  const session = await auth();
+  const user = await fetchMemberByEmail(session?.user.email!);
+  revalidatePath(`/${user!.role === "admin" ? "admin" : "home"}/professors`);
+  return result;
+}
+
+export async function deductCredit(userId: number) {
+  const member = await memberRepository.getById(userId);
+  const data: IMemberBase = {
+    accessToken: member!.accessToken,
+    credits: member!.credits - 10,
+    email: member!.email,
+    firstName: member!.firstName,
+    lastName: member!.lastName,
+    password: member!.password,
+    phoneNumber: member!.phoneNumber,
+    refreshToken: member!.refreshToken,
+    role: member!.role,
+    user_id: member!.user_id,
+  };
+
+  const result = await memberRepository.update(userId, data);
+  const session = await auth();
+  const user = await fetchMemberByEmail(session?.user.email!);
+  revalidatePath(`/${user!.role === "admin" ? "admin" : "home"}/professors`);
+  return result;
 }

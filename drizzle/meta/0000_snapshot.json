@@ -1,9 +1,75 @@
 {
-  "id": "401f5893-fd61-4d85-b42a-333e6b29fc56",
+  "id": "41ef8fd1-02a8-4111-aa31-6e00331fea49",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.appointments": {
+      "name": "appointments",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "professorId": {
+          "name": "professorId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "appointmentDate": {
+          "name": "appointmentDate",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "googleMeetLink": {
+          "name": "googleMeetLink",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "calendlyLink": {
+          "name": "calendlyLink",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "appointments_professorId_professors_id_fk": {
+          "name": "appointments_professorId_professors_id_fk",
+          "tableFrom": "appointments",
+          "tableTo": "professors",
+          "columnsFrom": [
+            "professorId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.books": {
       "name": "books",
       "schema": "",
@@ -58,6 +124,24 @@
         },
         "availableNumberOfCopies": {
           "name": "availableNumberOfCopies",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "image_url": {
+          "name": "image_url",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price": {
+          "name": "price",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rating": {
+          "name": "rating",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -153,6 +237,240 @@
           ]
         }
       }
+    },
+    "public.payments": {
+      "name": "payments",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "professorId": {
+          "name": "professorId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "orderId": {
+          "name": "orderId",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount": {
+          "name": "amount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "paymentStatus": {
+          "name": "paymentStatus",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "PaymentId": {
+          "name": "PaymentId",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "payments_professorId_professors_id_fk": {
+          "name": "payments_professorId_professors_id_fk",
+          "tableFrom": "payments",
+          "tableTo": "professors",
+          "columnsFrom": [
+            "professorId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "payments_userId_members_id_fk": {
+          "name": "payments_userId_members_id_fk",
+          "tableFrom": "payments",
+          "tableTo": "members",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "payments_orderId_unique": {
+          "name": "payments_orderId_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "orderId"
+          ]
+        },
+        "payments_PaymentId_unique": {
+          "name": "payments_PaymentId_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "PaymentId"
+          ]
+        }
+      }
+    },
+    "public.professors": {
+      "name": "professors",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "department": {
+          "name": "department",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bio": {
+          "name": "bio",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "calendlyLink": {
+          "name": "calendlyLink",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "googleMeetEnabled": {
+          "name": "googleMeetEnabled",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'true'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "professors_email_unique": {
+          "name": "professors_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      }
+    },
+    "public.ratings": {
+      "name": "ratings",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "bookId": {
+          "name": "bookId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "memberId": {
+          "name": "memberId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rating": {
+          "name": "rating",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "review": {
+          "name": "review",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "ratings_bookId_books_id_fk": {
+          "name": "ratings_bookId_books_id_fk",
+          "tableFrom": "ratings",
+          "tableTo": "books",
+          "columnsFrom": [
+            "bookId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "ratings_memberId_members_id_fk": {
+          "name": "ratings_memberId_members_id_fk",
+          "tableFrom": "ratings",
+          "tableTo": "members",
+          "columnsFrom": [
+            "memberId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
     },
     "public.requests": {
       "name": "requests",
@@ -257,8 +575,7 @@
         },
         "Status": {
           "name": "Status",
-          "type": "Status",
-          "typeSchema": "public",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true
         }
@@ -281,6 +598,67 @@
         "transactions_memberId_members_id_fk": {
           "name": "transactions_memberId_members_id_fk",
           "tableFrom": "transactions",
+          "tableTo": "members",
+          "columnsFrom": [
+            "memberId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.wishlist": {
+      "name": "wishlist",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "bookId": {
+          "name": "bookId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "memberId": {
+          "name": "memberId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "addedAt": {
+          "name": "addedAt",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "wishlist_bookId_books_id_fk": {
+          "name": "wishlist_bookId_books_id_fk",
+          "tableFrom": "wishlist",
+          "tableTo": "books",
+          "columnsFrom": [
+            "bookId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "wishlist_memberId_members_id_fk": {
+          "name": "wishlist_memberId_members_id_fk",
+          "tableFrom": "wishlist",
           "tableTo": "members",
           "columnsFrom": [
             "memberId"

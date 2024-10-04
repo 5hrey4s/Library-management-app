@@ -16,6 +16,8 @@ import {
   UserCheck,
   LogOut,
   Settings,
+  CreditCard,
+  Coins,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +34,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
+import BuyProduct from "./razorpay/BuyProduct";
+import { IMember } from "@/Models/member.model";
+import { addCredit } from "@/lib/actions";
 
 interface NavbarProps {
   logoText?: string;
@@ -45,6 +50,7 @@ interface NavbarProps {
   userAvatar?: string;
   userName?: string;
   locale: string;
+  user: IMember;
 }
 
 interface NavItemProps {
@@ -67,9 +73,11 @@ export default function Navbar({
   userAvatar,
   userName = "user",
   locale,
+  user,
 }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [credit, setCredit] = useState(user.credits);
   const t = useTranslations("navbar");
 
   useEffect(() => {
@@ -96,10 +104,24 @@ export default function Navbar({
     </Link>
   );
 
+  const handleAddCredit = async (userId: number) => {
+    const updatedUser = await addCredit(userId);
+    setCredit(updatedUser!.credits);
+  };
+
+  const CreditDisplay = () => (
+    <div className="flex items-center space-x-2 px-3 py-2 bg-green-50 rounded-md">
+      <Coins className="h-5 w-5 text-green-600" />
+      <span className="font-medium text-green-800">{credit} Credits</span>
+    </div>
+  );
+
   return (
     <div
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled ? "shadow-md bg-white" : "bg-white bg-opacity-90 backdrop-blur-sm"
+        isScrolled
+          ? "shadow-md bg-white"
+          : "bg-white bg-opacity-90 backdrop-blur-sm"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -112,7 +134,7 @@ export default function Navbar({
           </Link>
 
           {/* Desktop navigation */}
-          <nav className="hidden md:flex items-center space-x-1">
+          <nav className="hidden md:flex items-center space-x-4">
             {showAllBooks && (
               <NavItem
                 href={`/home/books`}
@@ -161,91 +183,96 @@ export default function Navbar({
                 isActive={active === "Dues"}
               />
             )}
-            <NavItem
-              href={`/home/professors`}
-              icon={<UserCheck className="h-5 w-5" />}
-              text={"Professors"}
-              isActive={active === "Professors"}
-            />
+            {(role === "user" || role === "admin") && (
+              <NavItem
+                href={`/${role}/professors`}
+                icon={<UserCheck className="h-5 w-5" />}
+                text="Professors"
+                isActive={active === "Professors"}
+              />
+            )}
           </nav>
 
           <div className="flex items-center space-x-4">
+            <CreditDisplay />
+            <BuyProduct user={user} onCreditUpdate={setCredit} />
             <LocaleSwitcher />
-            
+
             {/* Desktop user dropdown */}
-            <div className="hidden md:block">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="flex items-center space-x-2 hover:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-full"
-                  >
-                    <Avatar className="w-8 h-8">
-                      <AvatarImage src={userAvatar} alt={userName} />
-                      <AvatarFallback>{userName.charAt(0).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <span className="font-medium text-gray-700">
-                      {userName.charAt(0).toUpperCase() + userName.slice(1).toLowerCase()}
-                    </span>
-                    <ChevronDown className="h-4 w-4 text-gray-500" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="w-56 p-2 bg-white border border-gray-200 rounded-lg shadow-lg"
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="flex items-center space-x-2 hover:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-full"
                 >
-                  <DropdownMenuLabel className="px-2 py-1.5 text-sm font-semibold text-gray-900">
-                    <div className="flex flex-col">
-                      <span>{userName}</span>
-                      <span className="text-xs font-normal text-gray-500">
-                        {role === "admin" ? "Administrator" : "User"}
-                      </span>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="my-1 border-gray-200" />
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`/profile`}
-                      className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
-                    >
-                      <User className="mr-2 h-4 w-4" />
-                      <span>{t("profileDropdown.profile")}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`/profile/activity`}
-                      className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
-                    >
-                      <Activity className="mr-2 h-4 w-4" />
-                      <span>{t("profileDropdown.activity")}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`/profile/wishlist`}
-                      className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
-                    >
-                      <Heart className="mr-2 h-4 w-4" />
-                      <span>{t("profileDropdown.wishlist")}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`/settings`}
-                      className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
-                    >
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>{t("profileDropdown.settings")}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="my-1 border-gray-200" />
-                  <DropdownMenuItem asChild>
-                    <LogoutButton className="flex items-center w-full px-2 py-1.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-md transition-colors duration-150" />
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src={userAvatar} alt={userName} />
+                    <AvatarFallback>
+                      {userName.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="font-medium text-gray-700 hidden sm:inline">
+                    {userName.charAt(0).toUpperCase() +
+                      userName.slice(1).toLowerCase()}
+                  </span>
+                  <ChevronDown className="h-4 w-4 text-gray-500" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="w-56 p-2 bg-white border border-gray-200 rounded-lg shadow-lg"
+              >
+                <DropdownMenuLabel className="px-2 py-1.5 text-sm font-semibold text-gray-900">
+                  <div className="flex flex-col">
+                    <span>{userName}</span>
+                    <span className="text-xs font-normal text-gray-500">
+                      {role === "admin" ? "Administrator" : "User"}
+                    </span>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="my-1 border-gray-200" />
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={`/profile`}
+                    className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
+                  >
+                    <User className="mr-2 h-4 w-4" />
+                    <span>{t("profileDropdown.profile")}</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={`/profile/activity`}
+                    className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
+                  >
+                    <Activity className="mr-2 h-4 w-4" />
+                    <span>{t("profileDropdown.activity")}</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={`/profile/wishlist`}
+                    className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
+                  >
+                    <Heart className="mr-2 h-4 w-4" />
+                    <span>{t("profileDropdown.wishlist")}</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={`/${role}/professors`}
+                    className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
+                  >
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>{t("profileDropdown.settings")}</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="my-1 border-gray-200" />
+                <DropdownMenuItem asChild>
+                  <LogoutButton className="flex items-center w-full px-2 py-1.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-md transition-colors duration-150" />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* Mobile menu */}
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -253,13 +280,29 @@ export default function Navbar({
                 <Button
                   variant="ghost"
                   className="md:hidden"
-                  onClick={() => setIsMobileMenuOpen(true)}
+                  aria-label="Open menu"
                 >
                   <Menu className="h-6 w-6 text-gray-700" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                 <nav className="flex flex-col space-y-4 mt-8">
+                  <div className="flex items-center space-x-2 mb-4">
+                    <Avatar className="w-10 h-10">
+                      <AvatarImage src={userAvatar} alt={userName} />
+                      <AvatarFallback>
+                        {userName.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium text-gray-900">{userName}</p>
+                      <p className="text-sm text-gray-500">
+                        {role === "admin" ? "Administrator" : "User"}
+                      </p>
+                    </div>
+                  </div>
+                  <CreditDisplay />
+                  <BuyProduct user={user} onCreditUpdate={setCredit} />
                   <NavItem
                     href={`/profile`}
                     icon={<User className="h-5 w-5" />}
@@ -267,24 +310,6 @@ export default function Navbar({
                     isActive={active === "Profile"}
                     onClick={() => setIsMobileMenuOpen(false)}
                   />
-                  {showAllBooks && (
-                    <NavItem
-                      href={`/home/books`}
-                      icon={<Book className="h-5 w-5" />}
-                      text={t("menu.allBooks")}
-                      isActive={active === "Books"}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    />
-                  )}
-                  {showMyBooks && role === "user" && (
-                    <NavItem
-                      href={`/home/books/mybooks`}
-                      icon={<Book className="h-5 w-5" />}
-                      text={t("menu.myBooks")}
-                      isActive={active === "MyBooks"}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    />
-                  )}
                   {showMembers && role === "admin" && (
                     <NavItem
                       href={`/admin/members`}
@@ -327,13 +352,12 @@ export default function Navbar({
                     onClick={() => setIsMobileMenuOpen(false)}
                   />
                   <NavItem
-                    href={`/home/professors`}
+                    href={`/${role}/professors`}
                     icon={<UserCheck className="h-5 w-5" />}
-                    text={"Professors"}
+                    text="Professors"
                     isActive={active === "Professors"}
                     onClick={() => setIsMobileMenuOpen(false)}
                   />
-                
                   <div className="mt-4">
                     <LocaleSwitcher />
                   </div>

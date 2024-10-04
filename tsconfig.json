@@ -36,6 +36,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "middlewares",
+<<<<<<< HEAD
     "app/api/auth/[...nextauth]/route.js",
     "authOptions.js",
     "middleware.js"
@@ -44,3 +45,9 @@
     "node_modules"
   ]
 }
+=======
+    "app/api/auth/[...nextauth]/route.js"
+, "authOptions.js", "middleware.js", "components/razorpay/BuyProduct.jsx", "components/razorpay/Buy.jsx", "app/api/razorpay/route.js", "app/api/paymentverify/route.js"  ],
+  "exclude": ["node_modules"]
+}
+>>>>>>> 9d79266f7b3fed23398e25615f938473f18bf1d7

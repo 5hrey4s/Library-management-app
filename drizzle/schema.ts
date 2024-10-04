@@ -38,6 +38,7 @@ export const Members = pgTable("members", {
   accessToken: varchar("accessToken", { length: 255 }),
   user_id: varchar("user_id", { length: 255 }).notNull(),
   role: varchar("role", { length: 255 }).notNull(),
+  credits: integer("credits").notNull(),
 });
 
 // Transactions Table
@@ -115,4 +116,20 @@ export const Appointments = pgTable("appointments", {
   googleMeetLink: varchar("googleMeetLink", { length: 255 }), // Google Meet link for the appointment
   calendlyLink: varchar("calendlyLink", { length: 255 }).notNull(), // The Calendly link used for scheduling
   createdAt: varchar("createdAt", { length: 100 }).notNull(), // When the appointment was created
+});
+
+// Payments Table with Razorpay details
+export const Payments = pgTable("payments", {
+  id: serial("id").primaryKey(), // Unique payment ID
+  professorId: integer("professorId")
+    .references(() => Professors.id)
+    .notNull(), // Link to the professor's profile
+  userId: integer("userId") // Foreign key reference to Members table
+    .references(() => Members.id)
+    .notNull(), // The ID of the user making the payment
+  orderId: varchar("orderId", { length: 255 }).unique().notNull(), // Unique order identifier (razorpay_order_id)
+  amount: integer("amount").notNull(), // Payment amount in the smallest unit of currency (e.g., cents)
+  paymentStatus: varchar("paymentStatus", { length: 50 }).notNull(), // Payment status (e.g., "Pending", "Completed", "Failed")
+  PaymentId: varchar("PaymentId", { length: 255 }).unique().notNull(), // Razorpay payment ID (razorpay_payment_id)
+  createdAt: varchar("createdAt", { length: 100 }).notNull(), // When the payment was created
 });

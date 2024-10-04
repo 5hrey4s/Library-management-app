@@ -3,19 +3,7 @@ import React, { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { updateMember } from "@/lib/data"; // Assume updateMember is a function that updates member data
-import { IMember } from "@/Models/member.model";
-
-export interface IMemberBase {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  password: string;
-  refreshToken: string | null;
-  accessToken: string | null;
-  user_id: string;
-  role: string;
-}
+import { IMember, IMemberBase } from "@/Models/member.model";
 
 interface FormErrors {
   firstName?: string;
@@ -83,6 +71,7 @@ export const EditMember: React.FC<EditMemberProps> = ({ member }) => {
         accessToken: member.accessToken,
         user_id: member.user_id,
         role: member.role,
+        credits: 0,
       };
       console.log(formData);
       setIsSubmitting(true);

@@ -1,4 +1,4 @@
-import { MemberSortOptions, SortOptions, TransactionSortOptions } from "@/lib/data";
+import { MemberSortOptions, PaymentSortOptions, SortOptions, TransactionSortOptions } from "@/lib/data";
 import { IPageRequest, IPagesResponse } from "./pagination";
 
 export interface IRepository<
@@ -11,6 +11,6 @@ export interface IRepository<
   getById(id: number): Promise<CompleteModel | null>;
   list(
     params: IPageRequest,
-    sortOptions?: SortOptions | MemberSortOptions | TransactionSortOptions
+    sortOptions?: SortOptions | MemberSortOptions | TransactionSortOptions | PaymentSortOptions
   ): Promise<IPagesResponse<CompleteModel>>;
 }
