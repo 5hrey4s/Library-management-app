@@ -1,8 +1,11 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -20,7 +23,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     },
     "target": "ES2017",
     "forceConsistentCasingInFileNames": true
@@ -31,7 +36,11 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "middlewares",
-    "app/api/auth/[...nextauth]/route.js"
-, "authOptions.js", "middleware.js"  ],
-  "exclude": ["node_modules"]
+    "app/api/auth/[...nextauth]/route.js",
+    "authOptions.js",
+    "middleware.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
