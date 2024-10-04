@@ -37,7 +37,7 @@ const BuyProduct = ({ user, onCreditUpdate }) => {
 
     try {
       const response = await fetch(
-        "https://library-management-app-six.vercel.app/api/razorpay"
+        "/api/razorpay"
       );
 
       if (!response.ok) {
@@ -60,7 +60,7 @@ const BuyProduct = ({ user, onCreditUpdate }) => {
         description: "Credit Purchase",
         handler: async function (response) {
           const verificationResponse = await fetch(
-            "https://library-management-app-six.vercel.app/api/paymentverify",
+            "/api/paymentverify",
             {
               method: "POST",
               headers: {

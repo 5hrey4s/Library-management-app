@@ -92,11 +92,10 @@ export default function Navbar({
   const NavItem = ({ href, icon, text, isActive, onClick }: NavItemProps) => (
     <Link
       href={href}
-      className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-all duration-200 ${
-        isActive
-          ? "bg-green-100 text-green-800 shadow-sm"
-          : "text-gray-700 hover:bg-green-50 hover:text-green-800 hover:shadow-sm"
-      }`}
+      className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-all duration-200 ${isActive
+        ? "bg-green-100 text-green-800 shadow-sm"
+        : "text-gray-700 hover:bg-green-50 hover:text-green-800 hover:shadow-sm"
+        }`}
       onClick={onClick}
     >
       {icon}
@@ -118,11 +117,10 @@ export default function Navbar({
 
   return (
     <div
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled
-          ? "shadow-md bg-white"
-          : "bg-white bg-opacity-90 backdrop-blur-sm"
-      }`}
+      className={`sticky top-0 z-50 w-full transition-all duration-300 ${isScrolled
+        ? "shadow-md bg-white"
+        : "bg-white bg-opacity-90 backdrop-blur-sm"
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -185,7 +183,7 @@ export default function Navbar({
             )}
             {(role === "user" || role === "admin") && (
               <NavItem
-                href={`/${role}/professors`}
+                href={`/${role === "admin" ? "admin" : "home"}/professors`}
                 icon={<UserCheck className="h-5 w-5" />}
                 text="Professors"
                 isActive={active === "Professors"}
@@ -260,8 +258,7 @@ export default function Navbar({
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link
-                    href={`/${role}/professors`}
-                    className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
+                    href={`/${role === "admin" ? "admin" : "home"}/professors`} className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
                   >
                     <Settings className="mr-2 h-4 w-4" />
                     <span>{t("profileDropdown.settings")}</span>
@@ -352,8 +349,7 @@ export default function Navbar({
                     onClick={() => setIsMobileMenuOpen(false)}
                   />
                   <NavItem
-                    href={`/${role}/professors`}
-                    icon={<UserCheck className="h-5 w-5" />}
+                    href={`/${role === "admin" ? "admin" : "home"}/professors`} icon={<UserCheck className="h-5 w-5" />}
                     text="Professors"
                     isActive={active === "Professors"}
                     onClick={() => setIsMobileMenuOpen(false)}
