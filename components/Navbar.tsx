@@ -13,10 +13,6 @@ import {
   Calendar,
   Heart,
   Activity,
-  UserCheck,
-  LogOut,
-  Settings,
-  CreditCard,
   Coins,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,9 +30,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
-import BuyProduct from "./razorpay/BuyProduct";
 import { IMember } from "@/Models/member.model";
-import { addCredit } from "@/lib/actions";
 
 interface NavbarProps {
   logoText?: string;
@@ -103,17 +97,6 @@ export default function Navbar({
     </Link>
   );
 
-  const handleAddCredit = async (userId: number) => {
-    const updatedUser = await addCredit(userId);
-    setCredit(updatedUser!.credits);
-  };
-
-  const CreditDisplay = () => (
-    <div className="flex items-center space-x-2 px-3 py-2 bg-green-50 rounded-md">
-      <Coins className="h-5 w-5 text-green-600" />
-      <span className="font-medium text-green-800">{credit} Credits</span>
-    </div>
-  );
 
   return (
     <div
@@ -181,19 +164,9 @@ export default function Navbar({
                 isActive={active === "Dues"}
               />
             )}
-            {(role === "user" || role === "admin") && (
-              <NavItem
-                href={`/${role === "admin" ? "admin" : "home"}/professors`}
-                icon={<UserCheck className="h-5 w-5" />}
-                text="Professors"
-                isActive={active === "Professors"}
-              />
-            )}
           </nav>
 
           <div className="flex items-center space-x-4">
-            <CreditDisplay />
-            <BuyProduct user={user} onCreditUpdate={setCredit} />
             <LocaleSwitcher />
 
             {/* Desktop user dropdown */}
@@ -256,14 +229,6 @@ export default function Navbar({
                     <span>{t("profileDropdown.wishlist")}</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link
-                    href={`/${role === "admin" ? "admin" : "home"}/professors`} className="flex items-center px-2 py-1.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 rounded-md transition-colors duration-150"
-                  >
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>{t("profileDropdown.settings")}</span>
-                  </Link>
-                </DropdownMenuItem>
                 <DropdownMenuSeparator className="my-1 border-gray-200" />
                 <DropdownMenuItem asChild>
                   <LogoutButton className="flex items-center w-full px-2 py-1.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-md transition-colors duration-150" />
@@ -298,8 +263,6 @@ export default function Navbar({
                       </p>
                     </div>
                   </div>
-                  <CreditDisplay />
-                  <BuyProduct user={user} onCreditUpdate={setCredit} />
                   <NavItem
                     href={`/profile`}
                     icon={<User className="h-5 w-5" />}
@@ -346,12 +309,6 @@ export default function Navbar({
                     icon={<Activity className="h-5 w-5" />}
                     text={t("profileDropdown.activity")}
                     isActive={active === "Activity"}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  />
-                  <NavItem
-                    href={`/${role === "admin" ? "admin" : "home"}/professors`} icon={<UserCheck className="h-5 w-5" />}
-                    text="Professors"
-                    isActive={active === "Professors"}
                     onClick={() => setIsMobileMenuOpen(false)}
                   />
                   <div className="mt-4">

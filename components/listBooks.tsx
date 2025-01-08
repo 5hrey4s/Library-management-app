@@ -68,7 +68,7 @@ const ListBooks: React.FC<ListBooksProps> = ({
       }
     }
 
-    router.replace(`/home/books?${newSearchParams.toString()}`);
+    router.replace(`/${role === "admin" ? "admin" : "home"}/books?${newSearchParams.toString()}`);
   };
 
   const start = (page - 1) * perPage;
@@ -125,7 +125,7 @@ const ListBooks: React.FC<ListBooksProps> = ({
                 {t("applyFilters")}
               </Button>
             </form>
-            {user.role==="admin" && <AddBook />}
+            {user.role === "admin" && <AddBook />}
           </div>
         </div>
       </CardHeader>
