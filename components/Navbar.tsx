@@ -118,7 +118,7 @@ export default function Navbar({
           <nav className="hidden md:flex items-center space-x-4">
             {showAllBooks && (
               <NavItem
-                href={user.role==='admin'?`/home/admin`:`/home/books`}
+                href={user.role==='admin'?`/admin/books`:`/home/books`}
                 icon={<Book className="h-5 w-5" />}
                 text={t("menu.allBooks")}
                 isActive={active === "Books"}
