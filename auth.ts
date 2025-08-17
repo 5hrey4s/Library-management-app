@@ -123,10 +123,16 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
     },
 
     // The jwt callback adds custom data (like 'role') to the token.
-    async jwt({ token, user }) {
+    async jwt({ token, user, profile }) {
       if (user) {
         token.role = user.role;
       }
+      if (profile && profile.picture) token.image = profile.picture;
+      const member: IMember | null = await fetchMemberByEmail(token.email!);
+      if (member) {
+        token.role = member.role;
+      }
+      // console.log("token", token, user);
       return token;
     },
 
